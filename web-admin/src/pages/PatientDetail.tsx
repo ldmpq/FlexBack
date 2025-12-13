@@ -1,101 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axiosClient from '../api/axiosClient';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, User, Phone, MapPin, Calendar, FileText, PlusCircle, X, CheckCircle } from 'lucide-react';
-
-// Interface cho danh sách bác sĩ
-interface BacSiOption {
-  maBacSi: number;
-  TaiKhoan: { hoVaTen: string };
-  chuyenKhoa: string;
-}
+import { usePatientDetailManager } from '../hooks/usePatientDetailManager';
 
 const PatientDetail: React.FC = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
-  const [patient, setPatient] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  // --- STATE MODAL & FORM ---
-  const [showModal, setShowModal] = useState(false);
-  const [listBacSi, setListBacSi] = useState<BacSiOption[]>([]);
-  const [formData, setFormData] = useState({
-    chanDoan: '',
-    trangThaiHienTai: '',
-    maBacSi: ''
-  });
-  const [submitting, setSubmitting] = useState(false);
-
-  // --- 1. HÀM LOAD CHI TIẾT BỆNH NHÂN ---
-  const fetchDetail = async () => {
-    try {
-      setLoading(true);
-      // Gọi API
-      const res: any = await axiosClient.get(`/users/benh-nhan/${id}`);
-      
-      // SỬA LỖI TẠI ĐÂY: Dùng res.data thay vì res.data.data
-      setPatient(res.data.data || res.data); 
-
-    } catch (error: any) {
-      console.error("Lỗi tải thông tin:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // --- 2. HÀM LOAD DANH SÁCH BÁC SĨ ---
-  const fetchDoctors = async () => {
-    try {
-      const res: any = await axiosClient.get('/hoso/bac-si');
-      // Tương tự, kiểm tra xem dữ liệu nằm ở đâu
-      setListBacSi(res.data.data || res.data);
-    } catch (error) {
-      console.error("Lỗi lấy DS bác sĩ:", error);
-    }
-  };
-
-  // --- 3. HÀM TẠO HỒ SƠ ---
-  const handleCreateHoSo = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.chanDoan) return alert("Vui lòng nhập chẩn đoán!");
-
-    try {
-      setSubmitting(true);
-      
-      // Lấy ID chi tiết bệnh nhân (maBenhNhan) từ dữ liệu đã load
-      const maBenhNhan = patient.BenhNhan?.[0]?.maBenhNhan;
-      if (!maBenhNhan) {
-        alert("Lỗi dữ liệu bệnh nhân (Thiếu mã chi tiết). Vui lòng tải lại trang.");
-        return;
-      }
-
-      await axiosClient.post('/hoso', {
-        maBenhNhan: maBenhNhan,
-        maBacSi: formData.maBacSi,
-        chanDoan: formData.chanDoan,
-        trangThaiHienTai: formData.trangThaiHienTai
-      });
-
-      alert("Tạo hồ sơ thành công!");
-      setShowModal(false);
-      setFormData({ chanDoan: '', trangThaiHienTai: '', maBacSi: '' });
-      fetchDetail(); // Load lại trang
-    } catch (error) {
-      alert("Có lỗi xảy ra khi tạo hồ sơ.");
-      console.error(error);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  useEffect(() => {
-    if (id) fetchDetail();
-  }, [id]);
+  
+  // Lấy logic từ Hook
+  const { 
+    patient, loading, listBacSi, doctorsLoading, // Lấy thêm doctorsLoading
+    showModal, setShowModal,
+    formData, setFormData, submitting,
+    handleCreateHoSo, openCreateModal
+  } = usePatientDetailManager();
 
   if (loading) return <div className="p-8 text-center text-blue-600 font-medium">Đang tải thông tin...</div>;
   if (!patient) return <div className="p-8 text-center text-red-500">Không tìm thấy bệnh nhân! (Vui lòng kiểm tra lại ID)</div>;
 
-  const info = patient.BenhNhan?.[0] || {};
+  // Sử dụng Optional Chaining để tránh lỗi khi data chưa đầy đủ
+  const info = patient.BenhNhan?.[0];
 
   return (
     <div className="p-6 max-w-6xl mx-auto font-sans text-gray-800 relative">
@@ -106,7 +29,7 @@ const PatientDetail: React.FC = () => {
 
       {/* HEADER THÔNG TIN */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 flex flex-col md:flex-row gap-6">
-        <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl">
+        <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-3xl shrink-0">
           {patient.hoVaTen ? patient.hoVaTen.charAt(0) : 'U'}
         </div>
         <div className="flex-1">
@@ -115,15 +38,16 @@ const PatientDetail: React.FC = () => {
             <p className="flex items-center"><User size={18} className="mr-2" /> {patient.gioiTinh} - {patient.ngaySinh ? new Date(patient.ngaySinh).toLocaleDateString('vi-VN') : '---'}</p>
             <p className="flex items-center"><Phone size={18} className="mr-2" /> {patient.soDienThoai}</p>
             <p className="flex items-center"><MapPin size={18} className="mr-2" /> {patient.diaChi || 'Chưa cập nhật'}</p>
+            
             <p className="flex items-center font-medium text-blue-600">
-              Chiều cao: {info.chieuCao || '--'}cm - Cân nặng: {info.canNang || '--'}kg
+              Chiều cao: {info?.chieuCao || '--'}cm - Cân nặng: {info?.canNang || '--'}kg
             </p>
           </div>
         </div>
         <div className="border-l pl-6 border-gray-100 min-w-[300px]">
            <h3 className="font-bold text-gray-700 mb-2">Tình trạng hiện tại:</h3>
            <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded italic">
-             "{info.tinhTrangHienTai || 'Chưa có ghi chú tình trạng'}"
+             "{info?.tinhTrangHienTai || 'Chưa có ghi chú tình trạng'}"
            </p>
         </div>
       </div>
@@ -134,7 +58,7 @@ const PatientDetail: React.FC = () => {
           <FileText className="mr-2 text-blue-600" /> Hồ sơ bệnh án
         </h2>
         <button 
-          onClick={() => { setShowModal(true); fetchDoctors(); }}
+          onClick={openCreateModal}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition shadow"
         >
           <PlusCircle size={18} /> Tạo hồ sơ mới
@@ -142,8 +66,8 @@ const PatientDetail: React.FC = () => {
       </div>
 
       <div className="grid gap-4">
-        {info.HoSoBenhAn && info.HoSoBenhAn.length > 0 ? (
-          info.HoSoBenhAn.map((hs: any) => (
+        {info?.HoSoBenhAn && info.HoSoBenhAn.length > 0 ? (
+          info.HoSoBenhAn.map((hs) => (
             <div key={hs.maHoSo} className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition cursor-pointer">
               <div className="flex justify-between mb-2">
                 <span className="font-bold text-lg text-blue-700">Hồ sơ #{hs.maHoSo}</span>
@@ -154,15 +78,20 @@ const PatientDetail: React.FC = () => {
               </div>
               <p className="text-gray-700 font-medium mb-1">Chẩn đoán: {hs.chanDoan}</p>
               
-              {/* HIỂN THỊ TÊN BÁC SĨ (Hỗ trợ cả 2 cấu trúc) */}
               <p className="text-sm text-gray-500">
                 Bác sĩ phụ trách: <span className="font-semibold">
                   {hs.BacSi?.TaiKhoan?.hoVaTen || hs.BacSi?.hoVaTen || 'Chưa phân công'}
                 </span>
               </p>
               
+              {/* NÚT XEM LỘ TRÌNH*/}
               <div className="mt-4 pt-3 border-t flex justify-end gap-3">
-                 <button className="text-sm text-blue-600 font-medium hover:underline">Xem lộ trình điều trị &rarr;</button>
+                 <button 
+                    onClick={() => navigate('/admin/plans', { state: { selectedHoSoId: hs.maHoSo } })}
+                    className="text-sm text-blue-600 font-medium hover:underline flex items-center"
+                 >
+                    Xem lộ trình điều trị &rarr;
+                 </button>
               </div>
             </div>
           ))
@@ -173,7 +102,7 @@ const PatientDetail: React.FC = () => {
         )}
       </div>
 
-      {/* MODAL (POPUP) TẠO HỒ SƠ */}
+      {/* MODAL TẠO HỒ SƠ */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
@@ -185,40 +114,39 @@ const PatientDetail: React.FC = () => {
             <form onSubmit={handleCreateHoSo} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Chẩn đoán bệnh <span className="text-red-500">*</span></label>
-                <textarea 
-                  required
-                  className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  rows={3}
-                  placeholder="Nhập chẩn đoán..."
-                  value={formData.chanDoan}
+                <textarea required className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" rows={3}
+                  placeholder="Nhập chẩn đoán..." value={formData.chanDoan}
                   onChange={e => setFormData({...formData, chanDoan: e.target.value})}
                 ></textarea>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Tình trạng hiện tại</label>
-                <input 
-                  type="text" 
-                  className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  value={formData.trangThaiHienTai}
-                  onChange={e => setFormData({...formData, trangThaiHienTai: e.target.value})}
-                />
+                <input type="text" className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  value={formData.trangThaiHienTai} onChange={e => setFormData({...formData, trangThaiHienTai: e.target.value})} />
               </div>
 
+              {/* SELECT BÁC SĨ*/}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Chọn Bác sĩ</label>
                 <select 
                   className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 bg-white"
-                  value={formData.maBacSi}
-                  onChange={e => setFormData({...formData, maBacSi: e.target.value})}
+                  value={formData.maBacSi} 
+                  onChange={e => setFormData({...formData, maBacSi: e.target.value})} 
                 >
                   <option value="">-- Chưa phân công --</option>
-                  {listBacSi.map((bs: any) => (
-                    <option key={bs.maBacSi} value={bs.maBacSi}>
-                      {/* Xử lý hiển thị tên bác sĩ trong dropdown */}
-                      {bs.TaiKhoan?.hoVaTen || bs.hoVaTen} - {bs.chuyenKhoa}
-                    </option>
-                  ))}
+                  
+                  {doctorsLoading ? (
+                    <option disabled>Đang tải danh sách...</option>
+                  ) : listBacSi && listBacSi.length > 0 ? (
+                    listBacSi.map((bs: any) => (
+                      <option key={bs.maBacSi} value={bs.maBacSi}>
+                        {bs.TaiKhoan?.hoVaTen || bs.hoVaTen || `Bác sĩ #${bs.maBacSi}`} {bs.chuyenKhoa ? `- ${bs.chuyenKhoa}` : ''}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>-- Không tìm thấy bác sĩ nào --</option>
+                  )}
                 </select>
               </div>
 

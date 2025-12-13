@@ -20,18 +20,33 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
   }
 
   // 2. Kiểm tra token
-  const secret = process.env.JWT_SECRET || 'secret_mac_dinh';
+  const secret = process.env.JWT_SECRET || 'TryToGuessThisSecretKey_FlexBack';
 
   jwt.verify(token, secret, (err, decoded) => {
     if (err) {
       res.status(403).json({ message: 'Token không hợp lệ hoặc đã hết hạn!' });
       return;
     }
-
-    // 3. Nếu ngon lành, gắn thông tin user vào biến req để dùng ở bước sau
-    (req as AuthRequest).user = decoded as { id: number; role: string };
     
-    // 4. Cho phép đi tiếp
+    (req as AuthRequest).user = decoded as { id: number; role: string };
+
     next();
   });
+};
+
+// Hàm này nhận vào một mảng vai trò (role) được phép, và trả về một middleware
+export const authorizeRole = (allowedRoles: string[]) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        const userRole = (req as AuthRequest).user?.role;
+        if (!userRole) {
+            return res.status(403).json({ message: 'Không tìm thấy vai trò người dùng.' });
+        }
+
+        if (!allowedRoles.includes(userRole)) {
+            return res.status(403).json({ message: 'Không có quyền truy cập.' });
+        }
+        
+        // Nếu vai trò hợp lệ -> đi tiếp
+        next();
+    };
 };

@@ -12,7 +12,7 @@ async function main() {
   console.log('🔑 Generated Hash:', hashedPassword);
 
   // 2. Danh sách tài khoản cần reset mật khẩu
-  const accountsToFix = ['admin_root', 'bacsi_chuyenkhoa', 'ktv_xetnghiem', 'benhnhan_01'];
+  const accountsToFix = ['admin01'];
 
   for (const username of accountsToFix) {
     const user = await prisma.taiKhoan.findFirst({ where: { tenTaiKhoan: username } });

@@ -2,17 +2,20 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import authRoutes from './routes/authRoutes';
+import authRoutes from './routes/authRoute';
 
-import hoSoRoutes from './routes/hoSoRoutes';
+import hoSoRoutes from './routes/hoSoRoute';
 
-import dieuTriRoutes from './routes/dieuTriRoutes';
+import dieuTriRoutes from './routes/dieuTriRoute';
 
-import userRoutes from './routes/userRoutes';
+import userRoutes from './routes/userRoute';
 
-import exerciseRoutes from './routes/exerciseRoutes';
+import exerciseRoutes from './routes/baiTapRoute';
 
-import treatmentRoutes from './routes/treatmentRoutes';
+import treatmentRoutes from './routes/treatmentRoute';
+
+import accountRoutes from './routes/accountRoute';
+
 
 dotenv.config();
 
@@ -21,6 +24,7 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json()); // Quan trọng: Để đọc được JSON từ body request
+app.use(express.urlencoded({ extended: true }));
 
 // Cấu hình Routes
 app.use('/api/auth', authRoutes);
@@ -30,6 +34,7 @@ app.use('/api/dieutri', dieuTriRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/treatment', treatmentRoutes);
+app.use('/api/accounts', accountRoutes)
 
 // Route test server
 app.get('/', (req: Request, res: Response) => {
