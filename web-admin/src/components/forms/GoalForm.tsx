@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Target, X, CheckCircle } from 'lucide-react';
-import type { GoalFormProps } from '../types/goal.type';
+import type { GoalFormProps } from '../../types/goal.type';
 
 const GoalForm: React.FC<GoalFormProps> = ({ isOpen, onClose, onSubmit, submitting }) => {
   const initialState = {

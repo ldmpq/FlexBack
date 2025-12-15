@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, SafeAreaView, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { Ionicons } from '@expo/vector-icons';
 import axiosClient from '../utils/axiosClient';
 
@@ -59,7 +61,6 @@ const UpdateProfileScreen = ({ navigation }: any) => {
                 />
             </View>
 
-            {/* 2. Gender */}
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Giới tính</Text>
                 <View style={styles.genderRow}>
@@ -149,94 +150,119 @@ const UpdateProfileScreen = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#FFFFFF' 
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
-  scrollContent: { 
-    padding: 24, 
-    paddingBottom: 40 
+
+  scrollContent: {
+    padding: 24,
+    paddingBottom: 40,
   },
-  titleContainer: { 
-    marginBottom: 30, 
-    marginTop: 20 
-  },
-  title: { 
-    fontSize: 26, 
-    fontWeight: 'bold', 
-    color: '#1A1A1A', 
-    marginBottom: 8 
-  },
-  subtitle: { 
-    fontSize: 14, 
-    color: '#666' 
-  },
-  form: { 
-    gap: 20 
-  },
-  inputContainer: { 
-    gap: 8 
-  },
-  label: { 
-    fontSize: 14, 
-    fontWeight: '600', 
-    color: '#333' 
-  },
-  input: {
-    backgroundColor: '#F9F9F9', 
-    borderWidth: 1, 
-    borderColor: '#E8E8E8', 
-    borderRadius: 12, 
-    paddingHorizontal: 16, 
-    height: 50, 
-    fontSize: 15, 
-    color: '#333'
-  },
-  row: { 
-    flexDirection: 'row' 
-  },
-  genderRow: { 
-    flexDirection: 'row', 
-    gap: 10 
-  },
-  genderBtn: { 
-    flex: 1, 
-    height: 48, 
-    borderRadius: 10, 
-    borderWidth: 1, 
-    borderColor: '#E8E8E8', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    backgroundColor: '#fff' 
-  },
-  genderActive: { 
-    backgroundColor: '#00C269', 
-    borderColor: '#00C269' 
-  },
-  genderText: { 
-    fontWeight: '600', 
-    color: '#666' 
-  },
-  button: {
-    backgroundColor: '#00C269', 
-    borderRadius: 12, 
-    height: 56, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
+
+  /* ================= TITLE ================= */
+  titleContainer: {
     marginTop: 20,
-    shadowColor: "#00C269", 
-    shadowOffset: { width: 0, height: 4 }, 
-    shadowOpacity: 0.3, 
-    shadowRadius: 10, 
-    elevation: 5
+    marginBottom: 30,
   },
-  buttonText: { 
-    color: '#fff', 
-    fontSize: 16, 
-    fontWeight: 'bold' 
-  }
+
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 8,
+  },
+
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+  },
+
+  /* ================= FORM ================= */
+  form: {
+    gap: 20,
+  },
+
+  inputContainer: {
+    gap: 8,
+  },
+
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
+
+  input: {
+    height: 50,
+    paddingHorizontal: 16,
+
+    backgroundColor: '#F9F9F9',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    borderRadius: 12,
+
+    fontSize: 15,
+    color: '#333',
+  },
+
+  /* ================= ROWS ================= */
+  row: {
+    flexDirection: 'row',
+  },
+
+  genderRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+
+  genderBtn: {
+    flex: 1,
+    height: 48,
+
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+
+    backgroundColor: '#fff',
+
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  genderActive: {
+    backgroundColor: '#00C269',
+    borderColor: '#00C269',
+  },
+
+  genderText: {
+    fontWeight: '600',
+    color: '#666',
+  },
+
+  /* ================= BUTTON ================= */
+  button: {
+    height: 56,
+    marginTop: 20,
+
+    backgroundColor: '#00C269',
+    borderRadius: 12,
+
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    shadowColor: '#00C269',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
 });
 
 export default UpdateProfileScreen;
-
-

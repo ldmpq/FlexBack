@@ -1,4 +1,4 @@
-import axiosClient from '../utils/axiosClient';
+import axiosClient, { setAuthToken } from '../utils/axiosClient';
 import type { LoginCredentials, LoginResponse } from '../types/auth.type';
 
 export const authService = {
@@ -7,5 +7,20 @@ export const authService = {
     return res.data;
   },
 
-  // Có thể thêm register, logout, forgotPassword ở đây sau này
+  logout: async () => {
+    try {
+      // Clear token khỏi axios header
+      setAuthToken('');
+
+      // Clear token khỏi local storage (nếu dùng)
+      // await AsyncStorage.removeItem('token');
+
+      return true;
+    } catch (error) {
+      console.error('AuthService logout error:', error);
+      throw error;
+    }
+  },
+
+  // Có thể thêm register, forgotPassword ở đây sau này
 };

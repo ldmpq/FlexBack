@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { UserPlus, Search, Edit, Trash2, X, Save, UserCheck, Stethoscope, Briefcase, Eye, EyeOff, Shield, BadgeInfo, Phone, Mail, Calendar } from 'lucide-react';
 import { useAccountManager } from '../hooks/useAccountManager';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../components/forms/SearchBar';
 
 const Accounts: React.FC = () => {
   // Lấy toàn bộ logic và state từ Hook

@@ -3,8 +3,8 @@ import { FileText, Target, Map, Calendar, ChevronRight, ChevronDown, Plus, User,
 import { useTreatmentManager } from '../hooks/useTreatmentManager';
 import type { LoTrinh } from '../types/treatment.type';
 import ExerciseSetup from './ExerciseSetup';
-import GoalForm from '../components/GoalForm';
-import TreatmentForm from '../components/TreamentForm';
+import GoalForm from '../components/forms/GoalForm';
+import TreatmentForm from '../components/forms/TreamentForm';
 import { useLocation } from 'react-router-dom';
 
 const TreatmentManager: React.FC = () => {
@@ -67,10 +67,13 @@ const TreatmentManager: React.FC = () => {
 
   return (
     <div className="p-6 h-[calc(100vh-64px)] flex flex-col font-sans text-gray-800">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <Map className="text-blue-600" /> Quản lý Hồ sơ Bệnh nhân
-      </h2>
-
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <Map className="text-blue-600" /> Quản lí Hồ sơ và Lộ trình
+        </h2>
+        <p className="text-gray-500">Tạo lộ trình điều trị cho bệnh nhân</p>
+      </div>
+    
       <div className="flex gap-6 flex-1 overflow-hidden">
         {/* CỘT TRÁI: DANH SÁCH */}
         <div className="w-1/3 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">

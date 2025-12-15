@@ -79,40 +79,153 @@ const LoginScreen = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+
+  /* ================= TOP SECTION ================= */
   topSection: {
-    height: height * 0.4, width: '100%', position: 'relative',
+    height: height * 0.4,
+    width: '100%',
+    position: 'relative',
   },
-  topImage: { width: '100%', height: '100%' },
-  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.05)' },
+
+  topImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+  },
+
+  /* ================= BOTTOM SECTION ================= */
   bottomSection: {
-    flex: 1, backgroundColor: '#fff',
-    borderTopLeftRadius: 30, borderTopRightRadius: 30,
-    marginTop: -30, paddingHorizontal: 24, paddingTop: 30,
-    shadowColor: "#000", shadowOffset: { width: 0, height: -3 }, shadowOpacity: 0.1, shadowRadius: 5, elevation: 10, 
+    flex: 1,
+    backgroundColor: '#fff',
+
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    marginTop: -30,
+
+    paddingHorizontal: 24,
+    paddingTop: 30,
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 10,
   },
-  scrollContent: { paddingBottom: 20 },
-  header: { marginBottom: 20, alignItems: 'center' },
-  title: { fontSize: 26, fontWeight: 'bold', color: '#1A1A1A', marginBottom: 5 },
-  subtitle: { fontSize: 14, color: '#666' },
-  orText: { textAlign: 'center', color: '#999', fontSize: 12, marginBottom: 20 },
-  form: { gap: 16 },
+
+  scrollContent: {
+    paddingBottom: 20,
+  },
+
+  /* ================= HEADER ================= */
+  header: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 5,
+  },
+
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+  },
+
+  orText: {
+    textAlign: 'center',
+    fontSize: 12,
+    color: '#999',
+    marginBottom: 20,
+  },
+
+  /* ================= FORM ================= */
+  form: {
+    gap: 16,
+  },
+
   inputContainer: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#F9F9F9',
-    borderWidth: 1, borderColor: '#E8E8E8', borderRadius: 12, paddingHorizontal: 16, height: 56,
+    flexDirection: 'row',
+    alignItems: 'center',
+
+    height: 56,
+    paddingHorizontal: 16,
+
+    backgroundColor: '#F9F9F9',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    borderRadius: 12,
   },
-  input: { flex: 1, fontSize: 15, color: '#333' },
+
+  input: {
+    flex: 1,
+    fontSize: 15,
+    color: '#333',
+  },
+
+  /* ================= BUTTONS ================= */
   loginButton: {
-    backgroundColor: '#00C269', borderRadius: 12, height: 56, justifyContent: 'center', alignItems: 'center',
-    marginTop: 10, shadowColor: "#00C269", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 5
+    height: 56,
+    marginTop: 10,
+
+    backgroundColor: '#00C269',
+    borderRadius: 12,
+
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    shadowColor: '#00C269',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  loginText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  forgotButton: { alignSelf: 'flex-end' },
-  forgotText: { color: '#00C269', fontSize: 13, fontWeight: '600' },
-  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: 30 },
-  footerText: { color: '#888', fontSize: 14 },
-  linkText: { color: '#00C269', fontWeight: 'bold', fontSize: 14 }
+
+  loginText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+
+  forgotButton: {
+    alignSelf: 'flex-end',
+  },
+
+  forgotText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#00C269',
+  },
+
+  /* ================= FOOTER ================= */
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 30,
+  },
+
+  footerText: {
+    fontSize: 14,
+    color: '#888',
+  },
+
+  linkText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#00C269',
+  },
 });
+
 
 export default LoginScreen;
 

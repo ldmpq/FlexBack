@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Map, X } from 'lucide-react';
-import type { TreatmentFormProps } from '../types/treatment.type';
+import type { TreatmentFormProps } from '../../types/treatment.type';
 
 const TreatmentForm: React.FC<TreatmentFormProps> = ({ isOpen, onClose, onSubmit, submitting, listKTV }) => {
   const initialState = {

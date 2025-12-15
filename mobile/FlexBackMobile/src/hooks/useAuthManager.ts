@@ -34,9 +34,9 @@ export const useAuthManager = (navigation: any) => {
       }
 
       Alert.alert(
-        'Thành công', 
+        'Đăng nhâp thành công', 
         `Xin chào ${data.user.hoVaTen}`,
-        [{ text: 'OK', onPress: () => navigation.replace('Home') }]
+        [{ text: 'OK', onPress: () => navigation.replace('AppTabs') }]
       );
 
     } catch (error: any) {

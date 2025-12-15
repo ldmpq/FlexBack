@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, X } from 'lucide-react';
-import type { SearchBarProps } from '../types/searchBar.type';
+import type { SearchBarProps } from '../../types/searchBar.type';
 
 const SearchBar: React.FC<SearchBarProps> = ({ 
   value, 

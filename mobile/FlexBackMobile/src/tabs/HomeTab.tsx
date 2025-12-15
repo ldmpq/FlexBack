@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
-import axiosClient from '../../utils/axiosClient';
+import axiosClient from '../utils/axiosClient';
 
 const HomeTab = () => {
   const [user, setUser] = useState<any>(null);

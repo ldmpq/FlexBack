@@ -1,12 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import HomeTab from '../tabs/HomeTab';
-import ProgramTab from '../tabs/ProgramTab';
-import GuideTab from '../tabs/GuideTab';
-import ResultTab from '../tabs/ResultTab';
-import MeTab from '../tabs/MeTab';
+import HomeTab from '../../tabs/HomeTab';
+import ProgramTab from '../../tabs/ProgramTab';
+import ResultTab from '../../tabs/ResultTab';
+import MeTab from '../../tabs/MeTab';
+import GuideTab from '../../tabs/GuideTab';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,22 +24,34 @@ export const AppNavigation = () => {
           borderTopColor: '#f0f0f0',
           elevation: 5,
         },
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ color, size }) => {
           let iconName: any;
 
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Program') {
-            iconName = 'list';
-          } else if (route.name === 'Guide') {
-            iconName = 'book-open';
-          } else if (route.name === 'Result') {
-            iconName = 'bar-chart-2';
-          } else if (route.name === 'Me') {
-            iconName = 'user';
+          switch (route.name) {
+            case 'Home':
+              iconName = 'home-outline';
+              break;
+            case 'Program':
+              iconName = 'progress-clock';
+              break;
+            case 'Guide':
+              iconName = 'book-open-page-variant';
+              break;
+            case 'Result':
+              iconName = 'chart-line';
+              break;
+            case 'Me':
+              iconName = 'account-outline';
+              break;
           }
 
-          return <Feather name={iconName} size={size} color={color} />;
+          return (
+            <MaterialCommunityIcons
+              name={iconName}
+              size={size}
+              color={color}
+            />
+          );
         },
       })}
     >

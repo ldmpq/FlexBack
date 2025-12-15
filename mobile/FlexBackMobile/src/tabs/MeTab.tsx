@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Alert, Image } from 'react-native';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import axiosClient, { setAuthToken } from '../../utils/axiosClient';
+import axiosClient from '../utils/axiosClient';
+import { authService } from '../services/auth.service';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MeTab = () => {
@@ -21,36 +22,32 @@ const MeTab = () => {
     fetchProfile();
   }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     Alert.alert(
-      "Đăng xuất",
-      "Bạn có chắc chắn muốn đăng xuất không?",
+      'Đăng xuất',
+      'Bạn có chắc chắn muốn đăng xuất không?',
       [
-        { text: "Hủy", style: "cancel" },
-        { 
-          text: "Đồng ý", 
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Đồng ý',
           style: 'destructive',
           onPress: async () => {
             try {
-              // Xóa token trong axios client
-              setAuthToken('');
-              
-              // Xóa token trong AsyncStorage
-              //await AsyncStorage.removeItem('token');
+              await authService.logout();
 
-              // Reset Navigation về màn hình Login (để không back)
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'Login' }],
               });
             } catch (error) {
-              console.error("Lỗi khi đăng xuất:", error);
+              Alert.alert('Lỗi', 'Không thể đăng xuất, vui lòng thử lại');
             }
-          } 
-        }
+          },
+        },
       ]
     );
   };
+
 
   return (
     <SafeAreaView style={styles.container}>

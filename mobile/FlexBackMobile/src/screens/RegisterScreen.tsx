@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import axiosClient, { setAuthToken } from '../utils/axiosClient';
 
@@ -86,93 +87,120 @@ const RegisterScreen = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#FFFFFF' 
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
-  scrollContent: { 
-    paddingHorizontal: 24, 
-    paddingTop: 20, 
-    paddingBottom: 20 
+
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
-  header: { 
-    marginBottom: 20 
+
+  /* ================= HEADER ================= */
+  header: {
+    marginBottom: 20,
   },
-  backButton: { 
-    width: 40, 
-    height: 40, 
-    borderRadius: 12, 
-    backgroundColor: '#F5F5F5', 
-    justifyContent: 'center', 
-    alignItems: 'center' 
-  },
-  titleContainer: { 
-    marginBottom: 30, 
-    alignItems: 'center' 
-  },
-  title: { 
-    fontSize: 26, 
-    fontWeight: 'bold', 
-    color: '#1A1A1A', 
-    marginBottom: 8 
-  },
-  subtitle: { 
-    fontSize: 14, 
-    color: '#666' 
-  },
-  form: { 
-    gap: 16 
-  },
-  inputContainer: {
-    backgroundColor: '#fff', 
-    borderWidth: 1, 
-    borderColor: '#E8E8E8', 
-    borderRadius: 12, 
-    paddingHorizontal: 16, 
-    height: 56, 
+
+  backButton: {
+    width: 40,
+    height: 40,
+
+    borderRadius: 12,
+    backgroundColor: '#F5F5F5',
+
     justifyContent: 'center',
-    shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.02, 
-    shadowRadius: 5, 
-    elevation: 1
+    alignItems: 'center',
   },
-  input: { 
-    fontSize: 15, 
-    color: '#333' 
+
+  /* ================= TITLE ================= */
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 30,
   },
+
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 8,
+  },
+
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+  },
+
+  /* ================= FORM ================= */
+  form: {
+    gap: 16,
+  },
+
+  inputContainer: {
+    height: 56,
+    paddingHorizontal: 16,
+
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+    borderRadius: 12,
+
+    justifyContent: 'center',
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.02,
+    shadowRadius: 5,
+    elevation: 1,
+  },
+
+  input: {
+    fontSize: 15,
+    color: '#333',
+  },
+
+  /* ================= BUTTON ================= */
   registerButton: {
-    backgroundColor: '#00C269', 
-    borderRadius: 12, 
-    height: 56, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    height: 56,
     marginTop: 10,
-    shadowColor: "#00C269", 
-    shadowOffset: { width: 0, height: 4 }, 
-    shadowOpacity: 0.3, 
-    shadowRadius: 10, 
-    elevation: 5
+
+    backgroundColor: '#00C269',
+    borderRadius: 12,
+
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    shadowColor: '#00C269',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  registerText: { 
-    color: '#fff', 
-    fontSize: 16, 
-    fontWeight: 'bold' 
+
+  registerText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
   },
-  footer: { 
-    flexDirection: 'row', 
-    justifyContent: 'center', 
-    marginTop: 30 
+
+  /* ================= FOOTER ================= */
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 30,
   },
-  footerText: { 
-    color: '#888', 
-    fontSize: 14 
+
+  footerText: {
+    fontSize: 14,
+    color: '#888',
   },
-  linkText: { 
-    color: '#00C269', 
-    fontWeight: 'bold', 
-    fontSize: 14 
-  }
+
+  linkText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#00C269',
+  },
 });
 
 export default RegisterScreen;
