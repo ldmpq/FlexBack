@@ -31,7 +31,7 @@ export class AuthService {
                 hoVaTen,
                 email,
                 soDienThoai,
-                loaiTaiKhoan: 'BENH_NHAN', // Mặc định là Bệnh nhân
+                loaiTaiKhoan: 'BENH_NHAN',
                 ngayTaoTaiKhoan: new Date()
             }
         });
@@ -130,7 +130,6 @@ export class AuthService {
 
     if (!isMatch) throw new Error('Tài khoản hoặc mật khẩu không đúng!');
 
-    // Tạo JWT
     const secret = process.env.JWT_SECRET || 'TryToGuessThisSecretKey_FlexBack';
 
     const token = jwt.sign(
@@ -156,7 +155,19 @@ export class AuthService {
     const user = await prisma.taiKhoan.findUnique({
       where: { maTaiKhoan: userId },
       include: {
-        BenhNhan: true,
+        BenhNhan: {
+          include: {
+            HoSoBenhAn: {
+              where: {
+                maBenhNhan: {
+                  not: null
+                }
+              },
+              orderBy: { ngayLapHoSo: 'desc' },
+              take: 1
+            }
+          }
+        },
         BacSi: true,
         KyThuatVien: true
       }
@@ -165,7 +176,6 @@ export class AuthService {
     if (!user) throw new Error('Người dùng không tồn tại');
 
     const { matKhau, ...userInfo } = user;
-
     return userInfo;
   }
 }
