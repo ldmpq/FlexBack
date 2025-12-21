@@ -10,7 +10,6 @@ export class TreatmentService {
             ...data,
             MucTieuDieuTri: data.MucTieuDieuTri.map(mt => ({
                 ...mt,
-                // Trong Schema không có mucDoUuTien, ta giả sử lấy từ trangThai hoặc frontend tự xử lý hiển thị
                 mucDoUuTien: mt.trangThai || 'BinhThuong', 
                 LoTrinhDieuTri: mt.LoTrinhDieuTri.map(lt => {
                     // Gom tất cả bài tập từ tất cả các kế hoạch con của lộ trình này lại
@@ -27,12 +26,14 @@ export class TreatmentService {
                                     thoiLuongPhut: parseInt(ct.cuongDo || '0') || 0, 
                                     ghiChu: ct.ghiChu,
                                     
-                                    // Thông tin bài tập gốc (Merge vào)
+                                    // Thông tin bài tập
                                     maBaiTap: ct.BaiTapPhucHoi?.maBaiTap,
                                     tenBaiTap: ct.BaiTapPhucHoi?.tenBaiTap,
                                     doKho: ct.BaiTapPhucHoi?.mucDo, 
                                     dungCuCanThiet: ct.BaiTapPhucHoi?.dungCuCanThiet,
-                                    maNhomCo: ct.BaiTapPhucHoi?.maNhomCo
+                                    maNhomCo: ct.BaiTapPhucHoi?.maNhomCo,
+                                    videoHuongDan: ct.BaiTapPhucHoi?.videoHuongDan,
+                                    moTaBaiTap: ct.BaiTapPhucHoi?.moTaBaiTap
                                 }));
                                 allExercises = [...allExercises, ...exercises];
                             }
@@ -74,14 +75,15 @@ export class TreatmentService {
     }
 
     // 4. Các hàm hỗ trợ khác
+    // Lấy tất cả bài tập
     static async getAllExercises() {
         return TreatmentModel.getAllExercises();
     }
-
+    // Lấy danh sách kỹ thuật viên
     static async getTechnicians() {
         return TreatmentModel.getTechnicians();
     }
-
+    // Lưu bài tập cho lộ trình
     static async saveRouteExercises(maLoTrinh: number, exercises: any[]) {
         return TreatmentModel.saveRouteExercises(maLoTrinh, exercises);
     }

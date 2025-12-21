@@ -3,6 +3,7 @@ import LoginScreen from '../../screens/LoginScreen';
 import RegisterScreen from '../../screens/RegisterScreen';
 import UpdateScreen from '../../screens/UpdateProfileScreen';
 import { AppNavigation } from './app.navigation';
+import PhaseDetailScreen from '../../screens/PhaseDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,5 +13,6 @@ export const RootNavigation = () => (
     <Stack.Screen name="Register" component={RegisterScreen} />
     <Stack.Screen name="AppTabs" component={AppNavigation} />
     <Stack.Screen name="UpdateProfile" component={UpdateScreen} />
+    <Stack.Screen name="PhaseDetail" component={PhaseDetailScreen} />
   </Stack.Navigator>
 );

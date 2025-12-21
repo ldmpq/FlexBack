@@ -5,6 +5,7 @@ export interface LoTrinh {
   thoiGianKetThuc: string;
   ghiChu: string;
   trangThai?: string;
+  ChiTietBaiTap?: ExerciseDetail[];
 }
 
 export interface MucTieu {
@@ -21,4 +22,17 @@ export interface ProgramData {
   ngayLapHoSo: string;
   chanDoan: string;
   MucTieuDieuTri: MucTieu[];
+}
+
+export interface ExerciseDetail {
+  maBaiTap: number;
+  tenBaiTap: string;
+  soSet: number;
+  soRep: number;
+  thoiLuongPhut: number;
+  ghiChu?: string;
+  videoHuongDan?: string;
+  moTaBaiTap?: string;
+  doKho?: string;
+  dungCuCanThiet?: string;
 }

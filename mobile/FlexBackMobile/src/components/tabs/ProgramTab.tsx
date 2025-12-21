@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useProgram } from '../hooks/useProgram';
-import { MucTieu, LoTrinh } from '../types/program.type';
+import { useProgram } from '../../hooks/useProgram';
+import { MucTieu, LoTrinh } from '../../types/program.type';
+import { useNavigation } from '@react-navigation/native';
 
 const ProgramTab = () => {
+  const navigation = useNavigation<any>(); // Khai báo navigation
   const { program, loading, refreshing, onRefresh } = useProgram();
   
   // State để mở rộng/thu gọn từng mục tiêu
@@ -21,12 +24,11 @@ const ProgramTab = () => {
     } catch (e) { return dateString; }
   };
 
-  // Hàm lấy màu sắc theo mức độ ưu tiên
   const getPriorityColor = (priority: string) => {
     const p = priority?.toLowerCase();
-    if (p === 'cao') return '#ef4444'; // Đỏ
-    if (p === 'thap') return '#22c55e'; // Xanh lá
-    return '#eab308'; // Vàng/Cam (Mặc định/Trung bình)
+    if (p === 'cao') return '#ef4444';
+    if (p === 'thap') return '#22c55e';
+    return '#eab308';
   };
 
   // Hiển thị loading khi đang tải dữ liệu
@@ -113,7 +115,12 @@ const ProgramTab = () => {
                              <Text style={styles.phaseNote}>{loTrinh.ghiChu}</Text>
                           ) : null}
                           
-                          <TouchableOpacity style={styles.viewDetailBtn}>
+                          <TouchableOpacity
+                            style={styles.viewDetailBtn}
+                            onPress={() => navigation.navigate('PhaseDetail', {
+                              title: loTrinh.tenLoTrinh,
+                              exercises: loTrinh.ChiTietBaiTap
+                            })}>
                              <Text style={styles.viewDetailText}>Xem bài tập</Text>
                              <Feather name="arrow-right" size={14} color="#6f8f38" />
                           </TouchableOpacity>

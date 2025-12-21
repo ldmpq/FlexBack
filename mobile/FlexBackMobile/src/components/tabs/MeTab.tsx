@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Alert, Image } from 'react-native';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import axiosClient from '../utils/axiosClient';
-import { authService } from '../services/auth.service';
+import axiosClient from '../../utils/axiosClient';
+import { authService } from '../../services/auth.service';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MeTab = () => {

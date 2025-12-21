@@ -2,11 +2,11 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import HomeTab from '../../tabs/HomeTab';
-import ProgramTab from '../../tabs/ProgramTab';
-import ResultTab from '../../tabs/ResultTab';
-import MeTab from '../../tabs/MeTab';
-import GuideTab from '../../tabs/GuideTab';
+import HomeTab from '../tabs/HomeTab';
+import ProgramTab from '../tabs/ProgramTab';
+import ResultTab from '../tabs/ResultTab';
+import MeTab from '../tabs/MeTab';
+import GuideTab from '../tabs/GuideTab';
 
 const Tab = createBottomTabNavigator();
 

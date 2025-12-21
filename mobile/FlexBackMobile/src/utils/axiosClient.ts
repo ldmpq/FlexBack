@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import AsyncStorage from '@react-native-async-storage/async-storage'; // Uncomment khi cài thư viện này
 
 const baseURL = 'http://10.0.2.2:3000/api'; 
 
@@ -10,7 +9,7 @@ const axiosClient = axios.create({
   },
 });
 
-// Biến lưu token tạm thời (nếu chưa dùng AsyncStorage)
+// Biến lưu token tạm thời
 export let authToken = ''; 
 
 export const setAuthToken = (token: string) => {
@@ -21,7 +20,7 @@ export const setAuthToken = (token: string) => {
 axiosClient.interceptors.request.use(
   async (config) => {
     // const token = await AsyncStorage.getItem('token'); // Cách chuẩn dùng AsyncStorage
-    const token = authToken; // Cách tạm thời dùng biến global
+    const token = authToken;
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
