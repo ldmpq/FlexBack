@@ -3,23 +3,44 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } fr
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import VideoModal from '../components/modals/VideoModal';
+import YoutubeModal from '../components/modals/YoutubeModal';
+
+const BASE_URL = 'http://10.0.2.2:3000';
 
 const PhaseDetailScreen = ({ route, navigation }: any) => {
   const { title, exercises } = route.params || {};
 
-  // State quản lý Modal Video
+  // State Modal Video
   const [videoVisible, setVideoVisible] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
 
-  const openVideo = (url: string) => {
-    if (!url) {
-        Alert.alert("Thông báo", "Bài tập này chưa có video hướng dẫn.");
-        return;
-    }
+  // State Modal YouTube
+  const [youtubeVisible, setYoutubeVisible] = useState(false);
 
+  const openVideo = (url: string) => {
+  if (!url) {
+    Alert.alert("Thông báo", "Bài tập này chưa có video hướng dẫn.");
+    return;
+  }
+
+  // YouTube
+  if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    console.log("▶️ Opening YouTube:", url);
     setCurrentVideoUrl(url);
-    setVideoVisible(true);
-  };
+    setYoutubeVisible(true);
+    return;
+  }
+
+  // Video local (uploads)
+  const fullUrl = url.startsWith('http')
+    ? url
+    : `${BASE_URL}${url}`;
+
+  console.log("🎬 Opening local video:", fullUrl);
+
+  setCurrentVideoUrl(fullUrl);
+  setVideoVisible(true);
+};
 
   const closeVideo = () => {
     setVideoVisible(false);
@@ -108,62 +129,187 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
       </ScrollView>
 
       {/* --- VIDEO MODAL --- */}
-      <VideoModal 
+      {videoVisible && (<VideoModal 
         visible={videoVisible}
         videoUrl={currentVideoUrl}
         onClose={closeVideo}
+      />)}
+
+      {/* --- YOUTUBE MODAL --- */}
+      <YoutubeModal
+        visible={youtubeVisible}
+        youtubeUrl={currentVideoUrl}
+        onClose={() => setYoutubeVisible(false)}
       />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f7fa' },
-  header: { 
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', 
-    padding: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#eee' 
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f7fa',
   },
-  backButton: { padding: 4 },
-  headerTitle: { fontSize: 18, fontWeight: 'bold', color: '#333', flex: 1, textAlign: 'center' },
-  content: { padding: 16, paddingBottom: 40 },
-  
-  emptyContainer: { alignItems: 'center', marginTop: 60 },
-  emptyText: { marginTop: 16, color: '#999', fontSize: 16 },
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+
+  backButton: {
+    padding: 4,
+  },
+
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    flex: 1,
+    textAlign: 'center',
+  },
+
+  content: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+
+  emptyContainer: {
+    alignItems: 'center',
+    marginTop: 60,
+  },
+
+  emptyText: {
+    marginTop: 16,
+    color: '#999',
+    fontSize: 16,
+  },
 
   card: {
-    backgroundColor: '#fff', borderRadius: 16, padding: 16, marginBottom: 16,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
+
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+
   iconBox: {
-    width: 40, height: 40, borderRadius: 10, backgroundColor: '#6f8f38',
-    justifyContent: 'center', alignItems: 'center', marginRight: 12
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: '#6f8f38',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
-  exerciseName: { fontSize: 18, fontWeight: 'bold', color: '#333' },
-  subText: { fontSize: 13, color: '#666', marginTop: 2 },
 
-  statsContainer: { 
-    flexDirection: 'row', backgroundColor: '#f9fbf7', borderRadius: 12, padding: 12, marginBottom: 12 
+  exerciseName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
   },
-  statItem: { flex: 1, alignItems: 'center' },
-  statValue: { fontSize: 18, fontWeight: 'bold', color: '#6f8f38' },
-  statLabel: { fontSize: 12, color: '#888', textTransform: 'uppercase' },
-  statDivider: { width: 1, backgroundColor: '#e5e7eb', marginHorizontal: 8 },
 
-  descContainer: { marginBottom: 12 },
-  descLabel: { fontSize: 14, fontWeight: '600', color: '#555', marginBottom: 4 },
-  descText: { fontSize: 14, color: '#666', lineHeight: 20 },
-
-  noteContainer: { 
-    flexDirection: 'row', backgroundColor: '#fffbeb', padding: 10, borderRadius: 8, marginBottom: 12 
+  subText: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 2,
   },
-  noteText: { fontSize: 13, color: '#b45309', marginLeft: 8, flex: 1 },
+
+  statsContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#f9fbf7',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+
+  statItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
+
+  statValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#6f8f38',
+  },
+
+  statLabel: {
+    fontSize: 12,
+    color: '#888',
+    textTransform: 'uppercase',
+  },
+
+  statDivider: {
+    width: 1,
+    backgroundColor: '#e5e7eb',
+    marginHorizontal: 8,
+  },
+
+  descContainer: {
+    marginBottom: 12,
+  },
+
+  descLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#555',
+    marginBottom: 4,
+  },
+
+  descText: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
+  },
+
+  noteContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fffbeb',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+
+  noteText: {
+    fontSize: 13,
+    color: '#b45309',
+    marginLeft: 8,
+    flex: 1,
+  },
 
   videoButton: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    backgroundColor: '#ef4444', padding: 12, borderRadius: 10, gap: 8
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ef4444',
+    padding: 12,
+    borderRadius: 10,
+    gap: 8,
   },
-  videoButtonText: { color: '#fff', fontWeight: '600', fontSize: 14 }
+
+  videoButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 14,
+  },
 });
 
 export default PhaseDetailScreen;

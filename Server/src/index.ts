@@ -1,21 +1,15 @@
-// src/index.ts
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import path from 'path';
+
 import authRoutes from './routes/authRoute';
-
-import hoSoRoutes from './routes/hoSoRoute';
-
-import dieuTriRoutes from './routes/dieuTriRoute';
-
-import userRoutes from './routes/userRoute';
-
-import exerciseRoutes from './routes/baiTapRoute';
-
-import treatmentRoutes from './routes/treatmentRoute';
-
 import accountRoutes from './routes/accountRoute';
-
+import dieuTriRoutes from './routes/dieuTriRoute';
+import exerciseRoutes from './routes/baiTapRoute';
+import hoSoRoutes from './routes/hoSoRoute';
+import treatmentRoutes from './routes/treatmentRoute';
+import userRoutes from './routes/userRoute';
 
 dotenv.config();
 
@@ -27,8 +21,12 @@ app.use(express.json()); // Quan trọng: Để đọc được JSON từ body r
 app.use(express.urlencoded({ extended: true }));
 
 // Cấu hình Routes
-app.use('/api/auth', authRoutes);
+app.use(
+  '/uploads',
+  express.static(path.join(__dirname, '../uploads'))
+);
 
+app.use('/api/auth', authRoutes);
 app.use('/api/hoso', hoSoRoutes);
 app.use('/api/dieutri', dieuTriRoutes);
 app.use('/api/users', userRoutes);
