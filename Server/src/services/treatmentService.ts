@@ -19,10 +19,9 @@ export class TreatmentService {
                         lt.KeHoachDieuTri.forEach(kh => {
                             if (kh.ChiTietKeHoach) {
                                 const exercises = kh.ChiTietKeHoach.map(ct => ({
-                                    // Thông tin cấu hình
+                                    maKeHoach: kh.maKeHoach,
                                     soSet: ct.sets,
                                     soRep: ct.reps,
-                                    // Parse 'cuongDo' thành thoiLuongPhut
                                     thoiLuongPhut: parseInt(ct.cuongDo || '0') || 0, 
                                     ghiChu: ct.ghiChu,
                                     

@@ -10,6 +10,7 @@ import exerciseRoutes from './routes/baiTapRoute';
 import hoSoRoutes from './routes/hoSoRoute';
 import treatmentRoutes from './routes/treatmentRoute';
 import userRoutes from './routes/userRoute';
+import baoCaoRoutes from './routes/baocaoRoute';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.json()); // Quan trọng: Để đọc được JSON từ body request
+app.use(express.json()); // Quan trọng: Đọc JSON từ body request
 app.use(express.urlencoded({ extended: true }));
 
 // Cấu hình Routes
@@ -32,7 +33,8 @@ app.use('/api/dieutri', dieuTriRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/treatment', treatmentRoutes);
-app.use('/api/accounts', accountRoutes)
+app.use('/api/accounts', accountRoutes);
+app.use('/api/baocao', baoCaoRoutes);
 
 // Route test server
 app.get('/', (req: Request, res: Response) => {

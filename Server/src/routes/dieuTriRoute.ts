@@ -6,8 +6,6 @@ import { createKeHoach, addBaiTapToKeHoach, getBaiTapHomNay } from '../controlle
 
 import { authenticateToken } from '../middlewares/authMiddleware';
 
-import { createBaoCao } from '../controllers/baoCaoController';
-
 const router = Router();
 
 // Tạo Mục tiêu (Cần Login)
@@ -22,8 +20,5 @@ router.post('/kehoach/them-bai-tap', authenticateToken, addBaiTapToKeHoach);
 
 // Lấy bài tập hôm nay
 router.get('/bai-tap-hom-nay', authenticateToken, getBaiTapHomNay);
-
-// Báo cáo kết quả tập luyện
-router.post('/baocao', authenticateToken, createBaoCao);
 
 export default router;

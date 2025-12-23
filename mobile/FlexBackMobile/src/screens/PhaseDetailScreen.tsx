@@ -8,7 +8,9 @@ import YoutubeModal from '../components/modals/YoutubeModal';
 const BASE_URL = 'http://10.0.2.2:3000';
 
 const PhaseDetailScreen = ({ route, navigation }: any) => {
-  const { title, exercises } = route.params || {};
+  const { title, exercises} = route.params || {};
+
+  const maKeHoach = exercises && exercises.length > 0 ? exercises[0].maKeHoach : null;
 
   // State Modal Video
   const [videoVisible, setVideoVisible] = useState(false);
@@ -18,29 +20,29 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
   const [youtubeVisible, setYoutubeVisible] = useState(false);
 
   const openVideo = (url: string) => {
-  if (!url) {
-    Alert.alert("Thông báo", "Bài tập này chưa có video hướng dẫn.");
-    return;
-  }
+    if (!url) {
+      Alert.alert("Thông báo", "Bài tập này chưa có video hướng dẫn.");
+      return;
+    }
 
-  // YouTube
-  if (url.includes('youtube.com') || url.includes('youtu.be')) {
-    console.log("▶️ Opening YouTube:", url);
-    setCurrentVideoUrl(url);
-    setYoutubeVisible(true);
-    return;
-  }
+    // YouTube
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      console.log("▶️ Opening YouTube:", url);
+      setCurrentVideoUrl(url);
+      setYoutubeVisible(true);
+      return;
+    }
 
-  // Video local (uploads)
-  const fullUrl = url.startsWith('http')
-    ? url
-    : `${BASE_URL}${url}`;
+    // Video local (uploads)
+    const fullUrl = url.startsWith('http')
+      ? url
+      : `${BASE_URL}${url}`;
 
-  console.log("🎬 Opening local video:", fullUrl);
+    console.log("🎬 Opening local video:", fullUrl);
 
-  setCurrentVideoUrl(fullUrl);
-  setVideoVisible(true);
-};
+    setCurrentVideoUrl(fullUrl);
+    setVideoVisible(true);
+  };
 
   const closeVideo = () => {
     setVideoVisible(false);
@@ -115,7 +117,7 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
               )}
 
               {item.videoHuongDan ? (
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.videoButton}
                   onPress={() => openVideo(item.videoHuongDan)}
                 >
@@ -128,8 +130,26 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
         )}
       </ScrollView>
 
+      {/* Button Tạo báo cáo */}
+      <View style={styles.footerContainer}>
+        <TouchableOpacity
+          style={styles.reportButton}
+          onPress={() => {
+            // Kiểm tra xem có mã kế hoạch chưa
+            if (!maKeHoach) {
+              Alert.alert("Lỗi", "Không tìm thấy kế hoạch để báo cáo. Vui lòng kiểm tra lại.");
+              return;
+            }
+            navigation.navigate('CreateReport', { maKeHoach, title });
+          }}
+        >
+          <Feather name="check-circle" size={20} color="#fff" />
+          <Text style={styles.reportButtonText}>Hoàn thành & Báo cáo</Text>
+        </TouchableOpacity>
+      </View>
+
       {/* --- VIDEO MODAL --- */}
-      {videoVisible && (<VideoModal 
+      {videoVisible && (<VideoModal
         visible={videoVisible}
         videoUrl={currentVideoUrl}
         onClose={closeVideo}
@@ -309,6 +329,37 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     fontSize: 14,
+  },
+
+  footerContainer: {
+    padding: 16,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+  reportButton: {
+    backgroundColor: '#6f8f38',
+    borderRadius: 12,
+    paddingVertical: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+
+  reportButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
