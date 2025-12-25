@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 
-  /* ================= TOP SECTION ================= */
   topSection: {
     height: height * 0.4,
     width: '100%',
@@ -101,7 +100,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.05)',
   },
 
-  /* ================= BOTTOM SECTION ================= */
   bottomSection: {
     flex: 1,
     backgroundColor: '#fff',
@@ -124,7 +122,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 
-  /* ================= HEADER ================= */
   header: {
     alignItems: 'center',
     marginBottom: 20,
@@ -149,7 +146,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  /* ================= FORM ================= */
   form: {
     gap: 16,
   },
@@ -173,7 +169,6 @@ const styles = StyleSheet.create({
     color: '#333',
   },
 
-  /* ================= BUTTONS ================= */
   loginButton: {
     height: 56,
     marginTop: 10,
@@ -207,7 +202,6 @@ const styles = StyleSheet.create({
     color: '#00C269',
   },
 
-  /* ================= FOOTER ================= */
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',

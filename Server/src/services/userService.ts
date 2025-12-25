@@ -85,7 +85,7 @@ export class UserService {
       });
 
       // 2. Update bảng BenhNhan
-      // Tìm xem đã có record BenhNhan chưa
+      // Tìm xem đã có record BenhNhan chưa?
       const benhNhan = await tx.benhNhan.findFirst({
         where: { maTaiKhoan: userId }
       });
@@ -101,7 +101,7 @@ export class UserService {
           }
         });
       } else {
-        // Nếu chưa có (trường hợp hiếm), tạo mới
+        // Nếu chưa có => tạo mới
         await tx.benhNhan.create({
           data: {
             maTaiKhoan: userId,
@@ -114,6 +114,18 @@ export class UserService {
       }
 
       return { message: "Cập nhật hồ sơ thành công" };
+    });
+  }
+
+  static async getPatientProfile(userId: number) {
+    return prisma.benhNhan.findFirst({
+      where: { maTaiKhoan: userId },
+      select: {
+        chieuCao: true,
+        canNang: true,
+        tienSuChanThuong: true,
+        tinhTrangHienTai: true,
+      }
     });
   }
 }

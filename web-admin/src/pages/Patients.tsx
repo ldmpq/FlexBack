@@ -1,7 +1,7 @@
 import React from 'react';
 import { Search, Eye, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import SearchBar from '../components/forms/SearchBar';
+import SearchBar from '../components/SearchBar';
 import { usePatientManager } from '../hooks/usePatientManager';
 
 const Patients: React.FC = () => {

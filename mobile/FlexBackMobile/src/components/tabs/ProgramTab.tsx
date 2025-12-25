@@ -7,7 +7,7 @@ import { MucTieu, LoTrinh } from '../../types/program.type';
 import { useNavigation } from '@react-navigation/native';
 
 const ProgramTab = () => {
-  const navigation = useNavigation<any>(); // Khai báo navigation
+  const navigation = useNavigation<any>();
   const { program, loading, refreshing, onRefresh } = useProgram();
   
   // State để mở rộng/thu gọn từng mục tiêu

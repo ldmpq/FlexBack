@@ -50,3 +50,23 @@ export const updateProfile = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Lỗi cập nhật thông tin" });
   }
 };
+
+export const getProfile = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as AuthRequest).user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const profile = await UserService.getPatientProfile(userId);
+
+    if (!profile) {
+      return res.status(404).json({ message: "Không tìm thấy hồ sơ điều trị" });
+    }
+
+    res.status(200).json(profile);
+  } catch (error) {
+    console.error("Lỗi getProfile:", error);
+    res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};

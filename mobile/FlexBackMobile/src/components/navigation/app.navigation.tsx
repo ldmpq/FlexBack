@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text, StyleSheet } from 'react-native';
 
 import HomeTab from '../tabs/HomeTab';
 import ProgramTab from '../tabs/ProgramTab';
@@ -15,16 +16,43 @@ export const AppNavigation = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#6f8f38',
-        tabBarInactiveTintColor: 'gray',
-        tabBarStyle: {
-          paddingBottom: 5,
-          height: 60,
-          borderTopWidth: 1,
-          borderTopColor: '#f0f0f0',
-          elevation: 5,
+
+        tabBarShowLabel: false,
+        tabBarLabelStyle: {
+          fontSize: 11,
+          marginBottom: 4,
         },
-        tabBarIcon: ({ color, size }) => {
+
+        tabBarActiveTintColor: '#1ec8a5',
+        tabBarInactiveTintColor: '#9ca3af',
+
+        tabBarStyle: {
+          position: 'absolute',
+          bottom: 16,
+          left: 16,
+          right: 16,
+          height: 70,
+          borderRadius: 40,
+          paddingHorizontal: 8,
+          backgroundColor: '#ffffff',
+          borderTopWidth: 0,
+          elevation: 12,
+          shadowColor: '#000',
+          shadowOpacity: 0.1,
+          shadowRadius: 10,
+          shadowOffset: { width: 0, height: 5 },
+        },
+
+        tabBarItemStyle: {
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+
+        tabBarIconStyle: {
+          marginTop: 15,
+        },
+
+        tabBarIcon: ({ color, focused }) => {
           let iconName: any;
 
           switch (route.name) {
@@ -46,11 +74,16 @@ export const AppNavigation = () => {
           }
 
           return (
-            <MaterialCommunityIcons
-              name={iconName}
-              size={size}
-              color={color}
-            />
+            <View style={[
+              styles.iconWrapper,
+              focused && styles.iconWrapperActive
+            ]}>
+              <MaterialCommunityIcons
+                name={iconName}
+                size={27}
+                color={focused ? '#fff' : color}
+              />
+            </View>
           );
         },
       })}
@@ -63,3 +96,21 @@ export const AppNavigation = () => {
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  iconWrapper: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  iconWrapperActive: {
+    backgroundColor: '#1ec8a5',
+    shadowColor: '#1ec8a5',
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 6,
+  },
+});

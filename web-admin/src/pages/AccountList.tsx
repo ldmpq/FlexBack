@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { UserPlus, Search, Edit, Trash2, X, Save, UserCheck, Stethoscope, Briefcase, Eye, EyeOff, Shield, BadgeInfo, Phone, Mail, Calendar } from 'lucide-react';
+import { UserPlus, Search, Edit, Trash2, X, Save, UserCheck, Stethoscope, Briefcase, Eye, EyeOff, Shield, BadgeInfo, Phone, Mail, Calendar, Table, Home } from 'lucide-react';
 import { useAccountManager } from '../hooks/useAccountManager';
-import SearchBar from '../components/forms/SearchBar';
+import SearchBar from '../components/SearchBar';
 
 const Accounts: React.FC = () => {
   // Lấy toàn bộ logic và state từ Hook
@@ -105,6 +105,7 @@ const Accounts: React.FC = () => {
                 <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Thông tin liên hệ</h4>
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"><Mail size={18} className="text-blue-500"/><span className="text-gray-700 text-sm">{selectedAccount.email || 'Chưa có'}</span></div>
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"><Phone size={18} className="text-green-500"/><span className="text-gray-700 text-sm">{selectedAccount.soDienThoai || 'Chưa có'}</span></div>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"><Home size={18} className="text-green-500"/><span className="text-gray-700 text-sm">{selectedAccount.diaChi || 'Chưa có'}</span></div>
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"><Calendar size={18} className="text-purple-500"/><span className="text-gray-700 text-sm">Tham gia: {new Date(selectedAccount.ngayTaoTaiKhoan).toLocaleDateString('vi-VN')}</span></div>
               </div>
 

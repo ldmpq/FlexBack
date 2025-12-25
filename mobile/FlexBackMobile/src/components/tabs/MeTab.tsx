@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import axiosClient from '../../utils/axiosClient';
@@ -48,7 +49,6 @@ const MeTab = () => {
     );
   };
 
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -64,15 +64,12 @@ const MeTab = () => {
             <Text style={styles.roleText}>Bệnh nhân</Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('UpdateProfile')}>
-          <Feather name="edit-2" size={20} color="#666" />
-        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.menuContainer}>
         <Text style={styles.sectionTitle}>Tài khoản</Text>
         
-        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('UpdateProfile')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('Profile')}>
           <View style={[styles.iconBox, { backgroundColor: '#e0f2fe' }]}>
             <Feather name="user" size={20} color="#0284c7" />
           </View>
@@ -98,7 +95,7 @@ const MeTab = () => {
 
         <Text style={styles.sectionTitle}>Cài đặt</Text>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Thông báo', 'Chức năng đang phát triển')}>
           <View style={[styles.iconBox, { backgroundColor: '#f3f4f6' }]}>
             <Feather name="settings" size={20} color="#4b5563" />
           </View>
@@ -106,7 +103,7 @@ const MeTab = () => {
           <Feather name="chevron-right" size={20} color="#ccc" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Thông báo', 'Chức năng đang phát triển')}>
           <View style={[styles.iconBox, { backgroundColor: '#f3f4f6' }]}>
             <Feather name="help-circle" size={20} color="#4b5563" />
           </View>

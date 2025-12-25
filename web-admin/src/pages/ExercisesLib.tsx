@@ -1,7 +1,7 @@
 import React from 'react';
 import { Plus, Filter, Trash2, Edit, Youtube, Dumbbell, Upload } from 'lucide-react';
 import { useExerciseManager } from '../hooks/useExerciseManager';
-import SearchBar from '../components/forms/SearchBar';
+import SearchBar from '../components/SearchBar';
 import ExerciseForm from '../components/forms/ExerciseForm';
 
 const Exercises: React.FC = () => {

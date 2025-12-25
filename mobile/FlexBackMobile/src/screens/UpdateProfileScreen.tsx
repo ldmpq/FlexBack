@@ -44,8 +44,8 @@ const UpdateProfileScreen = ({ navigation }: any) => {
         <ScrollView contentContainerStyle={styles.scrollContent}>
           
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Complete Profile</Text>
-            <Text style={styles.subtitle}>Help us tailor the best treatment for you.</Text>
+            <Text style={styles.title}>Cập nhật thông tin cá nhân</Text>
+            <Text style={styles.subtitle}>Hãy hoàn tất để giúp chúng tôi xây dựng lộ trình phù hợp cho bạn</Text>
           </View>
 
           <View style={styles.form}>
@@ -53,7 +53,7 @@ const UpdateProfileScreen = ({ navigation }: any) => {
                 <Text style={styles.label}>Ngày sinh</Text>
                 <TextInput 
                   style={styles.input} 
-                  placeholder="Năm-Tháng-Ngày (VD: 2000-01-01" 
+                  placeholder="Năm-Tháng-Ngày (VD: 2000-01-01)" 
                   placeholderTextColor="#aaa" 
                   value={formData.ngaySinh} 
                   onChangeText={t => setFormData({...formData, ngaySinh: t})} 
@@ -159,7 +159,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
 
-  /* ================= TITLE ================= */
   titleContainer: {
     marginTop: 20,
     marginBottom: 30,
@@ -177,7 +176,6 @@ const styles = StyleSheet.create({
     color: '#666',
   },
 
-  /* ================= FORM ================= */
   form: {
     gap: 20,
   },
@@ -205,7 +203,6 @@ const styles = StyleSheet.create({
     color: '#333',
   },
 
-  /* ================= ROWS ================= */
   row: {
     flexDirection: 'row',
   },
@@ -239,7 +236,6 @@ const styles = StyleSheet.create({
     color: '#666',
   },
 
-  /* ================= BUTTON ================= */
   button: {
     height: 56,
     marginTop: 20,

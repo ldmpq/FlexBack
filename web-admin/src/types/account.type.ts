@@ -20,6 +20,7 @@ export interface StaffAccount {
   tenTaiKhoan: string;
   hoVaTen: string;
   email: string;
+  diaChi: string;
   soDienThoai: string;
   loaiTaiKhoan: AccountRole;
   ngayTaoTaiKhoan: string;
