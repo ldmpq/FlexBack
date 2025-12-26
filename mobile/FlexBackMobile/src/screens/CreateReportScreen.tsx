@@ -1,73 +1,42 @@
 import React, { useState } from 'react';
-import {
-    View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform
-} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather } from '@expo/vector-icons';
-import { reportService } from '../services/report.service';
+import { useCreateReport } from '../hooks/useCreateReport';
 
 const CreateReportScreen = ({ route, navigation }: any) => {
-    // Backend cần maKeHoach
-    const { maKeHoach, title } = route.params || {};
+  const { maKeHoach, title } = route.params || {};
 
-    const [danhGiaSoBo, setDanhGiaSoBo] = useState('');
-    const [thoiLuong, setThoiLuong] = useState('');
-    const [mucDoDau, setMucDoDau] = useState<number>(0);
+  const {
+    danhGiaSoBo,
+    setDanhGiaSoBo,
+    thoiLuong,
+    setThoiLuong,
+    mucDoDau,
+    setMucDoDau,
+    loading,
+    handleSubmit,
+  } = useCreateReport({ maKeHoach, navigation });
 
-    const [loading, setLoading] = useState(false);
-
-    const handleSubmit = async () => {
-        // Kiểm tra maKeHoach
-        if (!maKeHoach) {
-            Alert.alert("Lỗi", "Không tìm thấy kế hoạch. Vui lòng quay lại và thử lại.");
-            return;
-        }
-        if (!danhGiaSoBo) {
-            Alert.alert("Thông báo", "Vui lòng nhập đánh giá sơ bộ!");
-            return;
-        }
-        if (!thoiLuong) {
-            Alert.alert("Thông báo", "Vui lòng nhập thời lượng tập luyện!");
-            return;
-        }
-        if (mucDoDau === 0) {
-            Alert.alert("Thông báo", "Vui lòng chọn mức độ đau/mệt mỏi!");
-            return;
-        }
-
-        try {
-            setLoading(true);
-
-            await reportService.createReport({
-                maKeHoach: maKeHoach.toString(),
-                thoiLuong: thoiLuong.toString(),
-                mucDoDau: mucDoDau.toString(),
-                danhGiaSoBo: danhGiaSoBo,
-                ngayLuyenTap: new Date().toISOString()
-            });
-
-            Alert.alert(
-                "Thành công",
-                "Báo cáo luyện tập đã được gửi!",
-                [{ text: "OK", onPress: () => navigation.goBack() }]
-            );
-        } catch (error) {
-            console.error(error);
-            Alert.alert("Lỗi", "Không thể gửi báo cáo. Vui lòng kiểm tra lại.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const renderPainLevel = (level: number) => (
-        <TouchableOpacity
-            key={level}
-            style={[styles.painBtn, mucDoDau === level && styles.painBtnActive]}
-            onPress={() => setMucDoDau(level)}
-        >
-            <Text style={[styles.painText, mucDoDau === level && styles.painTextActive]}>{level}</Text>
-        </TouchableOpacity>
-    );
+  const renderPainLevel = (level: number) => (
+    <TouchableOpacity
+      key={level}
+      style={[
+        styles.painBtn,
+        mucDoDau === level && styles.painBtnActive,
+      ]}
+      onPress={() => setMucDoDau(level)}
+    >
+      <Text
+        style={[
+          styles.painText,
+          mucDoDau === level && styles.painTextActive,
+        ]}
+      >
+        {level}
+      </Text>
+    </TouchableOpacity>
+  );
 
     return (
         <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
@@ -86,7 +55,7 @@ const CreateReportScreen = ({ route, navigation }: any) => {
                     <View style={styles.infoBox}>
                         <Text style={styles.infoLabel}>Báo cáo cho:</Text>
                         <Text style={styles.infoValue}>{title || 'Kế hoạch tập luyện'}</Text>
-                        <Text style={{ fontSize: 10, color: '#aaa', marginTop: 5 }}>ID: {maKeHoach}</Text>
+                        <Text style={{ fontSize: 10, color: '#aaa', marginTop: 5 }}>Mã kế hoạch: {maKeHoach}</Text>
                     </View>
 
                     {/* Form */}
@@ -117,7 +86,7 @@ const CreateReportScreen = ({ route, navigation }: any) => {
                         <View style={styles.painRow}>
                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(renderPainLevel)}
                         </View>
-                        <Text style={styles.hintText}>1: Không đau - 10: Đau nhiều</Text>
+                        <Text style={styles.hintText}>1: Không đau - 10: Rất đau</Text>
                     </View>
 
                 </ScrollView>

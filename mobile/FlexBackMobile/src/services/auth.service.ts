@@ -1,5 +1,5 @@
 import axiosClient, { setAuthToken } from '../utils/axiosClient';
-import type { LoginCredentials, LoginResponse } from '../types/auth.type';
+import type { LoginCredentials, LoginResponse, RegisterPayload } from '../types/auth.type';
 
 export const authService = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
@@ -12,9 +12,6 @@ export const authService = {
       // Clear token khỏi axios header
       setAuthToken('');
 
-      // Clear token khỏi local storage (nếu dùng)
-      // await AsyncStorage.removeItem('token');
-
       return true;
     } catch (error) {
       console.error('AuthService logout error:', error);
@@ -22,5 +19,10 @@ export const authService = {
     }
   },
 
-  // Có thể thêm register, forgotPassword ở đây sau này
+  changePassword: (currentPassword: string, newPassword: string) => {
+    return axiosClient.put('/auth/change-password', {
+      currentPassword,
+      newPassword,
+    });
+  },
 };

@@ -104,7 +104,7 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
 
               {item.moTaBaiTap && (
                 <View style={styles.descContainer}>
-                  <Text style={styles.descLabel}>Hướng dẫn:</Text>
+                  <Text style={styles.descLabel}>Hướng dẫn thực hiện:</Text>
                   <Text style={styles.descText}>{item.moTaBaiTap}</Text>
                 </View>
               )}

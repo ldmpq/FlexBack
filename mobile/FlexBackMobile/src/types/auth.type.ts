@@ -16,3 +16,11 @@ export interface LoginCredentials {
   tenTaiKhoan: string;
   matKhau: string;
 }
+
+export interface RegisterPayload {
+  hoVaTen: string;
+  tenTaiKhoan: string;
+  soDienThoai?: string;
+  matKhau: string;
+  loaiTaiKhoan: 'BENH_NHAN';
+}

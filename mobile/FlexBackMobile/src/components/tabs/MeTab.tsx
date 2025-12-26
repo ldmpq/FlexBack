@@ -77,7 +77,7 @@ const MeTab = () => {
           <Feather name="chevron-right" size={20} color="#ccc" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('ChangePassword')}>
           <View style={[styles.iconBox, { backgroundColor: '#fef3c7' }]}>
             <Feather name="lock" size={20} color="#d97706" />
           </View>
@@ -95,7 +95,7 @@ const MeTab = () => {
 
         <Text style={styles.sectionTitle}>Cài đặt</Text>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Thông báo', 'Chức năng đang phát triển')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Thông báo', 'Chức năng đang phát triển 😄')}>
           <View style={[styles.iconBox, { backgroundColor: '#f3f4f6' }]}>
             <Feather name="settings" size={20} color="#4b5563" />
           </View>
@@ -103,7 +103,7 @@ const MeTab = () => {
           <Feather name="chevron-right" size={20} color="#ccc" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Thông báo', 'Chức năng đang phát triển')}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Thông báo', 'Chức năng đang phát triển 😄')}>
           <View style={[styles.iconBox, { backgroundColor: '#f3f4f6' }]}>
             <Feather name="help-circle" size={20} color="#4b5563" />
           </View>

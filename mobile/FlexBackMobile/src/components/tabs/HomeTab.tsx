@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-  TextInput
-} from 'react-native';
+import {View,Text,StyleSheet,ScrollView,TouchableOpacity,ActivityIndicator,TextInput} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import axiosClient from '../../utils/axiosClient';
@@ -37,7 +29,7 @@ const HomeTab = () => {
       {/* ===== HEADER ===== */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>Xin chào 👋</Text>
+          <Text style={styles.greeting}>Xin chào 👋😄</Text>
           {loading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (

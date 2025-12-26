@@ -47,8 +47,8 @@ const RegisterScreen = ({ navigation }: any) => {
           </View>
 
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Sign up to get started on your journey</Text>
+            <Text style={styles.title}>Tạo tài khoản</Text>
+            <Text style={styles.subtitle}>Bắt đầu hành trình mới từ đây</Text>
           </View>
 
           <View style={styles.form}>
@@ -74,9 +74,9 @@ const RegisterScreen = ({ navigation }: any) => {
           </View>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>Already have an account? </Text>
+            <Text style={styles.footerText}>Bạn đã có tài khoản? </Text>
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.linkText}>Login</Text>
+                <Text style={styles.linkText}>Đăng nhập</Text>
             </TouchableOpacity>
           </View>
 

@@ -150,6 +150,50 @@ export class AuthService {
     };
   }
 
+  // Đổi mật khẩu
+  static async changePassword(userId: number, data: any) {
+    const { currentPassword, newPassword } = data;
+    const user = await prisma.taiKhoan.findUnique({
+      where: { maTaiKhoan: userId }
+    });
+    if (!user || !user.matKhau) throw new Error('Người dùng không tồn tại');
+    const isMatch = await bcrypt.compare(currentPassword, user.matKhau);
+    if (!isMatch) throw new Error('Mật khẩu hiện tại không đúng');
+
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.taiKhoan.update({
+      where: { maTaiKhoan: userId },
+      data: { matKhau: hashedNewPassword }
+    });
+    return { message: 'Đổi mật khẩu thành công!' };
+  };
+
+  static async forgotPassword(data: any) {
+    const { tenTaiKhoan, email, soDienThoai, newPassword } = data;
+    // Tìm tài khoản dựa trên thông tin đã cung cấp
+    const user = await prisma.taiKhoan.findFirst({
+      where: {
+        tenTaiKhoan,
+        email,
+        soDienThoai
+      }
+    });
+
+    if (!user) throw new Error('Không tìm thấy tài khoản với thông tin đã cung cấp');
+
+    // Mã hóa mật khẩu mới
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+    // Cập nhật mật khẩu mới
+    await prisma.taiKhoan.update({
+      where: { maTaiKhoan: user.maTaiKhoan },
+      data: { matKhau: hashedNewPassword }
+    });
+
+    return { message: 'Đặt lại mật khẩu thành công!' };
+  }
+
   // Lấy thông tin cá nhân
   static async getMe(userId: number) {
     const user = await prisma.taiKhoan.findUnique({
