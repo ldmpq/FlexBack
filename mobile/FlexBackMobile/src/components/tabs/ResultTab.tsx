@@ -1,42 +1,287 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather } from '@expo/vector-icons';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator, RefreshControl } from 'react-native';
+import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { useResult } from '../../hooks/useResult';
 
 const ResultTab = () => {
+  const { reports, loading, refreshing, onRefresh, stats } = useResult();
+
+  const formatDate = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleDateString('vi-VN', {
+        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+    } catch (e) { return dateString; }
+  };
+
+  const getPainColor = (level: number) => {
+    if (level <= 2) return '#22c55e'; // Xanh (Nhẹ)
+    if (level <= 4) return '#eab308'; // Vàng (Vừa)
+    return '#ef4444'; // Đỏ (Đau)
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color="#6f8f38" />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Lịch sử & Kết quả</Text>
       </View>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        <Text style={styles.sectionHeader}>Đã hoàn thành</Text>
-        <View style={styles.historyItem}>
-          <Feather name="check-circle" size={20} color="green" />
-          <Text style={styles.historyText}>Bài tập giãn cơ - 12/12/2024</Text>
+      
+      <ScrollView 
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#6f8f38']} />}
+      >
+        {/* Thống kê tổng quan */}
+        <View style={styles.statsRow}>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{stats.totalSessions}</Text>
+            <Text style={styles.statLabel}>Buổi tập</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{stats.totalDuration}'</Text>
+            <Text style={styles.statLabel}>Phút tập</Text>
+          </View>
+          <View style={styles.statCard}>
+            <Text style={styles.statValue}>{stats.avgPain}</Text>
+            <Text style={styles.statLabel}>Đau TB</Text>
+          </View>
         </View>
-        <View style={styles.historyItem}>
-          <Feather name="check-circle" size={20} color="green" />
-          <Text style={styles.historyText}>Bài tập Squat - 10/12/2024</Text>
-        </View>
+
+        <Text style={styles.sectionHeader}>Lịch sử tập luyện</Text>
+
+        {reports.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Ionicons name="documents-outline" size={48} color="#ddd" />
+            <Text style={styles.emptyText}>Chưa có lịch sử tập luyện nào.</Text>
+          </View>
+        ) : (
+          reports.map((item) => (
+            <View key={item.maBaoCao} style={styles.historyItem}>
+              <View style={styles.historyLeft}>
+                <View style={[styles.iconBox, { backgroundColor: getPainColor(item.mucDoDau) }]}>
+                  <FontAwesome5 name="dumbbell" size={16} color="#fff" />
+                </View>
+                <View style={styles.line} />
+              </View>
+              
+              <View style={styles.historyContent}>
+                <Text style={styles.historyTitle}>
+                  {item.KeHoachDieuTri?.LoTrinhDieuTri?.tenLoTrinh || 'Bài tập tự do'}
+                </Text>
+                <Text style={styles.historySubTitle}>
+                  {item.KeHoachDieuTri?.tenKeHoach}
+                </Text>
+                
+                <View style={styles.metaRow}>
+                   <View style={styles.metaItem}>
+                      <Feather name="clock" size={12} color="#666"/>
+                      <Text style={styles.metaText}>{item.thoiLuong} phút</Text>
+                   </View>
+                   <View style={styles.metaItem}>
+                      <Feather name="activity" size={12} color="#666"/>
+                      <Text style={styles.metaText}>Đau: {item.mucDoDau}/10</Text>
+                   </View>
+                </View>
+
+                {item.danhGiaSoBo ? (
+                  <Text style={styles.noteText}>"{item.danhGiaSoBo}"</Text>
+                ) : null}
+                
+                <Text style={styles.dateText}>{formatDate(item.ngayLuyenTap)}</Text>
+              </View>
+            </View>
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#fff', paddingTop: 30 },
-  headerContainer: { padding: 20, backgroundColor: '#fff' },
-  headerTitle: { fontSize: 22, fontWeight: 'bold', color: '#333' },
-  contentContainer: { padding: 20 },
+  /* ================= SAFE AREA & LAYOUT ================= */
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: 30,
+  },
+
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  headerContainer: {
+    padding: 20,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+
+  contentContainer: {
+    padding: 20,
+  },
+
+  /* ================= STATS ================= */
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+
+  statCard: {
+    width: '31%',
+    backgroundColor: '#f9fbf7',
+    padding: 12,
+    borderRadius: 12,
+    alignItems: 'center',
+
+    borderWidth: 1,
+    borderColor: '#eef6e8',
+  },
+
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#6f8f38',
+    marginBottom: 4,
+  },
+
+  statLabel: {
+    fontSize: 12,
+    color: '#666',
+    textTransform: 'uppercase',
+  },
+
+  /* ================= SECTION ================= */
   sectionHeader: {
-    fontSize: 14, fontWeight: 'bold', color: '#888', marginBottom: 10, textTransform: 'uppercase',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 16,
   },
+
+  /* ================= HISTORY ITEM ================= */
   historyItem: {
-    flexDirection: 'row', alignItems: 'center', paddingVertical: 12,
-    borderBottomWidth: 1, borderBottomColor: '#f0f0f0',
+    flexDirection: 'row',
+    marginBottom: 0,
   },
-  historyText: { marginLeft: 10, fontSize: 15, color: '#333' },
+
+  historyLeft: {
+    width: 40,
+    alignItems: 'center',
+    marginRight: 12,
+  },
+
+  iconBox: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+
+  line: {
+    width: 2,
+    flex: 1,
+    backgroundColor: '#f0f0f0',
+    marginVertical: 4,
+  },
+
+  historyContent: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+
+    shadowColor: '#000',
+    shadowOpacity: 0.03,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+
+  historyTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 2,
+  },
+
+  historySubTitle: {
+    fontSize: 13,
+    color: '#666',
+    marginBottom: 8,
+  },
+
+  /* ================= META ================= */
+  metaRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 8,
+  },
+
+  metaItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+
+    backgroundColor: '#f5f5f5',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+
+  metaText: {
+    fontSize: 12,
+    color: '#555',
+  },
+
+  /* ================= NOTE & DATE ================= */
+  noteText: {
+    fontSize: 13,
+    fontStyle: 'italic',
+    color: '#444',
+
+    backgroundColor: '#fffbeb',
+    padding: 8,
+    borderRadius: 6,
+    marginBottom: 8,
+  },
+
+  dateText: {
+    fontSize: 11,
+    color: '#999',
+    textAlign: 'right',
+  },
+
+  /* ================= EMPTY STATE ================= */
+  emptyContainer: {
+    alignItems: 'center',
+    marginTop: 40,
+  },
+
+  emptyText: {
+    marginTop: 10,
+    color: '#999',
+  },
 });
 
 export default ResultTab;

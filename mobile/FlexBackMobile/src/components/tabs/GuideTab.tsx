@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 
@@ -31,7 +31,7 @@ const GuideTab = () => {
           <Text style={styles.gridLabel}>Thực phẩm</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.gridButton}>
+        <TouchableOpacity style={styles.gridButton} onPress = {() => Alert.alert('Thông báo', 'Chức năng đang trong giai đoạn phát triển 😄')}>
           <View style={[styles.iconCircle, { backgroundColor: '#fef3c7' }]}>
             <Feather name="book-open" size={28} color="#d97706" />
           </View>

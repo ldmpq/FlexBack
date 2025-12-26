@@ -28,4 +28,43 @@ export class BaoCaoService {
 
     return newBaoCao;
   }
+
+  static async getReportsByPatient(userId: number) {
+    // 1. Tìm mã bệnh nhân từ userId
+    const benhNhan = await prisma.benhNhan.findFirst({
+      where: { maTaiKhoan: userId }
+    });
+
+    if (!benhNhan) return [];
+
+    // 2. Lấy tất cả báo cáo liên quan đến bệnh nhân
+    // Logic: BaoCao -> KeHoach -> LoTrinh -> MucTieu -> HoSo -> BenhNhan
+    // Truy vấn ngược từ BaoCaoLuyenTap
+    const reports = await prisma.baoCaoLuyenTap.findMany({
+      where: {
+        KeHoachDieuTri: {
+          LoTrinhDieuTri: {
+            MucTieuDieuTri: {
+              HoSoBenhAn: {
+                maBenhNhan: benhNhan.maBenhNhan
+              }
+            }
+          }
+        }
+      },
+      include: {
+        KeHoachDieuTri: {
+          select: { 
+            tenKeHoach: true,
+            LoTrinhDieuTri: {
+              select: { tenLoTrinh: true }
+            }
+          }
+        }
+      },
+      orderBy: { ngayLuyenTap: 'desc' } // Mới nhất lên đầu
+    });
+
+    return reports;
+  }
 }

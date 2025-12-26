@@ -1,3 +1,4 @@
+import { ReportHistory } from '../types/result.type';
 import axiosClient from '../utils/axiosClient';
 
 export const reportService = {
@@ -10,5 +11,10 @@ export const reportService = {
     ngayLuyenTap?: string;
   }) => {
     return axiosClient.post('/baocao', data); 
+  },
+
+  getMyReports: async (): Promise<ReportHistory[]> => {
+    const res = await axiosClient.get('/baocao/history');
+    return res.data.data || [];
   }
 };
