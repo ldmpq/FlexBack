@@ -227,8 +227,8 @@ const styles = StyleSheet.create({
   },
 
   genderActive: {
-    backgroundColor: '#00C269',
-    borderColor: '#00C269',
+    backgroundColor: '#1ec8a5',
+    borderColor: '#1ec8a5',
   },
 
   genderText: {
@@ -240,13 +240,13 @@ const styles = StyleSheet.create({
     height: 56,
     marginTop: 20,
 
-    backgroundColor: '#00C269',
+    backgroundColor: '#1ec8a5',
     borderRadius: 12,
 
     justifyContent: 'center',
     alignItems: 'center',
 
-    shadowColor: '#00C269',
+    shadowColor: '#1ec8a5',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 10,

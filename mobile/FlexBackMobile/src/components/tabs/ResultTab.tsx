@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { useResult } from '../../hooks/useResult';
 
@@ -16,14 +17,14 @@ const ResultTab = () => {
 
   const getPainColor = (level: number) => {
     if (level <= 2) return '#22c55e'; // Xanh (Nhẹ)
-    if (level <= 4) return '#eab308'; // Vàng (Vừa)
+    if (level <= 5) return '#eab308'; // Vàng (Vừa)
     return '#ef4444'; // Đỏ (Đau)
   };
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#6f8f38" />
+        <ActivityIndicator size="large" color="#67a790ff" />
       </View>
     );
   }
@@ -86,7 +87,7 @@ const ResultTab = () => {
                    </View>
                    <View style={styles.metaItem}>
                       <Feather name="activity" size={12} color="#666"/>
-                      <Text style={styles.metaText}>Đau: {item.mucDoDau}/10</Text>
+                      <Text style={styles.metaText}>Mức độ đau: {item.mucDoDau}/10</Text>
                    </View>
                 </View>
 
@@ -105,7 +106,6 @@ const ResultTab = () => {
 };
 
 const styles = StyleSheet.create({
-  /* ================= SAFE AREA & LAYOUT ================= */
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
-  /* ================= STATS ================= */
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -166,7 +165,6 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
 
-  /* ================= SECTION ================= */
   sectionHeader: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -174,7 +172,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 
-  /* ================= HISTORY ITEM ================= */
   historyItem: {
     flexDirection: 'row',
     marginBottom: 0,
@@ -231,7 +228,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 
-  /* ================= META ================= */
   metaRow: {
     flexDirection: 'row',
     gap: 12,
@@ -254,7 +250,6 @@ const styles = StyleSheet.create({
     color: '#555',
   },
 
-  /* ================= NOTE & DATE ================= */
   noteText: {
     fontSize: 13,
     fontStyle: 'italic',
@@ -272,7 +267,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 
-  /* ================= EMPTY STATE ================= */
   emptyContainer: {
     alignItems: 'center',
     marginTop: 40,

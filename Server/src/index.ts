@@ -11,6 +11,8 @@ import hoSoRoutes from './routes/hoSoRoute';
 import treatmentRoutes from './routes/treatmentRoute';
 import userRoutes from './routes/userRoute';
 import baoCaoRoutes from './routes/baocaoRoute';
+import thuocRoute from './routes/thuocRoute';
+import thucPhamRoute from './routes/thucPhamRoute';
 
 dotenv.config();
 
@@ -35,6 +37,8 @@ app.use('/api/exercises', exerciseRoutes);
 app.use('/api/treatment', treatmentRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/baocao', baoCaoRoutes);
+app.use('api/thuoc', thuocRoute);
+app.use('/api/thucPham', thucPhamRoute);
 
 // Route test server
 app.get('/', (req: Request, res: Response) => {

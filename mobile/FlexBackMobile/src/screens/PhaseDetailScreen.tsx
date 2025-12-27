@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import VideoModal from '../components/modals/VideoModal';
 import YoutubeModal from '../components/modals/YoutubeModal';
+import HeaderNavigation from '../components/navigation/header.navigation';
 
 const BASE_URL = 'http://10.0.2.2:3000';
 
@@ -52,13 +53,7 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#333" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle} numberOfLines={1}>{title || 'Chi tiết giai đoạn'}</Text>
-        <View style={{ width: 24 }} />
-      </View>
+      <HeaderNavigation title={title || 'Chi tiết giai đoạn'} onBack={() => navigation.goBack()}/>
 
       <ScrollView contentContainerStyle={styles.content}>
         {!exercises || exercises.length === 0 ? (
@@ -169,28 +164,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f7fa',
-  },
-
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-
-  backButton: {
-    padding: 4,
-  },
-
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    flex: 1,
-    textAlign: 'center',
   },
 
   content: {

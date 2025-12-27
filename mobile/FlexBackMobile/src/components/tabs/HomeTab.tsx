@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import {View,Text,StyleSheet,ScrollView,TouchableOpacity,ActivityIndicator,TextInput} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
+import SearchBar from '../../components/common/SearchBar';
 import axiosClient from '../../utils/axiosClient';
 
 const HomeTab = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -47,14 +50,13 @@ const HomeTab = () => {
       </View>
 
       {/* ===== SEARCH ===== */}
-      <View style={styles.searchWrapper}>
-        <Feather name="search" size={18} color="#888" />
-        <TextInput
-          placeholder="Tìm kiếm bài tập, bác sĩ..."
-          placeholderTextColor="#999"
-          style={styles.searchInput}
-        />
-      </View>
+      <SearchBar
+        value={search}
+        onChangeText={setSearch}
+        placeholder="Bạn đang tìm kiếm gì 👀?"
+        containerStyle={{ marginHorizontal: 20, marginTop: -22 }}
+      />
+
 
       <ScrollView contentContainerStyle={styles.content}>
         {/* ===== CARD: BÀI TẬP ===== */}

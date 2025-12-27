@@ -52,7 +52,7 @@ const ProgramTab = () => {
           </View>
         )}
       </View>
-
+      
       <ScrollView 
         contentContainerStyle={styles.contentContainer}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#6f8f38']} />}
@@ -141,67 +141,229 @@ const ProgramTab = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#fff', paddingTop: 30 },
-  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { marginTop: 10, color: '#666' },
-  
-  headerContainer: { padding: 20, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-  headerTitle: { fontSize: 24, fontWeight: 'bold', color: '#333' },
-  diagnosisContainer: { flexDirection: 'row', alignItems: 'center', marginTop: 5 },
-  diagnosisText: { fontSize: 14, color: '#666', fontStyle: 'italic', flex: 1 },
-  
-  contentContainer: { padding: 20, paddingBottom: 40 },
-  
-  emptyContainer: { alignItems: 'center', marginTop: 50 },
-  emptyText: { fontSize: 18, fontWeight: '600', color: '#555', marginTop: 15 },
-  emptySubText: { fontSize: 14, color: '#999', marginTop: 5, textAlign: 'center', paddingHorizontal: 40 },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: 30,
+  },
 
-  // Goal Styles
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  loadingText: {
+    marginTop: 10,
+    color: '#666',
+  },
+
+  headerContainer: {
+    padding: 20,
+    backgroundColor: '#fff',
+
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+
+  diagnosisContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+
+  diagnosisText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#666',
+    fontStyle: 'italic',
+  },
+
+  contentContainer: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+
+  emptyContainer: {
+    alignItems: 'center',
+    marginTop: 50,
+  },
+
+  emptyText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#555',
+    marginTop: 15,
+  },
+
+  emptySubText: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 5,
+    textAlign: 'center',
+    paddingHorizontal: 40,
+  },
+
   goalCard: {
-    backgroundColor: '#fff', borderRadius: 16, marginBottom: 16,
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 5, elevation: 3,
-    borderWidth: 1, borderColor: '#f0f0f0', overflow: 'hidden'
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    marginBottom: 16,
+
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    overflow: 'hidden',
+
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    elevation: 3,
   },
+
   goalHeader: {
-    flexDirection: 'row', alignItems: 'center', padding: 16,
-    backgroundColor: '#fff'
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+
+    backgroundColor: '#fff',
   },
+
   goalIconContainer: {
-    width: 48, height: 48, borderRadius: 12, backgroundColor: '#6f8f38',
-    justifyContent: 'center', alignItems: 'center', marginRight: 16
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+
+    backgroundColor: '#6f8f38',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
   },
-  goalInfo: { flex: 1 },
-  goalTitle: { fontSize: 16, fontWeight: 'bold', color: '#333', marginBottom: 4 },
-  goalMeta: { flexDirection: 'row', alignItems: 'center' },
-  priorityBadge: { fontSize: 12, fontWeight: '700', marginRight: 10, textTransform: 'uppercase' },
-  goalDate: { fontSize: 12, color: '#999' },
-  
-  // Phases Styles
+
+  goalInfo: {
+    flex: 1,
+  },
+
+  goalTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+
+  goalMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  priorityBadge: {
+    fontSize: 12,
+    fontWeight: '700',
+    marginRight: 10,
+    textTransform: 'uppercase',
+  },
+
+  goalDate: {
+    fontSize: 12,
+    color: '#999',
+  },
+
   phasesContainer: {
-    backgroundColor: '#f9fbf7', padding: 16, borderTopWidth: 1, borderTopColor: '#f0f0f0'
+    backgroundColor: '#f9fbf7',
+    padding: 16,
+
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
   },
-  phaseItem: { flexDirection: 'row', marginBottom: 0 },
-  
-  timelineContainer: { alignItems: 'center', marginRight: 12, width: 20 },
-  timelineDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#6f8f38', marginTop: 6 },
-  timelineLine: { width: 2, flex: 1, backgroundColor: '#dcfce7', marginVertical: 4 },
-  
-  phaseContent: { flex: 1, paddingBottom: 20 },
-  phaseTitle: { fontSize: 15, fontWeight: '600', color: '#333' },
-  phaseTime: { flexDirection: 'row', alignItems: 'center', marginTop: 4, marginBottom: 4 },
-  phaseDate: { fontSize: 12, color: '#666' },
-  phaseNote: { fontSize: 13, color: '#555', fontStyle: 'italic', marginBottom: 8 },
-  
-  viewDetailBtn: { 
-    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start',
-    backgroundColor: '#fff', paddingHorizontal: 12, paddingVertical: 6,
-    borderRadius: 20, borderWidth: 1, borderColor: '#6f8f38', marginTop: 4
+
+  phaseItem: {
+    flexDirection: 'row',
+    marginBottom: 0,
   },
-  viewDetailText: { fontSize: 12, color: '#6f8f38', fontWeight: '600', marginRight: 4 },
-  
-  noPhaseText: { color: '#999', fontStyle: 'italic', textAlign: 'center', padding: 10 }
+
+  timelineContainer: {
+    alignItems: 'center',
+    marginRight: 12,
+    width: 20,
+  },
+
+  timelineDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#6f8f38',
+    marginTop: 6,
+  },
+
+  timelineLine: {
+    width: 2,
+    flex: 1,
+    backgroundColor: '#dcfce7',
+    marginVertical: 4,
+  },
+
+  phaseContent: {
+    flex: 1,
+    paddingBottom: 20,
+  },
+
+  phaseTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#333',
+  },
+
+  phaseTime: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+    marginBottom: 4,
+  },
+
+  phaseDate: {
+    fontSize: 12,
+    color: '#666',
+  },
+
+  phaseNote: {
+    fontSize: 13,
+    color: '#555',
+    fontStyle: 'italic',
+    marginBottom: 8,
+  },
+
+  viewDetailBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#6f8f38',
+    marginTop: 4,
+  },
+
+  viewDetailText: {
+    fontSize: 12,
+    color: '#6f8f38',
+    fontWeight: '600',
+    marginRight: 4,
+  },
+
+  noPhaseText: {
+    color: '#999',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    padding: 10,
+  },
 });
 
 export default ProgramTab;
-
-

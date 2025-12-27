@@ -8,6 +8,7 @@ import CreateReportScreen from '../../screens/CreateReportScreen';
 import ProfileScreen from '../../screens/ProfileScreen';
 import ChangePasswordScreen from '../../screens/ChangePasswordScreen';
 import ForgotPasswordScreen from '../../screens/ForgotPasswordScreen';
+import GuideDetailScreen from '../../screens/GuideDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,8 @@ export const RootNavigation = () => (
 
     <Stack.Screen name="PhaseDetail" component={PhaseDetailScreen} />
     <Stack.Screen name="CreateReport" component={CreateReportScreen} />
+
+    <Stack.Screen name="GuideDetail" component={GuideDetailScreen} />
 
     <Stack.Screen name="AppTabs" component={AppNavigation} />
   </Stack.Navigator>

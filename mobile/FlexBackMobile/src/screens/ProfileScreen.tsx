@@ -3,6 +3,7 @@ import {View,Text,TextInput,TouchableOpacity,StyleSheet,ScrollView,ActivityIndic
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather, FontAwesome5 } from '@expo/vector-icons';
 import { useProfile } from '../hooks/useProfile';
+import HeaderNavigation from '../components/navigation/header.navigation';
 
 const ProfileScreen = ({ navigation }: any) => {
   const {formData, setFormData,loading,fetching, handleUpdate,} = useProfile();
@@ -25,16 +26,7 @@ const ProfileScreen = ({ navigation }: any) => {
         style={{ flex: 1 }}
       >
         {/* HEADER */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="chevron-back" size={24} color="#333" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Thông tin cá nhân</Text>
-          <View style={{ width: 40 }} />
-        </View>
+        <HeaderNavigation title="Thông tin cá nhân" onBack={() => navigation.goBack()}/>
 
         <ScrollView
           contentContainerStyle={styles.scrollContent}
@@ -206,31 +198,6 @@ const styles = StyleSheet.create({
   },
 
   center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: '#F5F5F5',
     justifyContent: 'center',
     alignItems: 'center',
   },

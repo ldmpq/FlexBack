@@ -3,6 +3,7 @@ import {View,Text,TextInput,TouchableOpacity,StyleSheet,Platform,KeyboardAvoidin
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { useChangePassword } from '../hooks/useChangePassword';
+import HeaderNavigation from '../components/navigation/header.navigation';
 
 const ChangePasswordScreen = ({ navigation }: any) => {
   const {
@@ -26,16 +27,7 @@ const ChangePasswordScreen = ({ navigation }: any) => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }} >
         {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="chevron-back" size={24} color="#333" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Đổi Mật Khẩu</Text>
-          <View style={{ width: 40 }} />
-        </View>
+        <HeaderNavigation title="Đổi mật khẩu" onBack={() => navigation.goBack()}/>
 
         <View style={styles.content}>
           {/* Mật khẩu hiện tại */}
@@ -125,31 +117,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFFFF',
-    },
-
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
-    },
-
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-
-    backButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 12,
-        backgroundColor: '#F5F5F5',
-        justifyContent: 'center',
-        alignItems: 'center',
     },
 
     content: {

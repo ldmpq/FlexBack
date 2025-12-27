@@ -3,6 +3,7 @@ import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { useCreateReport } from '../hooks/useCreateReport';
+import HeaderNavigation from '../components/navigation/header.navigation';
 
 const CreateReportScreen = ({ route, navigation }: any) => {
   const { maKeHoach, title } = route.params || {};
@@ -41,13 +42,7 @@ const CreateReportScreen = ({ route, navigation }: any) => {
     return (
         <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
             {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Ionicons name="arrow-back" size={24} color="#333" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Báo cáo kết quả</Text>
-                <View style={{ width: 24 }} />
-            </View>
+            <HeaderNavigation title="Báo cáo kết quả tập luyện" onBack={() => navigation.goBack()}/>
 
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
                 <ScrollView contentContainerStyle={styles.content}>
@@ -115,25 +110,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-    },
-
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
-    },
-
-    backButton: {
-        padding: 4,
-    },
-
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
     },
 
     content: {

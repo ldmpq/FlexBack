@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityInd
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import axiosClient, { setAuthToken } from '../utils/axiosClient';
+import HeaderNavigation from '../components/navigation/header.navigation';
 
 const RegisterScreen = ({ navigation }: any) => {
   const [fullName, setFullName] = useState('');
@@ -39,16 +40,11 @@ const RegisterScreen = ({ navigation }: any) => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          
-          <View style={styles.header}>
-             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Ionicons name="chevron-back" size={24} color="#333" />
-            </TouchableOpacity>
-          </View>
+          {/* Header */}
+          <HeaderNavigation title="Tạo tài khoản" onBack={() => navigation.goBack()}/>
 
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Tạo tài khoản</Text>
-            <Text style={styles.subtitle}>Bắt đầu hành trình mới từ đây</Text>
+            <Text style={styles.subtitle}>Hãy tạo tài khoản để bắt đầu hành trình mới của bạn từ đây</Text>
           </View>
 
           <View style={styles.form}>
@@ -98,23 +94,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 
-  /* ================= HEADER ================= */
-  header: {
-    marginBottom: 20,
-  },
-
-  backButton: {
-    width: 40,
-    height: 40,
-
-    borderRadius: 12,
-    backgroundColor: '#F5F5F5',
-
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  /* ================= TITLE ================= */
   titleContainer: {
     alignItems: 'center',
     marginBottom: 30,
@@ -132,7 +111,6 @@ const styles = StyleSheet.create({
     color: '#666',
   },
 
-  /* ================= FORM ================= */
   form: {
     gap: 16,
   },
@@ -160,18 +138,17 @@ const styles = StyleSheet.create({
     color: '#333',
   },
 
-  /* ================= BUTTON ================= */
   registerButton: {
     height: 56,
     marginTop: 10,
 
-    backgroundColor: '#00C269',
+    backgroundColor: '#1ec8a5',
     borderRadius: 12,
 
     justifyContent: 'center',
     alignItems: 'center',
 
-    shadowColor: '#00C269',
+    shadowColor: '#1ec8a5',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
@@ -184,7 +161,6 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 
-  /* ================= FOOTER ================= */
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -199,7 +175,7 @@ const styles = StyleSheet.create({
   linkText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#00C269',
+    color: '#1ec8a5',
   },
 });
 

@@ -43,7 +43,7 @@ const LoginScreen = ({ navigation }: any) => {
                 style={styles.input} placeholder="Tên đăng nhập" placeholderTextColor="#aaa"
                 value={username} onChangeText={setUsername} autoCapitalize="none"
               />
-              {username.length > 0 && <Feather name="check-circle" size={20} color="#00C269" />}
+              {username.length > 0 && <Feather name="check-circle" size={20} color="#1ec8a5" />}
             </View>
 
             <View style={styles.inputContainer}>
@@ -173,13 +173,13 @@ const styles = StyleSheet.create({
     height: 56,
     marginTop: 10,
 
-    backgroundColor: '#00C269',
+    backgroundColor: '#1ec8a5',
     borderRadius: 12,
 
     justifyContent: 'center',
     alignItems: 'center',
 
-    shadowColor: '#00C269',
+    shadowColor: '#1ec8a5',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   forgotText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#00C269',
+    color: '#1ec8a5',
   },
 
   footer: {
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
   linkText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#00C269',
+    color: '#1ec8a5',
   },
 });
 
