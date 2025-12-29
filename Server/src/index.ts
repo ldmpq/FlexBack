@@ -37,8 +37,9 @@ app.use('/api/exercises', exerciseRoutes);
 app.use('/api/treatment', treatmentRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/baocao', baoCaoRoutes);
-app.use('api/thuoc', thuocRoute);
+app.use('/api/thuoc', thuocRoute);
 app.use('/api/thucPham', thucPhamRoute);
+app.use('/api/nhom-co', exerciseRoutes);
 
 // Route test server
 app.get('/', (req: Request, res: Response) => {

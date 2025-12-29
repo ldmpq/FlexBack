@@ -2,8 +2,13 @@ import axiosClient from '../utils/axiosClient';
 
 export const guideService = {
   getExercises: async () => {
-    const res = await axiosClient.get('/exercises/list');
-    return res.data.data;
+    const res = await axiosClient.get('/exercises');
+    return (res.data.data || []).map((item: any) => ({
+      id: item.maBaiTap,
+      name: item.tenBaiTap,
+      description: item.moTa,
+      category: 'EXERCISE'
+    }));
   },
   
   getMedicines: async () => {

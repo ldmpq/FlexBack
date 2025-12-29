@@ -10,15 +10,17 @@ export class BaiTapService {
 
   // 2. Lấy danh sách bài tập
   static async getExercises() {
-    return prisma.baiTapPhucHoi.findMany({
-      include: {
-        NhomCo: {
-          select: { tenNhomCo: true }
-        }
-      },
-      orderBy: { maBaiTap: 'desc' }
-    });
-  }
+  const data = await prisma.baiTapPhucHoi.findMany({
+    include: {
+      NhomCo: { select: { tenNhomCo: true } }
+    }
+  });
+
+  return data.map(item => ({
+    ...item,
+    NHOM_CO: item.NhomCo
+  }));
+}
 
   // 3. Tạo bài tập mới
   static async createExercise(data: CreateExerciseDTO, uploadedFile?: Express.Multer.File) {

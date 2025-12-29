@@ -22,7 +22,7 @@ const GuideTab = () => {
         {/* 1. Bài tập */}
         <TouchableOpacity 
           style={styles.gridButton} 
-          onPress={() => handleNavigate('EXERCISE', 'Các bài tập')}
+          onPress={() => handleNavigate('EXERCISE', 'Danh mục bài tập')}
         >
           <View style={[styles.iconCircle, { backgroundColor: '#e0f2fe' }]}>
             <FontAwesome5 name="dumbbell" size={28} color="#0284c7" />

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import SearchBar from '../components/common/SearchBar';
 import HeaderNavigation from '../components/navigation/header.navigation';
+import { guideService } from '../services/guide.service';
 
 interface GuideItem {
   id: number;
@@ -20,41 +21,22 @@ const GuideDetailScreen = ({ route, navigation }: any) => {
 
   const [search, setSearch] = useState('');
 
-  // Giả lập lấy dữ liệu (Sau này bạn thay bằng gọi API thật)
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 500)); 
-        
-        let mockData: GuideItem[] = [];
+        let apiData: GuideItem[] = [];
 
         if (category === 'EXERCISE') {
-            mockData = [
-                { id: 1, name: 'Squat cơ bản', description: 'Tập cơ đùi và mông, giúp săn chắc chân.', category: 'EXERCISE' },
-                { id: 2, name: 'Hít đất', description: 'Tăng cường cơ ngực và bắp tay sau.', category: 'EXERCISE' },
-                { id: 3, name: 'Plank', description: 'Cải thiện cơ bụng và sức bền cốt lõi.', category: 'EXERCISE' },
-                { id: 4, name: 'Giãn cơ cổ', description: 'Giảm đau mỏi vai gáy cho dân văn phòng.', category: 'EXERCISE' },
-            ];
+            apiData = await guideService.getExercises();
         } else if (category === 'MEDICINE') {
-            mockData = [
-                { id: 1, name: 'Paracetamol', description: 'Giảm đau, hạ sốt thông thường.', category: 'MEDICINE' },
-                { id: 2, name: 'Vitamin C', description: 'Tăng cường sức đề kháng cho cơ thể.', category: 'MEDICINE' },
-                { id: 3, name: 'Glucosamine', description: 'Hỗ trợ tái tạo sụn khớp, giảm đau khớp.', category: 'MEDICINE' },
-                { id: 4, name: 'Omega-3', description: 'Tốt cho tim mạch và trí não.', category: 'MEDICINE' },
-            ];
+            apiData = await guideService.getMedicines();
         } else if (category === 'FOOD') {
-            mockData = [
-                { id: 1, name: 'Ức gà', description: 'Nguồn protein dồi dào, ít chất béo.', category: 'FOOD' },
-                { id: 2, name: 'Cá hồi', description: 'Giàu Omega-3, tốt cho tim mạch.', category: 'FOOD' },
-                { id: 3, name: 'Rau chân vịt', description: 'Nhiều chất xơ, sắt và vitamin.', category: 'FOOD' },
-                { id: 4, name: 'Gạo lứt', description: 'Tinh bột chậm, tốt cho người giảm cân.', category: 'FOOD' },
-            ];
+            apiData = await guideService.getFoods();
         }
-        setData(mockData);
+        setData(apiData);
       } catch (error) {
-        console.error(error);
+        console.error("Lỗi tải dữ liệu hướng dẫn:", error);
       } finally {
         setLoading(false);
       }
@@ -95,13 +77,11 @@ const GuideDetailScreen = ({ route, navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      {/* Header */}
+
         <HeaderNavigation title={title} onBack={() => navigation.goBack()}/>
 
-      {/* Search Bar */}
         <SearchBar value={search} onChangeText={setSearch} placeholder="Tìm kiếm..." containerStyle={{ marginHorizontal: 20, marginTop: 15}}/>
 
-      {/* List Data */}
       {loading ? (
         <ActivityIndicator size="large" color="#6f8f38" style={{marginTop: 50}} />
       ) : (
@@ -114,7 +94,7 @@ const GuideDetailScreen = ({ route, navigation }: any) => {
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
                 <Ionicons name="search-outline" size={48} color="#ddd" />
-                <Text style={styles.emptyText}>Không tìm thấy kết quả nào.</Text>
+                <Text style={styles.emptyText}>Không tìm thấy kết quả trùng khớp nào.</Text>
             </View>
           }
         />
