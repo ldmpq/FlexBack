@@ -130,7 +130,11 @@ export class AuthService {
 
     if (!isMatch) throw new Error('Tài khoản hoặc mật khẩu không đúng!');
 
-    const secret = process.env.JWT_SECRET || 'TryToGuessThisSecretKey_FlexBack';
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined. Please check environment variables.');
+    }
+
+    const secret = process.env.JWT_SECRET;
 
     const token = jwt.sign(
       { id: user.maTaiKhoan, role: user.loaiTaiKhoan },
