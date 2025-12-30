@@ -4,15 +4,16 @@ import cors from 'cors';
 import path from 'path';
 
 import authRoutes from './routes/authRoute';
-import accountRoutes from './routes/accountRoute';
-import dieuTriRoutes from './routes/dieuTriRoute';
-import exerciseRoutes from './routes/baiTapRoute';
+import accountRoute from './routes/accountRoute';
+import dieuTriRoute from './routes/dieuTriRoute';
+import exerciseRoute from './routes/baiTapRoute';
 import hoSoRoutes from './routes/hoSoRoute';
-import treatmentRoutes from './routes/treatmentRoute';
-import userRoutes from './routes/userRoute';
-import baoCaoRoutes from './routes/baocaoRoute';
+import treatmentRoute from './routes/treatmentRoute';
+import userRoute from './routes/userRoute';
+import baoCaoRoute from './routes/baocaoRoute';
 import thuocRoute from './routes/thuocRoute';
 import thucPhamRoute from './routes/thucPhamRoute';
+import nhomCoRoute from './routes/nhomCoRoute';
 
 dotenv.config();
 
@@ -31,15 +32,15 @@ app.use(
 
 app.use('/api/auth', authRoutes);
 app.use('/api/hoso', hoSoRoutes);
-app.use('/api/dieutri', dieuTriRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/exercises', exerciseRoutes);
-app.use('/api/treatment', treatmentRoutes);
-app.use('/api/accounts', accountRoutes);
-app.use('/api/baocao', baoCaoRoutes);
+app.use('/api/dieutri', dieuTriRoute);
+app.use('/api/users', userRoute);
+app.use('/api/exercises', exerciseRoute);
+app.use('/api/treatment', treatmentRoute);
+app.use('/api/accounts', accountRoute);
+app.use('/api/baocao', baoCaoRoute  );
 app.use('/api/thuoc', thuocRoute);
 app.use('/api/thucPham', thucPhamRoute);
-app.use('/api/nhom-co', exerciseRoutes);
+app.use('/api/nhom-co', nhomCoRoute);
 
 // Route test server
 app.get('/', (req: Request, res: Response) => {

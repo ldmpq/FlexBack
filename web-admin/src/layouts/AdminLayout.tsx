@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Activity, FileText, LogOut, User, UserCheck } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, FileText, LogOut, User, UserCheck, Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface UserInfo {
@@ -22,7 +22,9 @@ const AdminLayout = () => {
   };
 
   const MenuItem = ({ to, icon: Icon, label }: any) => {
-    const active = location.pathname === to || location.pathname.startsWith(to);
+    const active = to === '/admin' 
+      ? location.pathname === to 
+      : location.pathname.startsWith(to);
     return (
       <Link
         to={to}
@@ -58,11 +60,11 @@ const AdminLayout = () => {
           </div>
         </div>
 
-
         <nav className="p-4 flex-1">
           <MenuItem to="/admin" icon={LayoutDashboard} label="Tổng quan" />
           <MenuItem to="/admin/patients" icon={Users} label="Bệnh nhân" />
           <MenuItem to="/admin/plans" icon={FileText} label="Hồ sơ và Lộ trình" />
+          <MenuItem to="/admin/muscles" icon={Activity} label="Quản lý nhóm cơ" />
           <MenuItem to="/admin/exercises" icon={Activity} label="Kho Bài tập" />
           {/* Phân quyền hiển thị mục Tài khoản Nội bộ */} 
           {user?.loaiTaiKhoan === 'ADMIN' && (
@@ -70,9 +72,15 @@ const AdminLayout = () => {
           )}         
         </nav>
 
-        <button onClick={logout} className="p-4 flex items-center text-red-500 hover:bg-red-50" >
-          <LogOut size={18} className="mr-2" /> Đăng xuất
+        <button
+          onClick={logout}
+          className="group flex w-full items-center gap-3 px-4 py-3.5 text-gray-500 font-medium transition-all duration-200 hover:bg-red-50 hover:text-red-600 rounded-xl">
+          <div className="p-1.5 bg-gray-100 rounded-lg group-hover:bg-white group-hover:text-red-500 transition-colors">
+            <LogOut size={18} className="transition-transform duration-300 group-hover:-translate-x-0.5" />
+          </div>
+          <span className="text-sm">Đăng xuất hệ thống</span>
         </button>
+        
       </aside>
 
       <main className="flex-1 overflow-auto p-8 bg-gray-50">

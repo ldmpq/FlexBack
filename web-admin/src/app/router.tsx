@@ -7,6 +7,7 @@ import PatientDetail from '../pages/PatientDetail';
 import Exercises from '../pages/ExercisesLib';
 import TreatmentManager from '../pages/TreatmentManager';
 import Accounts from '../pages/AccountList';
+import MusclePage from '../pages/MusclePage';
 
 const AppRouter = () => {
   return (
@@ -18,8 +19,10 @@ const AppRouter = () => {
         <Route path="patients" element={<Patients />} />
         <Route path="patients/:id" element={<PatientDetail />} />
         <Route path="plans" element={<TreatmentManager />} />
+        <Route path="muscles" element={<MusclePage />} />
         <Route path="exercises" element={<Exercises />} />
         <Route path="accounts" element={<Accounts />} />
+
       </Route>
 
       <Route path="*" element={<Navigate to="/login" replace />} />
