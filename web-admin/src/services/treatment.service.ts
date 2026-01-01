@@ -6,7 +6,7 @@ export const treatmentService = {
     const res: any = await axiosClient.get('/users/benh-nhan');
     const patients = res.data.data || res.data;
     
-    // Transform data: Flatten structure for UI
+    // Transform data: Flatten structure cho UI
     const allHoSo: HoSo[] = [];
     patients.forEach((p: any) => {
       const patientName = p.hoVaTen || p.TaiKhoan?.hoVaTen || "Chưa cập nhật tên";
@@ -47,8 +47,18 @@ export const treatmentService = {
     return axiosClient.post('/treatment/muctieu', data);
   },
 
+  deleteGoal: async (maMucTieu: number) => {
+    const response = await axiosClient.delete(`/treatment/muctieu/${maMucTieu}`); 
+    return response.data;
+  },
+
   createRoute: async (data: { maMucTieu: number; tenLoTrinh: string; maKyThuatVien: string; thoiGianBatDau: string; thoiGianKetThuc: string; ghiChu: string }) => {
     return axiosClient.post('/treatment/lotrinh', data);
+  },
+
+  deleteRoute: async (maLoTrinh: number) => {
+    const response = await axiosClient.delete(`/treatment/lotrinh/${maLoTrinh}`);
+    return response.data;
   },
 
   saveRouteExercises: async (maLoTrinh: number, exercises: BaiTapConfig[]) => {

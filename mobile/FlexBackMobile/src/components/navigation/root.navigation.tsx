@@ -9,6 +9,8 @@ import ProfileScreen from '../../screens/ProfileScreen';
 import ChangePasswordScreen from '../../screens/ChangePasswordScreen';
 import ForgotPasswordScreen from '../../screens/ForgotPasswordScreen';
 import GuideDetailScreen from '../../screens/GuideDetailScreen';
+import ExerciseDetailScreen from '../../screens/ExerciseDetailScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +25,7 @@ export const RootNavigation = () => (
     <Stack.Screen name="Profile" component={ProfileScreen} />
 
     <Stack.Screen name="PhaseDetail" component={PhaseDetailScreen} />
+    <Stack.Screen name="ExerciseDetail" component={ExerciseDetailScreen} />
     <Stack.Screen name="CreateReport" component={CreateReportScreen} />
 
     <Stack.Screen name="GuideDetail" component={GuideDetailScreen} />

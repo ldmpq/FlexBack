@@ -66,6 +66,24 @@ export const useTreatmentManager = () => {
     }
   };
 
+  const deleteGoal = async (maMucTieu: number) => {
+    if (!selectedHoSo) return false;
+    try {
+      setSubmitting(true);
+      await treatmentService.deleteGoal(maMucTieu); // Gọi API xóa mục tiêu
+      
+      alert("Xóa mục tiêu thành công!");
+      await handleSelectHoSo(selectedHoSo.maHoSo); // Reload data
+      return true;
+    } catch (error) {
+      console.error("Lỗi xóa mục tiêu:", error);
+      alert("Lỗi khi xóa mục tiêu. Vui lòng thử lại.");
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const createRoute = async (routeData: any, targetMucTieuId: number) => {
     try {
       setSubmitting(true);
@@ -76,6 +94,24 @@ export const useTreatmentManager = () => {
       return true;
     } catch (error) {
       alert("Lỗi khi thêm lộ trình.");
+      return false;
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const deleteRoute = async (maLoTrinh: number) => {
+    if (!selectedHoSo) return false;
+    try {
+      setSubmitting(true);
+      await treatmentService.deleteRoute(maLoTrinh);
+      
+      alert("Xóa lộ trình thành công!");
+      await handleSelectHoSo(selectedHoSo.maHoSo); // Tải lại dữ liệu
+      return true;
+    } catch (error) {
+      console.error("Lỗi xóa lộ trình:", error);
+      alert("Lỗi khi xóa lộ trình. Vui lòng thử lại.");
       return false;
     } finally {
       setSubmitting(false);
@@ -93,6 +129,8 @@ export const useTreatmentManager = () => {
     handleSelectHoSo,
     fetchKTV,
     createGoal,
-    createRoute
+    deleteGoal,
+    createRoute, 
+    deleteRoute
   };
 };

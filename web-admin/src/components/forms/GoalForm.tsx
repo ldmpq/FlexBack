@@ -73,21 +73,6 @@ const GoalForm: React.FC<GoalFormProps> = ({ isOpen, onClose, onSubmit, submitti
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Trạng thái
-            </label>
-            <select 
-              className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white transition" 
-              value={formData.trangThai} 
-              onChange={e => setFormData({...formData, trangThai: e.target.value})}
-            >
-              <option value="HoanThanh">Hoàn thành</option>
-              <option value="ChuaHoanThanh">Chưa hoàn thành</option>
-              <option value="DangThucHien">Đang thực hiện</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
               Ngày đặt mục tiêu
             </label>
             <input 

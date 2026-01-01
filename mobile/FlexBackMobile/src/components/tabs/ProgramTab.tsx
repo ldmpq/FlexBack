@@ -35,7 +35,7 @@ const ProgramTab = () => {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#6f8f38" />
+        <ActivityIndicator size="large" color="#1ec8a5" />
         <Text style={styles.loadingText}>Đang tải lộ trình...</Text>
       </View>
     );
@@ -51,11 +51,12 @@ const ProgramTab = () => {
              <Text style={styles.diagnosisText} numberOfLines={1}>Chẩn đoán: {program.chanDoan}</Text>
           </View>
         )}
+        
       </View>
       
       <ScrollView 
         contentContainerStyle={styles.contentContainer}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#6f8f38']} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#1ec8a5']} />}
       >
         {!program || !program.MucTieuDieuTri || program.MucTieuDieuTri.length === 0 ? (
           <View style={styles.emptyContainer}>
@@ -79,7 +80,7 @@ const ProgramTab = () => {
                   <Text style={styles.goalTitle}>{mucTieu.noiDung}</Text>
                   <View style={styles.goalMeta}>
                     <Text style={[styles.priorityBadge, { color: getPriorityColor(mucTieu.mucDoUuTien) }]}>
-                      {mucTieu.mucDoUuTien}
+                      Ưu tiên: {mucTieu.mucDoUuTien}
                     </Text>
                     <Text style={styles.goalDate}>Ngày đặt: {formatDate(mucTieu.ngayDatMucTieu)}</Text>
                   </View>
@@ -122,7 +123,7 @@ const ProgramTab = () => {
                               exercises: loTrinh.ChiTietBaiTap
                             })}>
                              <Text style={styles.viewDetailText}>Xem bài tập</Text>
-                             <Feather name="arrow-right" size={14} color="#6f8f38" />
+                             <Feather name="arrow-right" size={14} color="#1ec8a5" />
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 12,
 
-    backgroundColor: '#6f8f38',
+    backgroundColor: '#1ec8a5',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -295,7 +296,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#6f8f38',
+    backgroundColor: '#1ec8a5',
     marginTop: 6,
   },
 
@@ -347,13 +348,13 @@ const styles = StyleSheet.create({
 
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#6f8f38',
+    borderColor: '#1ec8a5',
     marginTop: 4,
   },
 
   viewDetailText: {
     fontSize: 12,
-    color: '#6f8f38',
+    color: '#1ec8a5',
     fontWeight: '600',
     marginRight: 4,
   },

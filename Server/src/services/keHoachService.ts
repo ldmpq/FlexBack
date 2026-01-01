@@ -73,4 +73,43 @@ export class KeHoachService {
       }
     });
   }
+
+  static async completeKeHoach(maKeHoach: number, reportData: any) {
+    // 1. Tìm Kế hoạch kèm theo các quan hệ cha (Lộ trình -> Mục tiêu)
+    const keHoach = await prisma.keHoachDieuTri.findUnique({
+      where: { maKeHoach: Number(maKeHoach) },
+      include: {
+        LoTrinhDieuTri: {
+          include: {
+            MucTieuDieuTri: true // Include Mục tiêu để lấy maHoSo
+          }
+        }
+      }
+    });
+
+    if (!keHoach) throw new Error("Kế hoạch không tồn tại!");
+
+    // 2. Truy xuất maHoSo từ chuỗi quan hệ
+    const loTrinh = keHoach.LoTrinhDieuTri;
+    if (!loTrinh) throw new Error("Lỗi dữ liệu: Kế hoạch không thuộc lộ trình nào!");
+
+    const mucTieu = loTrinh.MucTieuDieuTri;
+    if (!mucTieu) throw new Error("Lỗi dữ liệu: Lộ trình không thuộc mục tiêu nào!");
+
+    const maHoSo = mucTieu.maHoSo;
+    if (!maHoSo) throw new Error("Lỗi dữ liệu: Mục tiêu không gắn với hồ sơ nào!");
+
+    // 3. Cập nhật trạng thái HỒ SƠ (HoSoBenhAn)
+    return prisma.$transaction(async (tx) => {
+      
+      const updatedProfile = await tx.hoSoBenhAn.update({
+        where: { maHoSo: maHoSo },
+        data: { 
+          // Cập nhật trường trạng thái của hồ sơ (khớp với schema.prisma)
+          trangThaiHienTai: 'KetThuc' 
+        }
+      });
+      return updatedProfile;
+    });
+  }
 }

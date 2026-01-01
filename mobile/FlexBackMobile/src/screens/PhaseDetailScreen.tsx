@@ -9,15 +9,11 @@ import HeaderNavigation from '../components/navigation/header.navigation';
 const BASE_URL = 'http://10.0.2.2:3000';
 
 const PhaseDetailScreen = ({ route, navigation }: any) => {
-  const { title, exercises} = route.params || {};
-
+  const { title, exercises } = route.params || {};
   const maKeHoach = exercises && exercises.length > 0 ? exercises[0].maKeHoach : null;
 
-  // State Modal Video
   const [videoVisible, setVideoVisible] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
-
-  // State Modal YouTube
   const [youtubeVisible, setYoutubeVisible] = useState(false);
 
   const openVideo = (url: string) => {
@@ -25,22 +21,12 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
       Alert.alert("Thông báo", "Bài tập này chưa có video hướng dẫn.");
       return;
     }
-
-    // YouTube
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
-      console.log("▶️ Opening YouTube:", url);
       setCurrentVideoUrl(url);
       setYoutubeVisible(true);
       return;
     }
-
-    // Video local (uploads)
-    const fullUrl = url.startsWith('http')
-      ? url
-      : `${BASE_URL}${url}`;
-
-    console.log("🎬 Opening local video:", fullUrl);
-
+    const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
     setCurrentVideoUrl(fullUrl);
     setVideoVisible(true);
   };
@@ -50,10 +36,28 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
     setCurrentVideoUrl(null);
   };
 
+  const handlePressExercise = (item: any) => {
+    const detailData = {
+      sets: item.soSet,
+      reps: item.soRep,
+      ghiChu: item.ghiChu,
+      cuongDo: item.cuongDo || 'Vừa',
+
+      BaiTapPhucHoi: {
+        maBaiTap: item.maBaiTap,
+        tenBaiTap: item.tenBaiTap,
+        moTa: item.moTaBaiTap,
+        videoHuongDan: item.videoHuongDan,
+        dungCuCanThiet: item.dungCuCanThiet,
+        thoiLuongPhut: item.thoiLuongPhut
+      }
+    };
+    navigation.navigate('ExerciseDetail', { detail: detailData });
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      {/* Header */}
-      <HeaderNavigation title={title || 'Chi tiết giai đoạn'} onBack={() => navigation.goBack()}/>
+      <HeaderNavigation title={title || 'Chi tiết giai đoạn'} onBack={() => navigation.goBack()} />
 
       <ScrollView contentContainerStyle={styles.content}>
         {!exercises || exercises.length === 0 ? (
@@ -63,17 +67,23 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
           </View>
         ) : (
           exercises.map((item: any, index: number) => (
-            <View key={index} style={styles.card}>
+            <TouchableOpacity
+              key={index}
+              style={styles.card}
+              activeOpacity={0.7}
+              onPress={() => handlePressExercise(item)}
+            >
               <View style={styles.cardHeader}>
                 <View style={styles.iconBox}>
                   <FontAwesome5 name="running" size={20} color="#fff" />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.exerciseName}>{item.tenBaiTap}</Text>
-                  {item.dungCuCanThiet && (
+                  {item.dungCuCanThiet ? (
                     <Text style={styles.subText}>Dụng cụ: {item.dungCuCanThiet}</Text>
-                  )}
+                  ) : null}
                 </View>
+                <Feather name="chevron-right" size={24} color="#ccc" />
               </View>
 
               <View style={styles.statsContainer}>
@@ -97,42 +107,23 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
                 )}
               </View>
 
-              {item.moTaBaiTap && (
-                <View style={styles.descContainer}>
-                  <Text style={styles.descLabel}>Hướng dẫn thực hiện:</Text>
-                  <Text style={styles.descText}>{item.moTaBaiTap}</Text>
-                </View>
-              )}
-
-              {item.ghiChu && (
+              {item.ghiChu ? (
                 <View style={styles.noteContainer}>
                   <Feather name="info" size={14} color="#d97706" style={{ marginTop: 2 }} />
-                  <Text style={styles.noteText}>Lưu ý: {item.ghiChu}</Text>
+                  <Text style={styles.noteText} numberOfLines={1}>Lưu ý: {item.ghiChu}</Text>
                 </View>
-              )}
-
-              {item.videoHuongDan ? (
-                <TouchableOpacity
-                  style={styles.videoButton}
-                  onPress={() => openVideo(item.videoHuongDan)}
-                >
-                  <Feather name="play-circle" size={18} color="#fff" />
-                  <Text style={styles.videoButtonText}>Xem Video Hướng dẫn</Text>
-                </TouchableOpacity>
               ) : null}
-            </View>
+            </TouchableOpacity>
           ))
         )}
       </ScrollView>
 
-      {/* Button Tạo báo cáo */}
       <View style={styles.footerContainer}>
         <TouchableOpacity
           style={styles.reportButton}
           onPress={() => {
-            // Kiểm tra xem có mã kế hoạch chưa
             if (!maKeHoach) {
-              Alert.alert("Lỗi", "Không tìm thấy kế hoạch để báo cáo. Vui lòng kiểm tra lại.");
+              Alert.alert("Lỗi", "Không tìm thấy kế hoạch để báo cáo.");
               return;
             }
             navigation.navigate('CreateReport', { maKeHoach, title });
@@ -143,14 +134,14 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
         </TouchableOpacity>
       </View>
 
-      {/* --- VIDEO MODAL --- */}
-      {videoVisible && (<VideoModal
-        visible={videoVisible}
-        videoUrl={currentVideoUrl}
-        onClose={closeVideo}
-      />)}
+      {videoVisible && (
+        <VideoModal
+          visible={videoVisible}
+          videoUrl={currentVideoUrl}
+          onClose={closeVideo}
+        />
+      )}
 
-      {/* --- YOUTUBE MODAL --- */}
       <YoutubeModal
         visible={youtubeVisible}
         youtubeUrl={currentVideoUrl}
@@ -207,7 +198,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: '#6f8f38',
+    backgroundColor: '#1ec8a5',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -241,7 +232,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#6f8f38',
+    color: '#1ec8a5',
   },
 
   statLabel: {
@@ -288,22 +279,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  videoButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ef4444',
-    padding: 12,
-    borderRadius: 10,
-    gap: 8,
-  },
-
-  videoButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 14,
-  },
-
   footerContainer: {
     padding: 16,
     backgroundColor: '#fff',
@@ -320,7 +295,7 @@ const styles = StyleSheet.create({
   },
 
   reportButton: {
-    backgroundColor: '#6f8f38',
+    backgroundColor: '#1ec8a5',
     borderRadius: 12,
     paddingVertical: 14,
     flexDirection: 'row',

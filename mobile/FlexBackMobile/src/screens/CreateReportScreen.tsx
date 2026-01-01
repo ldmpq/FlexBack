@@ -122,12 +122,12 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginBottom: 24,
         borderLeftWidth: 4,
-        borderLeftColor: '#6f8f38',
+        borderLeftColor: '#1ec8a5',
     },
 
     infoLabel: {
         fontSize: 12,
-        color: '#6f8f38',
+        color: '#1ec8a5',
         marginBottom: 4,
         fontWeight: '600',
     },
@@ -176,8 +176,8 @@ const styles = StyleSheet.create({
     },
 
     painBtnActive: {
-        backgroundColor: '#6f8f38',
-        borderColor: '#6f8f38',
+        backgroundColor: '#1ec8a5',
+        borderColor: '#1ec8a5',
     },
 
     painText: {
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     },
 
     submitBtn: {
-        backgroundColor: '#6f8f38',
+        backgroundColor: '#1ec8a5',
         borderRadius: 12,
         paddingVertical: 16,
         flexDirection: 'row',

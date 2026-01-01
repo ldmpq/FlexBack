@@ -5,12 +5,18 @@ export class TreatmentService {
     static async getTreatmentTree(maHoSo: number) {
         const data = await TreatmentModel.getTreatmentTree(maHoSo);
         if (!data) return null;
+
+        const currentKTV = (data as any).PhanCong && (data as any).PhanCong.length > 0 
+            ? (data as any).PhanCong[0].KyThuatVien 
+            : null;
         
         const formattedData = {
             ...data,
+            KyThuatVien: currentKTV,
             MucTieuDieuTri: data.MucTieuDieuTri.map(mt => ({
                 ...mt,
-                mucDoUuTien: mt.trangThai || 'BinhThuong', 
+                mucDoUuTien: mt.mucDoUuTien || 'TrungBinh',
+                trangThai: mt.trangThai || 'Chưa hoàn thành', 
                 LoTrinhDieuTri: mt.LoTrinhDieuTri.map(lt => {
                     // Gom tất cả bài tập từ tất cả các kế hoạch con của lộ trình này lại
                     let allExercises: any[] = [];
@@ -50,7 +56,7 @@ export class TreatmentService {
         return formattedData;
     }
 
-    // 2. Tạo mục tiêu
+    // 2. Tạo/Xóa mục tiêu
     static async createMucTieu(data: any) {
         return TreatmentModel.createMucTieu({
             maHoSo: Number(data.maHoSo),
@@ -59,6 +65,10 @@ export class TreatmentService {
             trangThai: data.trangThai || "Chưa hoàn thành", 
             ngayDatMucTieu: new Date(data.ngayDatMucTieu)
         });
+    }
+
+    static async deleteMucTieu(maMucTieu: number) {
+      return TreatmentModel.deleteMucTieu(maMucTieu);
     }
 
     // 3. Tạo lộ trình
@@ -71,6 +81,10 @@ export class TreatmentService {
             ghiChu: data.ghiChu,
             maKyThuatVien: data.maKyThuatVien ? Number(data.maKyThuatVien) : null
         });
+    }
+
+    static async deleteLoTrinh(maLoTrinh: number) {
+        return TreatmentModel.deleteLoTrinh(maLoTrinh);
     }
 
     // 4. Các hàm hỗ trợ khác

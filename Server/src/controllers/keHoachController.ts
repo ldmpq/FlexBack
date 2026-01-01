@@ -47,3 +47,23 @@ export const getBaiTapHomNay = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Lỗi hệ thống", error });
   }
 };
+
+export const completeKeHoach = async (req: Request, res: Response) => {
+  try {
+    const { maKeHoach, ...reportData } = req.body;
+
+    if (!maKeHoach) {
+      return res.status(400).json({ message: "Thiếu mã kế hoạch!" });
+    }
+
+    const data = await KeHoachService.completeKeHoach(maKeHoach, reportData);
+
+    res.status(200).json({
+      message: "Đã cập nhật trạng thái hồ sơ thành công.",
+      data
+    });
+  } catch (error: any) {
+    console.error("Lỗi hoàn thành:", error);
+    res.status(400).json({ message: error.message || "Lỗi xử lý" });
+  }
+};

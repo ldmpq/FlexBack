@@ -37,7 +37,7 @@ const ResultTab = () => {
       
       <ScrollView 
         contentContainerStyle={styles.contentContainer}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#6f8f38']} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#1ec8a5']} />}
       >
         {/* Thống kê tổng quan */}
         <View style={styles.statsRow}>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#6f8f38',
+    color: '#1ec8a5',
     marginBottom: 4,
   },
 

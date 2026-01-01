@@ -11,7 +11,7 @@ const ProfileScreen = ({ navigation }: any) => {
   if (fetching) {
     return (
       <View style={[styles.container, styles.center]}>
-        <ActivityIndicator size="large" color="#00C269" />
+        <ActivityIndicator size="large" color="#1ec8a5" />
         <Text style={{ marginTop: 10, color: '#666' }}>
           Đang tải hồ sơ...
         </Text>
@@ -39,7 +39,7 @@ const ProfileScreen = ({ navigation }: any) => {
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Họ và tên</Text>
               <View style={styles.inputWrapper}>
-                <Feather name="user" size={18} color="#00C269" />
+                <Feather name="user" size={18} color="#1ec8a5" />
                 <TextInput
                   style={styles.input}
                   value={formData.hoVaTen}
@@ -53,7 +53,7 @@ const ProfileScreen = ({ navigation }: any) => {
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Số điện thoại</Text>
               <View style={styles.inputWrapper}>
-                <Feather name="phone" size={18} color="#00C269" />
+                <Feather name="phone" size={18} color="#1ec8a5" />
                 <TextInput
                   style={styles.input}
                   keyboardType="phone-pad"
@@ -68,7 +68,7 @@ const ProfileScreen = ({ navigation }: any) => {
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Ngày sinh (YYYY-MM-DD)</Text>
               <View style={styles.inputWrapper}>
-                <Feather name="calendar" size={18} color="#00C269" />
+                <Feather name="calendar" size={18} color="#1ec8a5" />
                 <TextInput
                   style={styles.input}
                   placeholder="1990-01-01"
@@ -126,7 +126,7 @@ const ProfileScreen = ({ navigation }: any) => {
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Địa chỉ</Text>
               <View style={styles.inputWrapper}>
-                <Feather name="map-pin" size={18} color="#00C269" />
+                <Feather name="map-pin" size={18} color="#1ec8a5" />
                 <TextInput
                   style={styles.input}
                   placeholder="Nhập địa chỉ..."
@@ -147,7 +147,7 @@ const ProfileScreen = ({ navigation }: any) => {
               <View style={[styles.inputContainer, { flex: 1, marginRight: 10 }]}>
                 <Text style={styles.label}>Chiều cao (cm)</Text>
                 <View style={styles.inputWrapper}>
-                  <FontAwesome5 name="ruler-vertical" size={16} color="#00C269" />
+                  <FontAwesome5 name="ruler-vertical" size={16} color="#1ec8a5" />
                   <TextInput style={styles.input} keyboardType="numeric" value={formData.chieuCao} onChangeText={(t) => setFormData({ ...formData, chieuCao: t })}/>
                 </View>
               </View>
@@ -155,7 +155,7 @@ const ProfileScreen = ({ navigation }: any) => {
               <View style={[styles.inputContainer, { flex: 1 }]}>
                 <Text style={styles.label}>Cân nặng (kg)</Text>
                 <View style={styles.inputWrapper}>
-                  <FontAwesome5 name="weight" size={16} color="#00C269" />
+                  <FontAwesome5 name="weight" size={16} color="#1ec8a5" />
                   <TextInput style={styles.input} keyboardType="numeric" value={formData.canNang} onChangeText={(t) => setFormData({ ...formData, canNang: t })}/>
                 </View>
               </View>
@@ -164,7 +164,7 @@ const ProfileScreen = ({ navigation }: any) => {
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Tiền sử chấn thương</Text>
               <View style={styles.inputWrapper}>
-                <FontAwesome5 name="file-medical-alt"size={16} color="#00C269" />
+                <FontAwesome5 name="file-medical-alt"size={16} color="#1ec8a5" />
                 <TextInput style={styles.input} placeholder="Chưa có thông tin" value={formData.tienSuChanThuong} onChangeText={(t) => setFormData({...formData, tienSuChanThuong: t,})}/>
               </View>
             </View>
@@ -172,7 +172,7 @@ const ProfileScreen = ({ navigation }: any) => {
             <View style={styles.inputContainer}>
               <Text style={styles.label}>Tình trạng hiện tại</Text>
               <View style={[ styles.inputWrapper, { height: 'auto', paddingVertical: 12 },]}>
-                <FontAwesome5 name="heartbeat" size={16} color="#00C269" style={{ marginTop: 4 }}/>
+                <FontAwesome5 name="heartbeat" size={16} color="#1ec8a5" style={{ marginTop: 4 }}/>
                 <TextInput style={[ styles.input, { height: 60, textAlignVertical: 'top' }, ]} multiline value={formData.tinhTrangHienTai} onChangeText={(t) => setFormData({...formData, tinhTrangHienTai: t,})}/>
               </View>
             </View>
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#3f5f18',
+    color: '#1ec8a5',
     marginBottom: 15,
     borderBottomWidth: 2,
     borderBottomColor: '#eef6e8',
@@ -277,8 +277,8 @@ const styles = StyleSheet.create({
   },
 
   genderActive: {
-    backgroundColor: '#00C269',
-    borderColor: '#00C269',
+    backgroundColor: '#1ec8a5',
+    borderColor: '#1ec8a5',
   },
 
   genderText: {
@@ -291,11 +291,11 @@ const styles = StyleSheet.create({
     height: 56,
     marginTop: 20,
     borderRadius: 12,
-    backgroundColor: '#00C269',
+    backgroundColor: '#1ec8a5',
     justifyContent: 'center',
     alignItems: 'center',
 
-    shadowColor: '#00C269',
+    shadowColor: '#1ec8a5',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 10,

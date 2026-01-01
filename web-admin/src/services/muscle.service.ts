@@ -1,4 +1,3 @@
-// FILE: src/services/muscle.service.ts
 import axiosClient from '../utils/axiosClient';
 import type { CreateNhomCoDTO, NhomCo } from '../types/muscle.type';
 

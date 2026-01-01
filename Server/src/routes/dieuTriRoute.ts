@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { createMucTieu } from '../controllers/mucTieuController';
 import { createLoTrinh } from '../controllers/loTrinhController';
 
-import { createKeHoach, addBaiTapToKeHoach, getBaiTapHomNay } from '../controllers/keHoachController'; 
+import { createKeHoach, addBaiTapToKeHoach, getBaiTapHomNay, completeKeHoach } from '../controllers/keHoachController'; 
 
 import { authenticateToken } from '../middlewares/authMiddleware';
 
@@ -20,5 +20,7 @@ router.post('/kehoach/them-bai-tap', authenticateToken, addBaiTapToKeHoach);
 
 // Lấy bài tập hôm nay
 router.get('/bai-tap-hom-nay', authenticateToken, getBaiTapHomNay);
+
+router.post('/kehoach/hoan-thanh', authenticateToken, completeKeHoach);
 
 export default router;

@@ -57,7 +57,7 @@ const ForgotPasswordScreen = ({ navigation }: any) => {
 
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
             <View style={styles.guideBox}>
-                <Feather name="info" size={20} color="#6f8f38" />
+                <Feather name="info" size={20} color="#1ec8a5" />
                 <Text style={styles.guideText}>
                     Vui lòng nhập thông tin tài khoản đã đăng ký để xác minh danh tính và đặt lại mật khẩu mới.
                 </Text>
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   guideText: {
     flex: 1,
     marginLeft: 10,
-    color: '#166534',
+    color: '#1ec8a5',
     fontSize: 14,
     lineHeight: 20,
   },
@@ -202,13 +202,13 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: '#00C269',
+    backgroundColor: '#1ec8a5',
     borderRadius: 12,
     height: 56,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
-    shadowColor: '#00C269',
+    shadowColor: '#1ec8a5',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 10,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Dumbbell, Edit, Trash2, Plus, Inbox } from 'lucide-react';
 import { useMuscle } from '../hooks/useMuscleManager'; 
 import type { NhomCo, CreateNhomCoDTO } from '../types/muscle.type';

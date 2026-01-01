@@ -157,13 +157,13 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        backgroundColor: '#00C269',
+        backgroundColor: '#1ec8a5',
         borderRadius: 12,
         height: 56,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 30,
-        shadowColor: '#00C269',
+        shadowColor: '#1ec8a5',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 10,

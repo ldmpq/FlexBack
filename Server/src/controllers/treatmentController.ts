@@ -36,7 +36,17 @@ export const createMucTieu = async (req: Request, res: Response) => {
     }
 };
 
-// 3. Tạo lộ trình
+export const deleteMucTieu = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        await TreatmentService.deleteMucTieu(Number(id));
+        res.status(200).json({ message: "Xóa thành công" });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi xóa mục tiêu", error });
+    }
+};
+
+// 3. Tạo và xóa lộ trình
 export const createLoTrinh = async (req: Request, res: Response) => {
     try {
         const newItem = await TreatmentService.createLoTrinh(req.body);
@@ -46,6 +56,17 @@ export const createLoTrinh = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Lỗi tạo lộ trình" });
     }
 };
+
+export const deleteLoTrinh = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        await TreatmentService.deleteLoTrinh(Number(id));
+        res.status(200).json({ message: "Xóa thành công" });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi xóa lộ trình", error });
+    }
+};
+
 
 // 4. Lấy danh sách bài tập
 export const getExercises = async (req: Request, res: Response) => {

@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Activity, FileText, LogOut, User, UserCheck, Menu } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, FileText, LogOut, User, UserCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 interface UserInfo {

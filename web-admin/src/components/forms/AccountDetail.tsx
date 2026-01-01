@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Mail, Phone, Home, Calendar, BadgeInfo, Briefcase, Shield, Stethoscope, UserCheck } from 'lucide-react';
+import { X, Mail, Phone, Home, Calendar, BadgeInfo, Briefcase } from 'lucide-react';
 
 interface AccountDetailModalProps {
   isOpen: boolean;
