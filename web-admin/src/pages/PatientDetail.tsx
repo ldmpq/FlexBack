@@ -1,14 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Phone, MapPin, Calendar, FileText, PlusCircle, X, CheckCircle } from 'lucide-react';
+import { ArrowLeft, User, Phone, MapPin, Calendar, FileText, PlusCircle, X } from 'lucide-react';
 import { usePatientDetailManager } from '../hooks/usePatientDetailManager';
+import CreateRecordForm from '../components/forms/CreateRecordForm';
 
 const PatientDetail: React.FC = () => {
   const navigate = useNavigate();
-  
+
+  const currentUser = JSON.parse(localStorage.getItem('user_info') || '{}');
+  const isDoctor = currentUser?.loaiTaiKhoan === 'BAC_SI';
+
   // Lấy logic từ Hook
   const { 
-    patient, loading, listBacSi, doctorsLoading, // Lấy thêm doctorsLoading
+    patient, loading, listBacSi, doctorsLoading,
     showModal, setShowModal,
     formData, setFormData, submitting,
     handleCreateHoSo, openCreateModal
@@ -57,12 +61,15 @@ const PatientDetail: React.FC = () => {
         <h2 className="text-xl font-bold text-gray-800 flex items-center">
           <FileText className="mr-2 text-blue-600" /> Hồ sơ bệnh án
         </h2>
-        <button 
-          onClick={openCreateModal}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition shadow"
-        >
-          <PlusCircle size={18} /> Tạo hồ sơ mới
-        </button>
+
+        {isDoctor && (
+          <button 
+            onClick={openCreateModal}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition shadow"
+          >
+            <PlusCircle size={18} /> Tạo hồ sơ mới
+          </button>
+        )}
       </div>
 
       <div className="grid gap-4">
@@ -102,64 +109,18 @@ const PatientDetail: React.FC = () => {
         )}
       </div>
 
-      {/* MODAL TẠO HỒ SƠ */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="bg-blue-600 p-4 flex justify-between items-center text-white">
-              <h3 className="font-bold text-lg flex items-center gap-2">Tạo Hồ Sơ Mới</h3>
-              <button onClick={() => setShowModal(false)}><X size={20}/></button>
-            </div>
-            
-            <form onSubmit={handleCreateHoSo} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Chẩn đoán bệnh <span className="text-red-500">*</span></label>
-                <textarea required className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" rows={3}
-                  placeholder="Nhập chẩn đoán..." value={formData.chanDoan}
-                  onChange={e => setFormData({...formData, chanDoan: e.target.value})}
-                ></textarea>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tình trạng hiện tại</label>
-                <input type="text" className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  value={formData.trangThaiHienTai} onChange={e => setFormData({...formData, trangThaiHienTai: e.target.value})} />
-              </div>
-
-              {/* SELECT BÁC SĨ*/}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Chọn Bác sĩ</label>
-                <select 
-                  className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 bg-white"
-                  value={formData.maBacSi} 
-                  onChange={e => setFormData({...formData, maBacSi: e.target.value})} 
-                >
-                  <option value="">-- Chưa phân công --</option>
-                  
-                  {doctorsLoading ? (
-                    <option disabled>Đang tải danh sách...</option>
-                  ) : listBacSi && listBacSi.length > 0 ? (
-                    listBacSi.map((bs: any) => (
-                      <option key={bs.maBacSi} value={bs.maBacSi}>
-                        {bs.TaiKhoan?.hoVaTen || bs.hoVaTen || `Bác sĩ #${bs.maBacSi}`} {bs.chuyenKhoa ? `- ${bs.chuyenKhoa}` : ''}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>-- Không tìm thấy bác sĩ nào --</option>
-                  )}
-                </select>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t">
-                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 border rounded-lg hover:bg-gray-50 text-gray-700">Hủy</button>
-                <button type="submit" disabled={submitting} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                  {submitting ? 'Đang lưu...' : <><CheckCircle size={18}/> Lưu hồ sơ</>}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* TẠO HỒ SƠ */}
+      {isDoctor && (
+        <CreateRecordForm
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleCreateHoSo}
+          formData={formData}
+          setFormData={setFormData}
+          submitting={submitting}
+          listBacSi={listBacSi}
+          doctorsLoading={doctorsLoading}
+        />)}
     </div>
   );
 };

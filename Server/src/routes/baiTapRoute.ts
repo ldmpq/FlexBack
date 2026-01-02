@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getExercises, getNhomCo, createExercise, deleteExercise } from '../controllers/baiTapController';
+import { getExercises, getNhomCo, createExercise, deleteExercise, updateExercise } from '../controllers/baiTapController';
 import multer from 'multer';
 import path from 'path';
 
@@ -24,5 +24,7 @@ router.get('/nhom-co', getNhomCo);
 router.get('/', getExercises);
 // DELETE bài tập
 router.delete('/:id', deleteExercise);
+// PUT cập nhật bài tập (KÈM UPLOAD VIDEO MỚI NẾU CÓ)
+router.put('/:id', upload.single('videoFile'), updateExercise);
 
 export default router;

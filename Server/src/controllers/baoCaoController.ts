@@ -31,3 +31,37 @@ export const getMyReports = async (req: Request, res: Response) => {
     res.status(400).json({ message: "Lỗi lấy lịch sử báo cáo" });
   }
 };
+
+// [Admin] Lấy tất cả báo cáo
+export const getAllReports = async (req: Request, res: Response) => {
+  try {
+    const data = await BaoCaoService.getAllReports();
+    res.status(200).json({ data });
+  } catch (error) {
+    console.error("Lỗi lấy danh sách báo cáo:", error);
+    res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
+// [Admin] Lấy chi tiết
+export const getReportDetail = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const data = await BaoCaoService.getReportDetail(Number(id));
+    if (!data) return res.status(404).json({ message: "Không tìm thấy" });
+    res.status(200).json({ data });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
+// [Admin] Gửi phản hồi
+export const sendFeedback = async (req: Request, res: Response) => {
+  try {
+    const { maHoSo, chiTiet } = req.body;
+    await BaoCaoService.createFeedback(Number(maHoSo), chiTiet);
+    res.status(201).json({ message: "Gửi phản hồi thành công" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi gửi phản hồi" });
+  }
+};

@@ -1,6 +1,6 @@
 // src/routes/authRoutes.ts
 import { Router } from 'express';
-import { registerBenhNhan, login, getMe, register, changePassword, resetPassword } from '../controllers/authController';
+import { registerBenhNhan, login, getMe, register, changePassword, resetPassword, updateProfile } from '../controllers/authController';
 
 import { authenticateToken } from '../middlewares/authMiddleware';
 
@@ -18,5 +18,7 @@ router.get('/me', authenticateToken, getMe);
 router.put('/change-password', authenticateToken, changePassword);
 
 router.post('/forgot-password', resetPassword);
+
+router.put('/update-profile', authenticateToken, updateProfile);
 
 export default router;

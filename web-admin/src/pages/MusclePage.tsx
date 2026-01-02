@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dumbbell, Edit, Trash2, Plus, Inbox } from 'lucide-react';
+import { BicepsFlexed, Edit, Trash2, Plus, Inbox } from 'lucide-react';
 import { useMuscle } from '../hooks/useMuscleManager'; 
 import type { NhomCo, CreateNhomCoDTO } from '../types/muscle.type';
 import SearchBar from '../components/SearchBar'; 
@@ -72,7 +72,7 @@ const MusclePage = () => {
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            <Dumbbell className="text-blue-600"/> Quản lý Nhóm Cơ
+            <BicepsFlexed className="text-blue-600"/> Quản lý Nhóm Cơ
           </h2>
           <p className="text-gray-500 text-sm mt-1">Danh sách các nhóm cơ ({filteredData.length})</p>
         </div>
@@ -104,7 +104,7 @@ const MusclePage = () => {
                   filteredData.map((item) => (
                     <tr key={item.maNhomCo} className="hover:bg-blue-50/50 transition">
                       <td className="p-4 font-bold text-gray-800 flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><Dumbbell size={16} /></div>
+                          <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><BicepsFlexed size={16} /></div>
                           {item.tenNhomCo}
                       </td>
                       <td className="p-4 text-sm text-gray-600 max-w-md truncate">

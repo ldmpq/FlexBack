@@ -48,3 +48,24 @@ export const deleteExercise = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const updateExercise = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    const uploadedFile = req.file; // Lấy file mới nếu người dùng upload lại video/ảnh
+
+    // Gọi Service để xử lý update
+    const updatedExercise = await BaiTapService.updateExercise(id, req.body, uploadedFile);
+
+    res.status(200).json({
+      message: 'Cập nhật bài tập thành công!',
+      data: updatedExercise
+    });
+  } catch (error: any) {
+    console.error("Lỗi cập nhật:", error);
+    if (error.message === 'Bài tập không tồn tại') {
+        return res.status(404).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Lỗi server khi cập nhật bài tập' });
+  }
+};

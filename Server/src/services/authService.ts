@@ -226,4 +226,32 @@ export class AuthService {
     const { matKhau, ...userInfo } = user;
     return userInfo;
   }
+
+  static async updateProfile(userId: number, data: any) {
+    const updateData: any = {
+      hoVaTen: data.hoVaTen,
+      email: data.email,
+      soDienThoai: data.soDienThoai,
+    };
+
+    // Gửi mật khẩu mới lên thì mới cập nhật và mã hóa (nếu có)
+    if (data.matKhau && data.matKhau.trim() !== "") {
+      const salt = await bcrypt.genSalt(10);
+      updateData.matKhau = await bcrypt.hash(data.matKhau, salt);
+    }
+
+    // Cập nhật bảng TaiKhoan
+    return await prisma.taiKhoan.update({
+      where: { maTaiKhoan: userId },
+      data: updateData,
+      select: {
+        maTaiKhoan: true,
+        tenTaiKhoan: true,
+        hoVaTen: true,
+        email: true,
+        soDienThoai: true,
+        loaiTaiKhoan: true
+      }
+    });
+  }
 }

@@ -67,4 +67,85 @@ export class BaoCaoService {
 
     return reports;
   }
+
+  // [Admin] Lấy danh sách tất cả báo cáo (kèm tên bệnh nhân)
+  static async getAllReports() {
+    return await prisma.baoCaoLuyenTap.findMany({
+      orderBy: { ngayLuyenTap: 'desc' },
+      include: {
+        KeHoachDieuTri: {
+          select: {
+            tenKeHoach: true,
+            LoTrinhDieuTri: {
+              select: {
+                tenLoTrinh: true,
+                MucTieuDieuTri: {
+                  select: {
+                    HoSoBenhAn: {
+                      select: {
+                        BenhNhan: {
+                          select: {
+                            TaiKhoan: { select: { hoVaTen: true } }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // [Admin] Lấy chi tiết 1 báo cáo
+  static async getReportDetail(id: number) {
+    return await prisma.baoCaoLuyenTap.findUnique({
+      where: { maBaoCao: id },
+      include: {
+        KeHoachDieuTri: {
+          include: {
+            ChiTietKeHoach: {
+              include: {
+                BaiTapPhucHoi: {
+                  select: { tenBaiTap: true }
+                }
+              }
+            },
+            LoTrinhDieuTri: {
+            include: {
+              MucTieuDieuTri: {
+                include: {
+                  HoSoBenhAn: {
+                    include: {
+                      BenhNhan: {
+                        include: {
+                          TaiKhoan: { select: { hoVaTen: true } }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+  // [Admin] Gửi phản hồi (Tạo đánh giá tiến triển)
+  static async createFeedback(maHoSo: number, chiTiet: string) {
+    return await prisma.danhGiaTienTrien.create({
+      data: {
+        maHoSo: maHoSo,
+        chiTiet: chiTiet,
+        ngayDanhGia: new Date(),
+        thangDiem: null
+      }
+    });
+  }
 }

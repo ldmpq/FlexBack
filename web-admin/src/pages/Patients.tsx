@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Eye, User } from 'lucide-react';
+import { Search, Eye, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import { usePatientManager } from '../hooks/usePatientManager';
@@ -20,7 +20,7 @@ const Patients: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <User className="text-blue-600" /> Quản lí Bệnh nhân
+          <Users className="text-blue-600" /> Quản lí Bệnh nhân
         </h2>
           <p className="text-gray-500">Danh sách bệnh nhân đang điều trị trong hệ thống</p>
         </div>

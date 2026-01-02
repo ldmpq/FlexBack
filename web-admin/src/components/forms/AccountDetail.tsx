@@ -11,7 +11,6 @@ interface AccountDetailModalProps {
 const AccountDetailModal: React.FC<AccountDetailModalProps> = ({ isOpen, onClose, account, isLoading }) => {
   if (!isOpen || !account) return null;
 
-  // Helper render role riêng cho modal
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'ADMIN': return 'Quản trị viên';
@@ -55,18 +54,18 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({ isOpen, onClose
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
               <Home size={18} className="text-green-500" />
               <span className="text-gray-700 text-sm">{account.diaChi || 'Chưa có'}</span>
-            </div>
+            </div>           
+          </div>
+
+          {/* Thông tin chuyên môn */}
+          <div className="space-y-3 pt-2 border-t">
+            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Thông tin chuyên môn</h4>
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
               <Calendar size={18} className="text-purple-500" />
               <span className="text-gray-700 text-sm">
                 Tham gia: {new Date(account.ngayTaoTaiKhoan).toLocaleDateString('vi-VN')}
               </span>
             </div>
-          </div>
-
-          {/* Thông tin chuyên môn */}
-          <div className="space-y-3 pt-2 border-t">
-            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Thông tin chuyên môn</h4>
             {isLoading ? (
               <p className="text-sm text-center italic text-gray-400">Đang tải...</p>
             ) : (

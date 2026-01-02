@@ -82,3 +82,30 @@ export const resetPassword = async (req: Request, res: Response) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+// Server/src/controllers/authController.ts
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    console.log("Token decoded user:", (req as any).user);
+
+    const userPayload = (req as any).user;
+    const userId = userPayload?.maTaiKhoan || userPayload?.id || userPayload?.userId;
+
+    if (!userId) {
+      console.error("Không tìm thấy ID trong token");
+      return res.status(401).json({ message: "Phiên đăng nhập không hợp lệ" });
+    }
+
+    const updatedUser = await AuthService.updateProfile(Number(userId), req.body);
+    
+    res.status(200).json({ 
+      message: "Cập nhật thành công", 
+      data: updatedUser 
+    });
+
+  } catch (error) {
+    console.error("Lỗi cập nhật profile:", error);
+    res.status(500).json({ message: "Lỗi hệ thống khi cập nhật thông tin" });
+  }
+};

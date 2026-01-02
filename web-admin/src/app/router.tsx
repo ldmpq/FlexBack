@@ -8,6 +8,9 @@ import Exercises from '../pages/ExercisesLib';
 import TreatmentManager from '../pages/TreatmentManager';
 import Accounts from '../pages/AccountList';
 import MusclePage from '../pages/MusclePage';
+import ReportsList from '../pages/ReportsList';
+import ReportDetail from '../pages/ReportDetail';
+import PatientList from '../pages/PatientList';
 
 const AppRouter = () => {
   return (
@@ -21,8 +24,10 @@ const AppRouter = () => {
         <Route path="plans" element={<TreatmentManager />} />
         <Route path="muscles" element={<MusclePage />} />
         <Route path="exercises" element={<Exercises />} />
+        <Route path="reports" element={<ReportsList />} />
+        <Route path="reports/:id" element={<ReportDetail />} />
         <Route path="accounts" element={<Accounts />} />
-
+        <Route path="assignments" element={<PatientList />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/login" replace />} />
