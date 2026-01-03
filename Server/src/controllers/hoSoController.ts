@@ -30,3 +30,12 @@ export const getListBacSi = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Lỗi lấy danh sách bác sĩ' });
   }
 };
+
+export const getListKTV = async (req: Request, res: Response) => {
+  try {
+    const data = await HoSoService.getListKTV();
+    res.status(200).json({ data });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi lấy danh sách KTV' });
+  }
+};

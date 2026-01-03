@@ -22,6 +22,16 @@ export interface ProgramData {
   ngayLapHoSo: string;
   chanDoan: string;
   MucTieuDieuTri: MucTieu[];
+  KyThuatVien?: {
+    maKyThuatVien: number;
+    TaiKhoan: { hoVaTen: string };
+  } | null;
+  PhanCong?: {
+    maKyThuatVien: number;
+    KyThuatVien: {
+      TaiKhoan: { hoVaTen: string };
+    };
+  }[];
 }
 
 export interface ExerciseDetail {

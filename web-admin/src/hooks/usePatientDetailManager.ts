@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { patientDetailService } from '../services/patientDetail.service';
-import type { PatientDetailData, DoctorOption, CreateHoSoForm } from '../types/patientDetail.type';
+import type { PatientDetailData, DoctorOption, KtvOption, CreateHoSoForm } from '../types/patientDetail.type';
 
 export const usePatientDetailManager = () => {
   const { id } = useParams<{ id: string }>(); // Lấy ID từ URL
@@ -9,8 +9,11 @@ export const usePatientDetailManager = () => {
   // Data State
   const [patient, setPatient] = useState<PatientDetailData | null>(null);
   const [listBacSi, setListBacSi] = useState<DoctorOption[]>([]);
+  const [listKTV, setListKTV] = useState<KtvOption[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [doctorsLoading, setDoctorsLoading] = useState(false);
+  const [ktvsLoading, setKtvsLoading] = useState(false);
 
   // UI & Form State
   const [showModal, setShowModal] = useState(false);
@@ -18,7 +21,8 @@ export const usePatientDetailManager = () => {
   const [formData, setFormData] = useState<CreateHoSoForm>({
     chanDoan: '',
     trangThaiHienTai: '',
-    maBacSi: ''
+    maBacSi: '',
+    maKyThuatVien: ''
   });
 
   // --- API CALLS ---
@@ -38,16 +42,29 @@ export const usePatientDetailManager = () => {
 
   const fetchDoctors = async () => {
     try {
-      // Chỉ gọi API nếu list đang rỗng để tiết kiệm request
       if (listBacSi.length === 0) {
-        setDoctorsLoading(true); // Bắt đầu loading
+        setDoctorsLoading(true);
         const data = await patientDetailService.getDoctors();
         setListBacSi(data);
       }
     } catch (error) {
       console.error("Lỗi lấy danh sách bác sĩ:", error);
     } finally {
-      setDoctorsLoading(false); // Kết thúc loading
+      setDoctorsLoading(false);
+    }
+  };
+
+  const fetchKTVs = async () => {
+    try {
+      if (listKTV.length === 0) {
+        setKtvsLoading(true);
+        const data = await patientDetailService.getKTVs(); 
+        setListKTV(data);
+      }
+    } catch (error) {
+      console.error("Lỗi lấy danh sách KTV:", error);
+    } finally {
+      setKtvsLoading(false);
     }
   };
 
@@ -55,8 +72,6 @@ export const usePatientDetailManager = () => {
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
-
-  // --- HANDLERS ---
 
   const handleCreateHoSo = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +88,7 @@ export const usePatientDetailManager = () => {
       await patientDetailService.createHoSo({
         maBenhNhan,
         maBacSi: formData.maBacSi,
+        maKyThuatVien: formData.maKyThuatVien,
         chanDoan: formData.chanDoan,
         trangThaiHienTai: formData.trangThaiHienTai
       });
@@ -89,14 +105,14 @@ export const usePatientDetailManager = () => {
     }
   };
 
-  // Helpers để mở modal và load bác sĩ cùng lúc
   const openCreateModal = () => {
     setShowModal(true);
     fetchDoctors();
+    fetchKTVs();
   };
 
   return {
-    patient, loading, listBacSi, doctorsLoading, // Export thêm doctorsLoading
+    patient, loading, listBacSi, listKTV, doctorsLoading, ktvsLoading,
     showModal, setShowModal, 
     formData, setFormData, submitting,
     handleCreateHoSo, openCreateModal

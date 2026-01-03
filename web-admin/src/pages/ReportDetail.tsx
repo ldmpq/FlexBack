@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Calendar, MessageCircle, Send, PlayCircle, Clock, Activity, Dumbbell, List } from 'lucide-react';
+import { ArrowLeft, User, Calendar, MessageCircle, Send, PlayCircle, Clock, Activity, Dumbbell, List, Star } from 'lucide-react';
 import axiosClient from '../utils/axiosClient';
 
 const ReportDetail = () => {
@@ -11,6 +11,7 @@ const ReportDetail = () => {
   const [loading, setLoading] = useState(true);
   
   const [feedback, setFeedback] = useState('');
+  const [score, setScore] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -45,10 +46,12 @@ const ReportDetail = () => {
     try {
       await axiosClient.post('/baocao/feedback', {
         maHoSo: maHoSo,
-        chiTiet: `[Phản hồi Báo cáo #${report.maBaoCao}]: ${feedback}`
+        chiTiet: `[Phản hồi Báo cáo #${report.maBaoCao}]: ${feedback}`,
+        thangDiem: score ? parseFloat(score) : null
       });
       alert("Đã gửi phản hồi thành công!");
       setFeedback("");
+      setScore("");
     } catch (error) {
       alert("Lỗi khi gửi phản hồi.");
     } finally {
@@ -89,7 +92,7 @@ const ReportDetail = () => {
                 </h1>
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                     <span className="flex items-center gap-1"><User size={14} className="text-blue-500"/> {getPatientName()}</span>
-                    <span className="flex items-center gap-1"><Calendar size={14} className="text-orange-500"/> {new Date(report.ngayLuyenTap).toLocaleString('vi-VN')}</span>
+                    <span className="flex items-center gap-1"><Calendar size={14} className="text-orange-500"/> {new Date(report.ngayTao || report.ngayLuyenTap).toLocaleString('vi-VN')}</span>
                     <span className="flex items-center gap-1"><Clock size={14} className="text-green-500"/> {report.thoiLuong} phút</span>
                 </div>
 
@@ -145,20 +148,6 @@ const ReportDetail = () => {
                   </div>
                 )}
             </div>
-
-            {/* 3. Video (Nếu có) */}
-            {report.videoKetQua && (
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                    <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                        <PlayCircle size={20} className="text-purple-600"/> Video quá trình tập
-                    </h3>
-                    <div className="aspect-video bg-black rounded-xl overflow-hidden relative group flex justify-center items-center">
-                        <video controls className="w-full h-full object-contain" src={report.videoKetQua}>
-                            Trình duyệt không hỗ trợ thẻ video.
-                        </video>
-                    </div>
-                </div>
-            )}
         </div>
 
         {/* === CỘT PHẢI (NHỎ) === */}
@@ -171,12 +160,6 @@ const ReportDetail = () => {
                 <div className="text-xs text-gray-400">Chỉ số do bệnh nhân tự đánh giá</div>
                 
                 <div className="mt-4 pt-4 border-t grid grid-cols-2 gap-2 text-left">
-                    <div>
-                        <div className="text-xs text-gray-400">Lộ trình</div>
-                        <div className="font-semibold text-gray-700 truncate text-sm" title={getPlanInfo()}>
-                            {getPlanInfo()}
-                        </div>
-                    </div>
                      <div>
                         <div className="text-xs text-gray-400">ID Báo cáo</div>
                         <div className="font-semibold text-gray-700 text-sm">#{report.maBaoCao}</div>
@@ -191,6 +174,22 @@ const ReportDetail = () => {
                 <p className="text-xs text-gray-500 mb-3">
                     Phản hồi này sẽ được lưu vào <strong>Đánh giá tiến triển</strong> của hồ sơ bệnh án.
                 </p>
+
+                <div className="mb-3">
+                    <label className="text-xs font-bold text-gray-600 mb-1 flex items-center gap-1">
+                        <Star size={12} className="text-yellow-500 fill-yellow-500"/> Chấm điểm tiến triển (0-10)
+                    </label>
+                    <input 
+                        type="number"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                        placeholder="VD: 8.5"
+                        value={score}
+                        onChange={(e) => setScore(e.target.value)}
+                        className="w-full p-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-100 text-sm font-medium"
+                    />
+                </div>
                 
                 <textarea 
                     className="w-full p-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-100 min-h-[120px] text-sm mb-3 resize-none"

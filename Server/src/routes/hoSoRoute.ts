@@ -1,6 +1,6 @@
 // src/routes/hoSoRoutes.ts
 import { Router } from 'express';
-import { createHoSoBenhAn, getListBacSi } from '../controllers/hoSoController';
+import { createHoSoBenhAn, getListBacSi, getListKTV } from '../controllers/hoSoController';
 import { authenticateToken } from '../middlewares/authMiddleware';
 
 const router = Router();
@@ -9,5 +9,6 @@ const router = Router();
 // Flow: Client gọi -> Check Token -> Controller xử lý
 router.post('/', authenticateToken, createHoSoBenhAn);
 router.get('/bac-si', authenticateToken, getListBacSi);
+router.get('/ky-thuat-vien', authenticateToken, getListKTV);
 
 export default router;

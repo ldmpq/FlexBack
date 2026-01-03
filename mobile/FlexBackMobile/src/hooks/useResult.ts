@@ -28,14 +28,17 @@ export const useResult = () => {
     fetchReports();
   };
 
-  // Tính thống kê (đơn giản)
+  // Tính thống kê mức độ đau
   const stats = {
     totalSessions: reports.length,
     totalDuration: reports.reduce((sum, item) => sum + (item.thoiLuong || 0), 0),
     avgPain: reports.length > 0 
-      ? (reports.reduce((sum, item) => sum + (item.mucDoDau || 0), 0) / reports.length).toFixed(1) 
-      : 0
-  };
+      ? Math.min(
+          (reports.reduce((sum, item) => sum + (item.mucDoDau || 0), 0) / reports.length), 
+          10
+        ).toFixed(1) 
+      : "0.0"
+};
 
   return {
     reports,

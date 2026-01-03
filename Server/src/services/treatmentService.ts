@@ -100,4 +100,24 @@ export class TreatmentService {
     static async saveRouteExercises(maLoTrinh: number, exercises: any[]) {
         return TreatmentModel.saveRouteExercises(maLoTrinh, exercises);
     }
+
+    static async assignTechnician(maHoSo: number, maKyThuatVien: number) {
+    // Bước 1: Kiểm tra xem hồ sơ này đã có KTV nào đang phụ trách chưa
+    const currentAssignment = await TreatmentModel.getCurrentAssignment(maHoSo);
+
+    // Bước 2: Xử lý logic
+    if (currentAssignment) {
+        // TH1: Đã có người phụ trách
+        if (currentAssignment.maKyThuatVien === maKyThuatVien) {
+            return { message: "KTV này đã đang phụ trách hồ sơ này rồi!" };
+        }        
+        // TH2: Muốn đổi KTV (Kết thúc người cũ -> Thêm người mới)
+        await TreatmentModel.endAssignment(currentAssignment.maPhanCong);      
+        // Hoặc báo lỗi để Admin biết
+        throw new Error("Hồ sơ này đang được phụ trách bởi KTV khác. Vui lòng kết thúc phân công cũ trước!");
+    }
+
+    // Bước 3: Nếu chưa có ai -> Tạo phân công mới
+    return await TreatmentModel.assignTechnicianToProfile(maHoSo, maKyThuatVien);
+}
 }

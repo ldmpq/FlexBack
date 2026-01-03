@@ -58,8 +58,8 @@ export const getReportDetail = async (req: Request, res: Response) => {
 // [Admin] Gửi phản hồi
 export const sendFeedback = async (req: Request, res: Response) => {
   try {
-    const { maHoSo, chiTiet } = req.body;
-    await BaoCaoService.createFeedback(Number(maHoSo), chiTiet);
+    const { maHoSo, chiTiet, thangDiem } = req.body;
+    await BaoCaoService.createFeedback(Number(maHoSo), chiTiet, thangDiem);
     res.status(201).json({ message: "Gửi phản hồi thành công" });
   } catch (error) {
     res.status(500).json({ message: "Lỗi gửi phản hồi" });

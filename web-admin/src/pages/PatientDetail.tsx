@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Phone, MapPin, Calendar, FileText, PlusCircle, X } from 'lucide-react';
+import { ArrowLeft, User, Phone, MapPin, Calendar, FileText, PlusCircle} from 'lucide-react';
 import { usePatientDetailManager } from '../hooks/usePatientDetailManager';
 import CreateRecordForm from '../components/forms/CreateRecordForm';
 
@@ -12,7 +12,7 @@ const PatientDetail: React.FC = () => {
 
   // Lấy logic từ Hook
   const { 
-    patient, loading, listBacSi, doctorsLoading,
+    patient, loading, listBacSi, listKTV, doctorsLoading,
     showModal, setShowModal,
     formData, setFormData, submitting,
     handleCreateHoSo, openCreateModal
@@ -90,6 +90,14 @@ const PatientDetail: React.FC = () => {
                   {hs.BacSi?.TaiKhoan?.hoVaTen || hs.BacSi?.hoVaTen || 'Chưa phân công'}
                 </span>
               </p>
+
+              <p className="text-sm text-gray-500 mt-1">
+                KTV phụ trách: <span className="font-semibold text-blue-600">
+                  {hs.PhanCong && hs.PhanCong.length > 0
+                    ? hs.PhanCong[0].KyThuatVien?.TaiKhoan?.hoVaTen
+                    : 'Chưa phân công'}
+                </span>
+              </p>
               
               {/* NÚT XEM LỘ TRÌNH*/}
               <div className="mt-4 pt-3 border-t flex justify-end gap-3">
@@ -119,6 +127,7 @@ const PatientDetail: React.FC = () => {
           setFormData={setFormData}
           submitting={submitting}
           listBacSi={listBacSi}
+          listKTV={listKTV}
           doctorsLoading={doctorsLoading}
         />)}
     </div>

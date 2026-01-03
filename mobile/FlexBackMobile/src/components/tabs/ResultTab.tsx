@@ -1,11 +1,39 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { Feather, FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useResult } from '../../hooks/useResult';
+import { useNavigation } from '@react-navigation/native';
+import axiosClient from '../../utils/axiosClient';
 
 const ResultTab = () => {
   const { reports, loading, refreshing, onRefresh, stats } = useResult();
+  const navigation = useNavigation<any>();
+
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await axiosClient.get('/thongbao/unread-count');
+        setUnreadCount(res.data.count); 
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchUnreadCount();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  // Hàm xử lý khi bấm vào nút phản hồi
+  const handleOpenFeedback = () => {
+    setUnreadCount(0); 
+    navigation.navigate('DoctorFeedback'); 
+  };
 
   const formatDate = (dateString: string) => {
     try {
@@ -33,6 +61,18 @@ const ResultTab = () => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Lịch sử & Kết quả</Text>
+        
+        <TouchableOpacity style={styles.feedbackButton} onPress={handleOpenFeedback}>
+          <MaterialCommunityIcons name="message-text-outline" size={24} color="#1ec8a5" />
+          
+          {unreadCount > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
       </View>
       
       <ScrollView 
@@ -119,16 +159,48 @@ const styles = StyleSheet.create({
   },
 
   headerContainer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
+  },
+
+  feedbackButton: {
+    padding: 8,
+    backgroundColor: '#f0fcf9',
+    borderRadius: 12,
+    position: 'relative',
+  },
+
+  badge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: '#ef4444',
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: '#fff',
+  },
+
+  badgeText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 'bold',
+    paddingHorizontal: 4,
   },
 
   contentContainer: {

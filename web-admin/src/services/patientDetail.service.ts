@@ -1,5 +1,5 @@
 import axiosClient from '../utils/axiosClient';
-import type { DoctorOption, PatientDetailData } from '../types/patientDetail.type';
+import type { DoctorOption, KtvOption, PatientDetailData } from '../types/patientDetail.type';
 
 export const patientDetailService = {
   // Lấy chi tiết bệnh nhân theo ID tài khoản
@@ -8,14 +8,19 @@ export const patientDetailService = {
     return res.data.data || res.data;
   },
 
-  // Lấy danh sách bác sĩ để gán hồ sơ
+  // Lấy danh sách bác sĩ, ktv để gán hồ sơ
   getDoctors: async (): Promise<DoctorOption[]> => {
     const res: any = await axiosClient.get('/hoso/bac-si'); 
     return res.data.data || res.data || [];
   },
 
+  getKTVs: async (): Promise<KtvOption[]>=> {
+    const res = await axiosClient.get('/hoso/ky-thuat-vien'); 
+    return res.data.data || res.data || []; 
+  },
+
   // Tạo hồ sơ bệnh án mới
-  createHoSo: async (payload: { maBenhNhan: number; maBacSi: string | number; chanDoan: string; trangThaiHienTai: string }) => {
+  createHoSo: async (payload: { maBenhNhan: number; maBacSi: string | number; maKyThuatVien?: string | number; chanDoan: string; trangThaiHienTai: string }) => {
     return axiosClient.post('/hoso', payload);
   }
 };

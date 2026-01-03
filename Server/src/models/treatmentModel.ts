@@ -122,28 +122,23 @@ export const TreatmentModel = {
 
   async deleteLoTrinh(maLoTrinh: number) {
     return await prisma.$transaction(async (tx) => {
-      // 1. Tìm danh sách các Kế hoạch thuộc Lộ trình này
       const keHoachList = await tx.keHoachDieuTri.findMany({
         where: { maLoTrinh: maLoTrinh },
-        select: { maKeHoach: true } // Chỉ cần lấy ID
+        select: { maKeHoach: true }
       });
 
       const keHoachIds = keHoachList.map(k => k.maKeHoach);
 
       if (keHoachIds.length > 0) {
-        // 2. QUAN TRỌNG: Xóa "Chi tiết kế hoạch" (Bài tập đã gán) trước!
-        // Đây là bước bạn đang thiếu gây ra lỗi 500
         await tx.chiTietKeHoach.deleteMany({
           where: { maKeHoach: { in: keHoachIds } }
         });
 
-        // 3. Sau đó mới được xóa "Kế hoạch điều trị"
         await tx.keHoachDieuTri.deleteMany({
           where: { maLoTrinh: maLoTrinh }
         });
       }
 
-      // 4. Cuối cùng xóa "Lộ trình"
       return await tx.loTrinhDieuTri.delete({
         where: { maLoTrinh: maLoTrinh }
       });
@@ -187,6 +182,32 @@ export const TreatmentModel = {
           }))
         });
       }
+    });
+  },
+
+  async getCurrentAssignment(maHoSo: number) {
+    return prisma.phanCong.findFirst({
+      where: {
+        maHoSo: maHoSo,
+        ngayKetThuc: null
+      }
+    });
+  },
+
+  async assignTechnicianToProfile(maHoSo: number, maKyThuatVien: number) {
+    return prisma.phanCong.create({
+      data: {
+        maHoSo: maHoSo,
+        maKyThuatVien: maKyThuatVien,
+        ngayBatDau: new Date(),
+        ngayKetThuc: null
+      }
+    });
+  },
+  async endAssignment(maPhanCong: number) {
+    return prisma.phanCong.update({
+      where: { maPhanCong },
+      data: { ngayKetThuc: new Date() }
     });
   }
 };

@@ -33,10 +33,18 @@ const ReportsList = () => {
   }, []);
 
   const getPatientName = (rp: any) => {
+    console.log("Kiểm tra Report:", rp); 
+
     try {
-      return rp?.KeHoachDieuTri?.LoTrinhDieuTri?.MucTieuDieuTri?.HoSoBenhAn?.BenhNhan?.TaiKhoan?.hoVaTen || 'Ẩn danh';
+      const path1 = rp?.KeHoachDieuTri?.LoTrinhDieuTri?.MucTieuDieuTri?.HoSoBenhAn?.BenhNhan?.TaiKhoan?.hoVaTen;
+      const path2 = rp?.KeHoachDieuTri?.LoTrinhDieuTri?.HoSoBenhAn?.BenhNhan?.TaiKhoan?.hoVaTen;
+
+      if (path1) return path1;
+      if (path2) return path2;
+      
+      return 'Ẩn danh (Mất kết nối dữ liệu)';
     } catch (e) {
-      return 'Lỗi dữ liệu';
+      return 'Lỗi cấu trúc';
     }
   };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { SafeAreaView} from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -55,7 +55,8 @@ const GuideTab = () => {
         {/* 4. Kiến thức */}
         <TouchableOpacity 
           style={styles.gridButton}
-          onPress={() => handleNavigate('KNOWLEDGE', 'Kiến thức Y khoa')}
+          onPress={() => Alert.alert('Thông báo','Chức năng đang trong quá trình phát triển 😄')}
+          // onPress={() => handleNavigate('KNOWLEDGE', 'Kiến thức Y khoa')}
         >
           <View style={[styles.iconCircle, { backgroundColor: '#fef3c7' }]}>
             <Feather name="book-open" size={28} color="#d97706" />

@@ -3,11 +3,11 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
 
-import authRoutes from './routes/authRoute';
+import authRoute from './routes/authRoute';
 import accountRoute from './routes/accountRoute';
 import dieuTriRoute from './routes/dieuTriRoute';
 import exerciseRoute from './routes/baiTapRoute';
-import hoSoRoutes from './routes/hoSoRoute';
+import hoSoRoute from './routes/hoSoRoute';
 import treatmentRoute from './routes/treatmentRoute';
 import keHoachRoute from './routes/dieuTriRoute';
 import userRoute from './routes/userRoute';
@@ -16,6 +16,7 @@ import thuocRoute from './routes/thuocRoute';
 import thucPhamRoute from './routes/thucPhamRoute';
 import nhomCoRoute from './routes/nhomCoRoute';
 import benhNhanRoute from './routes/benhNhanRoute';
+import thongBaoRoute from './routes/thongBaoRoute';
 
 dotenv.config();
 
@@ -32,19 +33,20 @@ app.use(
   express.static(path.join(__dirname, '../uploads'))
 );
 
-app.use('/api/auth', authRoutes);
-app.use('/api/hoso', hoSoRoutes);
+app.use('/api/auth', authRoute);
+app.use('/api/hoso', hoSoRoute);
 app.use('/api/dieutri', dieuTriRoute);
 app.use('/api/users', userRoute);
 app.use('/api/exercises', exerciseRoute);
 app.use('/api/treatment', treatmentRoute);
-app.use('api/bai-tap-hom-nay', keHoachRoute);
+app.use('/api/bai-tap-hom-nay', keHoachRoute);
 app.use('/api/accounts', accountRoute);
 app.use('/api/baocao', baoCaoRoute);
 app.use('/api/thuoc', thuocRoute);
 app.use('/api/thucPham', thucPhamRoute);
 app.use('/api/nhom-co', nhomCoRoute);
-app.use('/api/benhnhan', benhNhanRoute);
+app.use('/api/benh-nhan', benhNhanRoute);
+app.use('/api/thongbao', thongBaoRoute);
 
 // Route test server
 app.get('/', (req: Request, res: Response) => {

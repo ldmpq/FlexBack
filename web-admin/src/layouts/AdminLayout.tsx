@@ -92,7 +92,7 @@ const AdminLayout = () => {
     }
   };
 
-  // 4. Xử lý Submit form cập nhật
+  // 4. Xử lý Submit cho form cập nhật
   const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editFormData.matKhau && editFormData.matKhau !== editFormData.xacNhanMatKhau) {
@@ -107,7 +107,7 @@ const AdminLayout = () => {
       alert("Cập nhật thành công!");
       setShowEditModal(false);
       
-      // Cập nhật lại tên hiển thị ở Sidebar nếu có đổi tên
+      // Cập nhật lại tên hiển thị ở Sidebar (nếu có đổi tên)
       const updatedUser = { ...user, hoVaTen: editFormData.hoVaTen };
       setUser(updatedUser as UserInfo);
       localStorage.setItem('user_info', JSON.stringify(updatedUser));
@@ -188,6 +188,7 @@ const AdminLayout = () => {
           <MenuItem to="/admin/patients" icon={Users} label="Bệnh nhân" />
           <MenuItem to="/admin/plans" icon={Map} label="Hồ sơ và Lộ trình" />
           <MenuItem to="/admin/reports" icon={ClipboardList} label="Báo cáo" />
+
           {user?.loaiTaiKhoan === 'KY_THUAT_VIEN' && (
              <div className="mt-2">
                 <MenuItem to="/admin/assignments" icon={CalendarCheck} label="Phân công" />
@@ -211,8 +212,8 @@ const AdminLayout = () => {
               <div className="ml-4 pl-3 border-l-2 border-gray-100 my-1 space-y-1">
                 <MenuItem to="/admin/muscles" icon={BicepsFlexed} label="Nhóm cơ" />
                 <MenuItem to="/admin/exercises" icon={Dumbbell} label="Kho Bài tập" />
-                <MenuItem icon={Pill} label="Kho Thuốc" />
-                <MenuItem icon={Utensils} label="Kho Thực phẩm" />
+                <MenuItem to="/admin/resources?tab=thuoc" icon={Pill} label="Kho Thuốc" />
+                <MenuItem to="/admin/resources?tab=thucpham" icon={Utensils} label="Kho Thực phẩm" />
               </div>
             </div>
           </div>

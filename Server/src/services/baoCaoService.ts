@@ -54,7 +54,7 @@ export class BaoCaoService {
       },
       include: {
         KeHoachDieuTri: {
-          select: { 
+          select: {
             tenKeHoach: true,
             LoTrinhDieuTri: {
               select: { tenLoTrinh: true }
@@ -70,22 +70,22 @@ export class BaoCaoService {
 
   // [Admin] Lấy danh sách tất cả báo cáo (kèm tên bệnh nhân)
   static async getAllReports() {
-    return await prisma.baoCaoLuyenTap.findMany({
+    const data = await prisma.baoCaoLuyenTap.findMany({
       orderBy: { ngayLuyenTap: 'desc' },
       include: {
         KeHoachDieuTri: {
-          select: {
-            tenKeHoach: true,
+          include: { // Dùng include để lấy hết thông tin kế hoạch
             LoTrinhDieuTri: {
-              select: {
-                tenLoTrinh: true,
+              include: { // Lấy hết thông tin lộ trình
                 MucTieuDieuTri: {
-                  select: {
+                  include: { // Quan trọng: Phải đi qua Mục tiêu mới tới Hồ sơ
                     HoSoBenhAn: {
-                      select: {
+                      include: {
                         BenhNhan: {
-                          select: {
-                            TaiKhoan: { select: { hoVaTen: true } }
+                          include: {
+                            TaiKhoan: {
+                              select: { hoVaTen: true } // Chỉ lấy tên ở đích đến cuối cùng
+                            }
                           }
                         }
                       }
@@ -98,7 +98,9 @@ export class BaoCaoService {
         }
       }
     });
-  }
+    
+    return data;
+}
 
   // [Admin] Lấy chi tiết 1 báo cáo
   static async getReportDetail(id: number) {
@@ -115,14 +117,15 @@ export class BaoCaoService {
               }
             },
             LoTrinhDieuTri: {
-            include: {
-              MucTieuDieuTri: {
-                include: {
-                  HoSoBenhAn: {
-                    include: {
-                      BenhNhan: {
-                        include: {
-                          TaiKhoan: { select: { hoVaTen: true } }
+              include: {
+                MucTieuDieuTri: {
+                  include: {
+                    HoSoBenhAn: {
+                      include: {
+                        BenhNhan: {
+                          include: {
+                            TaiKhoan: { select: { hoVaTen: true } }
+                          }
                         }
                       }
                     }
@@ -133,18 +136,18 @@ export class BaoCaoService {
           }
         }
       }
-    }
-  });
-}
+    });
+  }
 
   // [Admin] Gửi phản hồi (Tạo đánh giá tiến triển)
-  static async createFeedback(maHoSo: number, chiTiet: string) {
+  static async createFeedback(maHoSo: number, chiTiet: string, thangDiem?: any) {
     return await prisma.danhGiaTienTrien.create({
       data: {
         maHoSo: maHoSo,
         chiTiet: chiTiet,
         ngayDanhGia: new Date(),
-        thangDiem: null
+        daDoc: false,
+        thangDiem: thangDiem ? parseFloat(thangDiem) : null
       }
     });
   }

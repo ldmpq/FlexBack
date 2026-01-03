@@ -243,7 +243,7 @@ model DanhGiaTienTrien {
   ngayDanhGia  DateTime? @db.Date
   chiTiet      String?   @db.Text
   thangDiem    Decimal?  @db.Decimal(4, 2)
-
+  daDoc       Boolean  @default(false)
   // Relations
   HoSoBenhAn   HoSoBenhAn? @relation(fields: [maHoSo], references: [maHoSo])
 

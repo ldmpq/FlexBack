@@ -134,7 +134,7 @@ const TreatmentManager: React.FC = () => {
                     {/* Kiểm tra và hiển thị KTV */}
                     {(selectedHoSo as any).KyThuatVien ? (
                       <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded text-xs font-medium backdrop-blur-sm border border-white/10 shadow-sm">
-                        <Stethoscope size={12} className="text-white" />
+                        <Briefcase size={12} className="text-white" />
                         KTV: {(selectedHoSo as any).KyThuatVien?.TaiKhoan?.hoVaTen || 'Chưa cập nhật tên'}
                       </span>
                     ) : (selectedHoSo as any).BacSi ? (

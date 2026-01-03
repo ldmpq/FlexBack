@@ -107,3 +107,25 @@ export const saveRouteExercises = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Lỗi lưu bài tập" });
     }
 };
+
+// 7. Phân công KTV
+export const assignProfile = async (req: Request, res: Response) => {
+  try {
+    const { maHoSo, maKyThuatVien } = req.body;
+
+    if (!maHoSo || !maKyThuatVien) {
+      return res.status(400).json({ message: "Thiếu thông tin phân công!" });
+    }
+
+    const result = await TreatmentService.assignTechnician(Number(maHoSo), Number(maKyThuatVien));
+    
+    res.status(200).json({ 
+        message: "Phân công KTV quản lý hồ sơ thành công!", 
+        data: result 
+    });
+
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ message: error.message || "Lỗi hệ thống" });
+  }
+};

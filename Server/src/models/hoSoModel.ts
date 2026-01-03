@@ -3,4 +3,5 @@ export interface CreateHoSoDTO {
   maBacSi?: string;
   chanDoan: string;
   trangThaiHienTai?: string;
+  maKyThuatVien?: string | number;
 }

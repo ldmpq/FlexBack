@@ -60,7 +60,7 @@ const GuideDetailScreen = ({ route, navigation }: any) => {
 
   // Render từng item trong danh sách
   const renderItem = ({ item }: { item: GuideItem }) => (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('ItemDetail', { item })}>
       <View style={[styles.iconContainer, { 
           backgroundColor: category === 'EXERCISE' ? '#e0f2fe' : 
                            category === 'MEDICINE' ? '#fce7f3' : 

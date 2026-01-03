@@ -11,3 +11,15 @@ export interface ReportHistory {
     }
   };
 }
+
+export interface Feedback {
+  maThongBao: number;
+  tieuDe: string;
+  noiDung: string;
+  ngayTao: string;
+  thangDiem: number;
+  daDoc: boolean;
+  BacSi?: {
+    hoVaTen: string;
+  };
+}

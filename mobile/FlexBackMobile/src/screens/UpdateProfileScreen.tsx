@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import axiosClient from '../utils/axiosClient';
 
 const UpdateProfileScreen = ({ navigation }: any) => {
@@ -30,7 +29,7 @@ const UpdateProfileScreen = ({ navigation }: any) => {
       if (!payload.tinhTrangHienTai) delete payload.tinhTrangHienTai;
       
       await axiosClient.put('/users/profile', payload);
-      Alert.alert("Hoàn tất", "Thông tin của bạn đã được cập nhật!", [ { text: "Đến màn hình chính", onPress: () => navigation.replace('Home') } ]);
+      Alert.alert("Hoàn tất", "Thông tin của bạn đã được cập nhật!", [ { text: "Đến màn hình chính", onPress: () => navigation.replace('AppTabs') } ]);
     } catch (error: any) {
       Alert.alert("Lỗi", "Không thể cập nhật thông tin");
     } finally {

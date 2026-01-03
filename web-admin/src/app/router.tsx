@@ -11,6 +11,7 @@ import MusclePage from '../pages/MusclePage';
 import ReportsList from '../pages/ReportsList';
 import ReportDetail from '../pages/ReportDetail';
 import PatientList from '../pages/PatientList';
+import MedicalResources from '../pages/MedicalResources';
 
 const AppRouter = () => {
   return (
@@ -28,6 +29,7 @@ const AppRouter = () => {
         <Route path="reports/:id" element={<ReportDetail />} />
         <Route path="accounts" element={<Accounts />} />
         <Route path="assignments" element={<PatientList />} />
+        <Route path="resources" element={<MedicalResources />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/login" replace />} />

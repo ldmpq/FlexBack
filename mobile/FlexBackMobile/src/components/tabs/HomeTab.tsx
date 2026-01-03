@@ -162,10 +162,15 @@ const HomeTab = () => {
             <Text style={styles.cardContent}>
               Bạn không có bài tập nào được lên lịch cho hôm nay.
             </Text>
-            <TouchableOpacity style={styles.primaryButton}>
+            
+            {/* Nút Xem lộ trình tổng quan */}
+            <TouchableOpacity 
+              style={styles.primaryButton}
+              onPress={() => navigation.navigate('Program')} 
+            >
               <Text style={styles.primaryButtonText}>Xem lộ trình tổng quan</Text>
             </TouchableOpacity>
-          </View>
+          </View>        
         )}
 
         {/* ===== CARD: TIẾN ĐỘ ===== */}

@@ -9,19 +9,28 @@ import { useNavigation } from '@react-navigation/native';
 const ProgramTab = () => {
   const navigation = useNavigation<any>();
   const { program, loading, refreshing, onRefresh } = useProgram();
-  
-  // State để mở rộng/thu gọn từng mục tiêu
+
   const [expandedGoals, setExpandedGoals] = useState<Record<number, boolean>>({});
 
   const toggleGoal = (id: number) => {
     setExpandedGoals(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Hàm format ngày tháng
   const formatDate = (dateString: string) => {
     try {
       return new Date(dateString).toLocaleDateString('vi-VN');
     } catch (e) { return dateString; }
+  };
+
+  const getKTVName = () => {
+    if (!program) return "Đang cập nhật";
+    if (program.KyThuatVien?.TaiKhoan?.hoVaTen) {
+      return program.KyThuatVien.TaiKhoan.hoVaTen;
+    }
+    if (program.PhanCong && program.PhanCong.length > 0) {
+      return program.PhanCong[0]?.KyThuatVien?.TaiKhoan?.hoVaTen || "Chưa cập nhật tên";
+    }
+    return "Chưa phân công";
   };
 
   const getPriorityColor = (priority: string) => {
@@ -46,12 +55,23 @@ const ProgramTab = () => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Lộ trình điều trị</Text>
         {program && (
-          <View style={styles.diagnosisContainer}>
-             <MaterialCommunityIcons name="stethoscope" size={16} color="#666" style={{marginRight: 5}}/>
-             <Text style={styles.diagnosisText} numberOfLines={1}>Chẩn đoán: {program.chanDoan}</Text>
+          <View>
+
+            <View style={styles.diagnosisContainer}>
+              <MaterialCommunityIcons name="stethoscope" size={16} color="#666" style={{ marginRight: 8, width: 20, textAlign: 'center' }} />
+              <Text style={styles.diagnosisText} numberOfLines={1}>
+                Chẩn đoán: <Text style={{ fontWeight: '600', color: '#333' }}>{program.chanDoan}</Text>
+              </Text>
+            </View>
+
+            <View style={[styles.diagnosisContainer, { marginTop: 8 }]}>
+              <FontAwesome5 name="user-nurse" size={14} color="#666" style={{ marginRight: 8, width: 20, textAlign: 'center' }} />
+              <Text style={styles.diagnosisText}>
+                KTV phụ trách: <Text style={{ fontWeight: '600', color: '#333' }}> {getKTVName()} </Text>
+              </Text>
+            </View>
           </View>
         )}
-        
       </View>
       
       <ScrollView 
@@ -67,7 +87,6 @@ const ProgramTab = () => {
         ) : (
           program.MucTieuDieuTri.map((mucTieu: MucTieu) => (
             <View key={mucTieu.maMucTieu} style={styles.goalCard}>
-              {/* Goal Header */}
               <TouchableOpacity 
                 style={styles.goalHeader} 
                 onPress={() => toggleGoal(mucTieu.maMucTieu)}

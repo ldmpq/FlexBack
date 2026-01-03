@@ -3,7 +3,14 @@ export interface DoctorOption {
   maBacSi: number;
   TaiKhoan: { hoVaTen: string };
   chuyenKhoa: string;
-  hoVaTen?: string; // Fallback cho trường hợp cấu trúc API khác
+  hoVaTen?: string;
+}
+
+export interface KtvOption {
+  maKyThuatVien: number;
+  TaiKhoan: { hoVaTen: string};
+  chungChi: string;
+  hoVaTen?: string;
 }
 
 // Chi tiết 1 hồ sơ bệnh án
@@ -15,6 +22,13 @@ export interface MedicalRecord {
     hoVaTen?: string;
     TaiKhoan?: { hoVaTen: string };
   };
+  PhanCong?: Array<{
+    KyThuatVien: {
+      TaiKhoan: {
+        hoVaTen: string;
+      };
+    };
+  }>;
 }
 
 // Thông tin chi tiết bệnh nhân
@@ -38,4 +52,5 @@ export interface CreateHoSoForm {
   chanDoan: string;
   trangThaiHienTai: string;
   maBacSi: string;
+  maKyThuatVien?: string
 }

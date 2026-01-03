@@ -9,10 +9,12 @@ interface CreateRecordModalProps {
     chanDoan: string;
     trangThaiHienTai: string;
     maBacSi: string;
+    maKyThuatVien?: string;
   };
   setFormData: (data: any) => void;
   submitting: boolean;
   listBacSi: any[];
+  listKTV: any[];
   doctorsLoading: boolean;
 }
 
@@ -24,6 +26,7 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
   setFormData,
   submitting,
   listBacSi,
+  listKTV,
   doctorsLoading
 }) => {
   if (!isOpen) return null;
@@ -90,7 +93,33 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
                   </option>
                 ))
               ) : (
-                <option disabled>-- Không tìm thấy bác sĩ nào --</option>
+                <option disabled>-- Không tìm thấy Bác sĩ nào --</option>
+              )}
+            </select>
+          </div>
+
+          {/* Select KTV */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Chọn Kỹ thuật viên phụ trách
+            </label>
+            <select
+              className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 bg-white transition"
+              value={formData.maKyThuatVien}
+              onChange={(e) => setFormData({ ...formData, maKyThuatVien: e.target.value })}
+            >
+              <option value="">-- Chưa phân công --</option>
+
+              {doctorsLoading ? (
+                <option disabled>Đang tải danh sách...</option>
+              ) : listKTV && listKTV.length > 0 ? (
+                listKTV.map((ktv: any) => (
+                  <option key={ktv.maKTV} value={ktv.maKTV}>
+                    {ktv.TaiKhoan?.hoVaTen || `KTV #${ktv.maKyThuatVien}`}
+                  </option>
+                ))
+              ) : (
+                <option disabled>-- Không tìm thấy Kỹ thuật viên nào --</option>
               )}
             </select>
           </div>
