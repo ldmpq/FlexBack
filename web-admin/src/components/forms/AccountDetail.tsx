@@ -20,8 +20,8 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({ isOpen, onClose
     }
   };
 
-  const bacSiInfo = account?.BacSi?.[0];
-  const ktvInfo = account?.KyThuatVien?.[0];
+  const bacSiInfo = account?.BacSi;
+  const ktvInfo = account?.KyThuatVien;
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm animate-in fade-in">

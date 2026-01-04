@@ -44,7 +44,7 @@ export interface PatientDetailData {
     canNang?: number;
     tinhTrangHienTai?: string;
     HoSoBenhAn: MedicalRecord[];
-  }[];
+  };
 }
 
 // Dữ liệu Form tạo mới hồ sơ

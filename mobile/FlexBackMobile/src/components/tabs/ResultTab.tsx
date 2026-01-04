@@ -9,7 +9,6 @@ import axiosClient from '../../utils/axiosClient';
 const ResultTab = () => {
   const { reports, loading, refreshing, onRefresh, stats } = useResult();
   const navigation = useNavigation<any>();
-
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -17,19 +16,12 @@ const ResultTab = () => {
       try {
         const res = await axiosClient.get('/thongbao/unread-count');
         setUnreadCount(res.data.count); 
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) { console.log(error); }
     };
-    
-    const unsubscribe = navigation.addListener('focus', () => {
-      fetchUnreadCount();
-    });
-
+    const unsubscribe = navigation.addListener('focus', () => { fetchUnreadCount(); });
     return unsubscribe;
   }, [navigation]);
 
-  // Hàm xử lý khi bấm vào nút phản hồi
   const handleOpenFeedback = () => {
     setUnreadCount(0); 
     navigation.navigate('DoctorFeedback'); 
@@ -44,15 +36,15 @@ const ResultTab = () => {
   };
 
   const getPainColor = (level: number) => {
-    if (level <= 2) return '#22c55e'; // Xanh (Nhẹ)
-    if (level <= 5) return '#eab308'; // Vàng (Vừa)
-    return '#ef4444'; // Đỏ (Đau)
+    if (level <= 2) return '#22c55e';
+    if (level <= 5) return '#eab308';
+    return '#ef4444';
   };
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#67a790ff" />
+        <ActivityIndicator size="large" color="#1ec8a5" />
       </View>
     );
   }
@@ -64,12 +56,9 @@ const ResultTab = () => {
         
         <TouchableOpacity style={styles.feedbackButton} onPress={handleOpenFeedback}>
           <MaterialCommunityIcons name="message-text-outline" size={24} color="#1ec8a5" />
-          
           {unreadCount > 0 && (
             <View style={styles.badge}>
-              <Text style={styles.badgeText}>
-                {unreadCount > 9 ? '9+' : unreadCount}
-              </Text>
+              <Text style={styles.badgeText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
             </View>
           )}
         </TouchableOpacity>
@@ -79,7 +68,6 @@ const ResultTab = () => {
         contentContainerStyle={styles.contentContainer}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#1ec8a5']} />}
       >
-        {/* Thống kê tổng quan */}
         <View style={styles.statsRow}>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>{stats.totalSessions}</Text>
@@ -116,9 +104,7 @@ const ResultTab = () => {
                 <Text style={styles.historyTitle}>
                   {item.KeHoachDieuTri?.LoTrinhDieuTri?.tenLoTrinh || 'Bài tập tự do'}
                 </Text>
-                <Text style={styles.historySubTitle}>
-                  {item.KeHoachDieuTri?.tenKeHoach}
-                </Text>
+                <Text style={styles.historySubTitle}>{item.KeHoachDieuTri?.tenKeHoach}</Text>
                 
                 <View style={styles.metaRow}>
                    <View style={styles.metaItem}>
@@ -127,14 +113,11 @@ const ResultTab = () => {
                    </View>
                    <View style={styles.metaItem}>
                       <Feather name="activity" size={12} color="#666"/>
-                      <Text style={styles.metaText}>Mức độ đau: {item.mucDoDau}/10</Text>
+                      <Text style={styles.metaText}>Mức đau: {item.mucDoDau}/10</Text>
                    </View>
                 </View>
 
-                {item.danhGiaSoBo ? (
-                  <Text style={styles.noteText}>"{item.danhGiaSoBo}"</Text>
-                ) : null}
-                
+                {item.danhGiaSoBo ? <Text style={styles.noteText}>"{item.danhGiaSoBo}"</Text> : null}
                 <Text style={styles.dateText}>{formatDate(item.ngayLuyenTap)}</Text>
               </View>
             </View>
@@ -146,208 +129,73 @@ const ResultTab = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 30,
-  },
-
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  safeArea: { flex: 1, backgroundColor: '#f5f7fb' },
+  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 
   headerContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    paddingVertical: 20,
+    backgroundColor: '#1ec8a5',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    // No border radius
   },
-
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
+  headerTitle: { fontSize: 22, fontWeight: 'bold', color: '#fff' },
 
   feedbackButton: {
     padding: 8,
-    backgroundColor: '#f0fcf9',
+    backgroundColor: '#fff',
     borderRadius: 12,
     position: 'relative',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-
   badge: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    backgroundColor: '#ef4444',
-    minWidth: 18,
-    height: 18,
-    borderRadius: 9,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#fff',
+    position: 'absolute', top: -4, right: -4,
+    backgroundColor: '#ef4444', minWidth: 18, height: 18,
+    borderRadius: 9, justifyContent: 'center', alignItems: 'center',
+    borderWidth: 1.5, borderColor: '#fff',
   },
+  badgeText: { color: '#fff', fontSize: 10, fontWeight: 'bold', paddingHorizontal: 4 },
 
-  badgeText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: 'bold',
-    paddingHorizontal: 4,
-  },
+  contentContainer: { padding: 20 },
 
-  contentContainer: {
-    padding: 20,
-  },
-
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-  },
-
+  statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
   statCard: {
     width: '31%',
-    backgroundColor: '#f9fbf7',
-    padding: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-
-    borderWidth: 1,
-    borderColor: '#eef6e8',
+    backgroundColor: '#fff',
+    padding: 12, borderRadius: 18, alignItems: 'center',
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, elevation: 2,
   },
+  statValue: { fontSize: 20, fontWeight: 'bold', color: '#1ec8a5', marginBottom: 4 },
+  statLabel: { fontSize: 12, color: '#666', textTransform: 'uppercase' },
 
-  statValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#1ec8a5',
-    marginBottom: 4,
-  },
+  sectionHeader: { fontSize: 16, fontWeight: 'bold', color: '#333', marginBottom: 16 },
 
-  statLabel: {
-    fontSize: 12,
-    color: '#666',
-    textTransform: 'uppercase',
-  },
-
-  sectionHeader: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
-  },
-
-  historyItem: {
-    flexDirection: 'row',
-    marginBottom: 0,
-  },
-
-  historyLeft: {
-    width: 40,
-    alignItems: 'center',
-    marginRight: 12,
-  },
-
-  iconBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-
-  line: {
-    width: 2,
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    marginVertical: 4,
-  },
+  historyItem: { flexDirection: 'row', marginBottom: 0 },
+  historyLeft: { width: 40, alignItems: 'center', marginRight: 12 },
+  iconBox: { width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center', zIndex: 1 },
+  line: { width: 2, flex: 1, backgroundColor: '#e0e0e0', marginVertical: 4 },
 
   historyContent: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-
-    shadowColor: '#000',
-    shadowOpacity: 0.03,
-    shadowRadius: 3,
-    elevation: 1,
+    flex: 1, backgroundColor: '#fff', padding: 16,
+    borderRadius: 18, marginBottom: 16,
+    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, elevation: 2,
+    borderWidth: 0,
   },
-
-  historyTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 2,
-  },
-
-  historySubTitle: {
-    fontSize: 13,
-    color: '#666',
-    marginBottom: 8,
-  },
-
-  metaRow: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 8,
-  },
-
-  metaItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-
-    backgroundColor: '#f5f5f5',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-
-  metaText: {
-    fontSize: 12,
-    color: '#555',
-  },
-
-  noteText: {
-    fontSize: 13,
-    fontStyle: 'italic',
-    color: '#444',
-
-    backgroundColor: '#fffbeb',
-    padding: 8,
-    borderRadius: 6,
-    marginBottom: 8,
-  },
-
-  dateText: {
-    fontSize: 11,
-    color: '#999',
-    textAlign: 'right',
-  },
-
-  emptyContainer: {
-    alignItems: 'center',
-    marginTop: 40,
-  },
-
-  emptyText: {
-    marginTop: 10,
-    color: '#999',
-  },
+  historyTitle: { fontSize: 16, fontWeight: 'bold', color: '#333', marginBottom: 2 },
+  historySubTitle: { fontSize: 13, color: '#666', marginBottom: 8 },
+  metaRow: { flexDirection: 'row', gap: 12, marginBottom: 8 },
+  metaItem: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#f5f7fb', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },
+  metaText: { fontSize: 12, color: '#555' },
+  noteText: { fontSize: 13, fontStyle: 'italic', color: '#444', backgroundColor: '#fffbeb', padding: 8, borderRadius: 8, marginBottom: 8 },
+  dateText: { fontSize: 11, color: '#999', textAlign: 'right' },
+  emptyContainer: { alignItems: 'center', marginTop: 40 },
+  emptyText: { marginTop: 10, color: '#999' },
 });
 
 export default ResultTab;

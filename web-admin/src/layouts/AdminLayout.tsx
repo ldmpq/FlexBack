@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, LogOut, User, UserCheck, ChevronDown, Settings, Eye, Dumbbell, Database, BicepsFlexed, ClipboardList, Map, Pill, Utensils, CalendarCheck } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, User, UserCheck, ChevronDown, Settings, Eye, Dumbbell, Database, BicepsFlexed, ClipboardList, Map, Pill, Utensils, CalendarCheck} from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import AccountDetailModal from '../components/forms/AccountDetail';
 import AccountFormModal from '../components/forms/AccountForm';
@@ -33,9 +33,14 @@ const AdminLayout = () => {
 
   useEffect(() => {
     const stored = localStorage.getItem('user_info');
-    if (stored) setUser(JSON.parse(stored));
 
-    // Event listener click outside
+    if (!stored) {
+      window.location.replace('/login');
+      return; 
+    }
+
+    setUser(JSON.parse(stored));
+
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
@@ -43,11 +48,13 @@ const AdminLayout = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [])
 
   const logout = () => {
-    localStorage.clear();
-    window.location.href = '/login';
+    if (window.confirm("Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?")) {
+      localStorage.clear();
+      window.location.replace('/login');
+    }
   };
 
   // 1. Hàm lấy data từ API (Dùng chung cho cả Xem và Sửa)
@@ -87,7 +94,10 @@ const AdminLayout = () => {
         soDienThoai: data.soDienThoai || '',
         loaiTaiKhoan: data.loaiTaiKhoan,
         matKhau: '',
-        xacNhanMatKhau: ''
+        xacNhanMatKhau: '',
+        chuyenKhoa: data.BacSi?.chuyenKhoa || '',
+        congTac: data.BacSi?.congTac || '',
+        chungChi: data.KyThuatVien?.chungChi || ''
       });
     }
   };
@@ -107,7 +117,7 @@ const AdminLayout = () => {
       alert("Cập nhật thành công!");
       setShowEditModal(false);
       
-      // Cập nhật lại tên hiển thị ở Sidebar (nếu có đổi tên)
+      // Cập nhật lại tên hiển thị ở Sidebar (nếu đổi tên)
       const updatedUser = { ...user, hoVaTen: editFormData.hoVaTen };
       setUser(updatedUser as UserInfo);
       localStorage.setItem('user_info', JSON.stringify(updatedUser));
@@ -140,8 +150,11 @@ const AdminLayout = () => {
   return (
     <div className="flex h-screen">
       <aside className="w-64 bg-white shadow flex flex-col z-20">
-        <div className="p-6 border-b text-center font-bold text-blue-600">
-          FLEXBACK
+        <div className="p-6 border-b border-gray-50 flex items-center justify-center">
+          <span className="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-1">
+            Flex<span className="text-blue-600 italic">Back</span>
+            <div className="w-2 h-2 rounded-full bg-green-500 mb-4 ml-0.5 animate-pulse"></div>
+          </span>
         </div>
 
         <div className="relative" ref={dropdownRef}>
@@ -250,6 +263,7 @@ const AdminLayout = () => {
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         isEditing={true}
+        isSelfEdit={true}
         formData={editFormData}
         setFormData={setEditFormData}
         onSubmit={handleUpdateSubmit}

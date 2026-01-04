@@ -2,7 +2,6 @@ import React from 'react';
 import { UserPlus, Edit, Trash2, Eye, Shield, Briefcase, Stethoscope, UserCheck, Phone, Mail } from 'lucide-react';
 import { useAccountManager } from '../hooks/useAccountManager';
 import SearchBar from '../components/SearchBar';
-// Import 2 Modal vừa tạo (nhớ chỉnh đường dẫn cho đúng)
 import AccountDetailModal from '../components/forms/AccountDetail';
 import AccountFormModal from '../components/forms/AccountForm';
 
@@ -15,7 +14,7 @@ const Accounts: React.FC = () => {
     handleViewDetail, handleSubmitAccount, handleDeleteAccount, openCreateModal, openEditModal
   } = useAccountManager();
 
-  // Helper cho Role (Chỉ dùng hiển thị ở Table)
+  // Helper cho Role
   const getRoleInfo = (role: string) => {
     switch (role) {
       case 'ADMIN': return { style: 'bg-red-100 text-red-700 border-red-200', icon: <Shield size={14} />, label: 'Quản trị viên' };
@@ -27,13 +26,12 @@ const Accounts: React.FC = () => {
 
   return (
     <div className="p-6 font-sans bg-gray-50 min-h-screen">
-
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
             <UserCheck className="text-blue-600" /> Tài khoản Nội bộ
           </h2>
-          <p className="text-gray-500 text-sm">Quản lý nhân sự ({filteredStaff.length})</p>
+          <p className="text-gray-500 text-sm mt-1">Quản lý nhân sự ({filteredStaff.length})</p>
         </div>
         <button onClick={openCreateModal} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium shadow-sm transition">
           <UserPlus size={20} /> Tạo tài khoản mới
@@ -113,6 +111,7 @@ const Accounts: React.FC = () => {
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         isEditing={isEditing}
+        isSelfEdit={false}
         formData={formData}
         setFormData={setFormData}
         onSubmit={handleSubmitAccount}

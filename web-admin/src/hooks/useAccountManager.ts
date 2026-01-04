@@ -23,8 +23,10 @@ export const useAccountManager = () => {
   
   const initialFormState: AccountFormData = {
     tenTaiKhoan: '', hoVaTen: '', email: '', soDienThoai: '',
-    loaiTaiKhoan: 'BAC_SI', matKhau: '', xacNhanMatKhau: ''
+    loaiTaiKhoan: 'BAC_SI', matKhau: '', xacNhanMatKhau: '',
+    chuyenKhoa: '', congTac: '', chungChi: ''
   };
+
   const [formData, setFormData] = useState<AccountFormData>(initialFormState);
 
   // --- LOGIC API ---
@@ -112,6 +114,7 @@ export const useAccountManager = () => {
   const openEditModal = (staff: StaffAccount) => {
     setIsEditing(true);
     setEditingId(staff.maTaiKhoan);
+    
     setFormData({
       tenTaiKhoan: staff.tenTaiKhoan,
       hoVaTen: staff.hoVaTen,
@@ -119,7 +122,11 @@ export const useAccountManager = () => {
       soDienThoai: staff.soDienThoai || '',
       loaiTaiKhoan: staff.loaiTaiKhoan,
       matKhau: '',
-      xacNhanMatKhau: ''
+      xacNhanMatKhau: '',
+
+      chuyenKhoa: staff.BacSi?.chuyenKhoa || '',
+      congTac: staff.BacSi?.congTac || '',
+      chungChi: staff.KyThuatVien?.chungChi || ''
     });
     setShowModal(true);
   };

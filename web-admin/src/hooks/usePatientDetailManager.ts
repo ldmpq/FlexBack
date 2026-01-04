@@ -78,7 +78,8 @@ export const usePatientDetailManager = () => {
     if (!formData.chanDoan) return alert("Vui lòng nhập chẩn đoán!");
 
     // Lấy maBenhNhan từ dữ liệu chi tiết đã load
-    const maBenhNhan = patient?.BenhNhan?.[0]?.maBenhNhan;
+    const maBenhNhan = patient?.BenhNhan?.maBenhNhan;
+    
     if (!maBenhNhan) {
       return alert("Lỗi dữ liệu bệnh nhân (Thiếu mã chi tiết). Vui lòng tải lại trang.");
     }

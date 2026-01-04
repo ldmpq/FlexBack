@@ -23,7 +23,7 @@ const Exercises: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
             <Dumbbell className="text-blue-600" /> Kho Bài Tập
           </h2>
-          <p className="text-gray-500">Quản lý bài tập & Video hướng dẫn ({loading ? '...' : filteredList.length})</p>
+          <p className="text-gray-500 text-sm mt-1">Quản lý bài tập & Video hướng dẫn ({loading ? '...' : filteredList.length})</p>
         </div>
         <button
           onClick={() => { resetForm(); setShowModal(true); }}

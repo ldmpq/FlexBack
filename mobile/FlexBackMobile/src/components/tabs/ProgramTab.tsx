@@ -9,7 +9,6 @@ import { useNavigation } from '@react-navigation/native';
 const ProgramTab = () => {
   const navigation = useNavigation<any>();
   const { program, loading, refreshing, onRefresh } = useProgram();
-
   const [expandedGoals, setExpandedGoals] = useState<Record<number, boolean>>({});
 
   const toggleGoal = (id: number) => {
@@ -24,12 +23,8 @@ const ProgramTab = () => {
 
   const getKTVName = () => {
     if (!program) return "Đang cập nhật";
-    if (program.KyThuatVien?.TaiKhoan?.hoVaTen) {
-      return program.KyThuatVien.TaiKhoan.hoVaTen;
-    }
-    if (program.PhanCong && program.PhanCong.length > 0) {
-      return program.PhanCong[0]?.KyThuatVien?.TaiKhoan?.hoVaTen || "Chưa cập nhật tên";
-    }
+    if (program.KyThuatVien?.TaiKhoan?.hoVaTen) return program.KyThuatVien.TaiKhoan.hoVaTen;
+    if (program.PhanCong && program.PhanCong.length > 0) return program.PhanCong[0]?.KyThuatVien?.TaiKhoan?.hoVaTen || "Chưa cập nhật tên";
     return "Chưa phân công";
   };
 
@@ -40,7 +35,6 @@ const ProgramTab = () => {
     return '#eab308';
   };
 
-  // Hiển thị loading khi đang tải dữ liệu
   if (loading) {
     return (
       <View style={styles.centerContainer}>
@@ -55,19 +49,18 @@ const ProgramTab = () => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>Lộ trình điều trị</Text>
         {program && (
-          <View>
-
+          <View style={{ marginTop: 8 }}>
             <View style={styles.diagnosisContainer}>
-              <MaterialCommunityIcons name="stethoscope" size={16} color="#666" style={{ marginRight: 8, width: 20, textAlign: 'center' }} />
+              <MaterialCommunityIcons name="stethoscope" size={16} color="#eafff9" style={{ marginRight: 8 }} />
               <Text style={styles.diagnosisText} numberOfLines={1}>
-                Chẩn đoán: <Text style={{ fontWeight: '600', color: '#333' }}>{program.chanDoan}</Text>
+                Chẩn đoán: <Text style={{ fontWeight: '700', color: '#fff' }}>{program.chanDoan}</Text>
               </Text>
             </View>
 
-            <View style={[styles.diagnosisContainer, { marginTop: 8 }]}>
-              <FontAwesome5 name="user-nurse" size={14} color="#666" style={{ marginRight: 8, width: 20, textAlign: 'center' }} />
+            <View style={styles.diagnosisContainer}>
+              <FontAwesome5 name="user-nurse" size={14} color="#eafff9" style={{ marginRight: 8 }} />
               <Text style={styles.diagnosisText}>
-                KTV phụ trách: <Text style={{ fontWeight: '600', color: '#333' }}> {getKTVName()} </Text>
+                KTV: <Text style={{ fontWeight: '700', color: '#fff' }}> {getKTVName()} </Text>
               </Text>
             </View>
           </View>
@@ -93,7 +86,7 @@ const ProgramTab = () => {
                 activeOpacity={0.7}
               >
                 <View style={styles.goalIconContainer}>
-                  <MaterialCommunityIcons name="target" size={24} color="#fff" />
+                  <MaterialCommunityIcons name="target" size={24} color="#1ec8a5" />
                 </View>
                 <View style={styles.goalInfo}>
                   <Text style={styles.goalTitle}>{mucTieu.noiDung}</Text>
@@ -101,7 +94,7 @@ const ProgramTab = () => {
                     <Text style={[styles.priorityBadge, { color: getPriorityColor(mucTieu.mucDoUuTien) }]}>
                       Ưu tiên: {mucTieu.mucDoUuTien}
                     </Text>
-                    <Text style={styles.goalDate}>Ngày đặt: {formatDate(mucTieu.ngayDatMucTieu)}</Text>
+                    <Text style={styles.goalDate}>{formatDate(mucTieu.ngayDatMucTieu)}</Text>
                   </View>
                 </View>
                 <Feather 
@@ -111,13 +104,11 @@ const ProgramTab = () => {
                 />
               </TouchableOpacity>
 
-              {/* Danh sách các giai đoạn (Lộ trình con) */}
               {expandedGoals[mucTieu.maMucTieu] && (
                 <View style={styles.phasesContainer}>
                   {mucTieu.LoTrinhDieuTri && mucTieu.LoTrinhDieuTri.length > 0 ? (
                     mucTieu.LoTrinhDieuTri.map((loTrinh: LoTrinh, index) => (
                       <View key={loTrinh.maLoTrinh} style={styles.phaseItem}>
-                        {/* Timeline Connector */}
                         <View style={styles.timelineContainer}>
                           <View style={styles.timelineDot} />
                           {index < (mucTieu.LoTrinhDieuTri?.length || 0) - 1 && <View style={styles.timelineLine} />}
@@ -131,9 +122,7 @@ const ProgramTab = () => {
                               {formatDate(loTrinh.thoiGianBatDau)} - {formatDate(loTrinh.thoiGianKetThuc)}
                             </Text>
                           </View>
-                          {loTrinh.ghiChu ? (
-                             <Text style={styles.phaseNote}>{loTrinh.ghiChu}</Text>
-                          ) : null}
+                          {loTrinh.ghiChu && <Text style={styles.phaseNote}>{loTrinh.ghiChu}</Text>}
                           
                           <TouchableOpacity
                             style={styles.viewDetailBtn}
@@ -148,7 +137,7 @@ const ProgramTab = () => {
                       </View>
                     ))
                   ) : (
-                    <Text style={styles.noPhaseText}>Chưa có giai đoạn điều trị nào cho mục tiêu này.</Text>
+                    <Text style={styles.noPhaseText}>Chưa có giai đoạn điều trị nào.</Text>
                   )}
                 </View>
               )}
@@ -161,229 +150,64 @@ const ProgramTab = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 30,
-  },
-
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  loadingText: {
-    marginTop: 10,
-    color: '#666',
-  },
+  safeArea: { flex: 1, backgroundColor: '#f5f7fb' },
+  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { marginTop: 10, color: '#666' },
 
   headerContainer: {
     padding: 20,
-    backgroundColor: '#fff',
-
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    paddingBottom: 20,
+    backgroundColor: '#1ec8a5',
   },
+  headerTitle: { fontSize: 22, fontWeight: 'bold', color: '#fff' },
+  diagnosisContainer: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
+  diagnosisText: { flex: 1, fontSize: 14, color: '#eafff9' },
 
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-
-  diagnosisContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 5,
-  },
-
-  diagnosisText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#666',
-    fontStyle: 'italic',
-  },
-
-  contentContainer: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-
-  emptyContainer: {
-    alignItems: 'center',
-    marginTop: 50,
-  },
-
-  emptyText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#555',
-    marginTop: 15,
-  },
-
-  emptySubText: {
-    fontSize: 14,
-    color: '#999',
-    marginTop: 5,
-    textAlign: 'center',
-    paddingHorizontal: 40,
-  },
+  contentContainer: { padding: 20, paddingBottom: 40 },
+  emptyContainer: { alignItems: 'center', marginTop: 50 },
+  emptyText: { fontSize: 18, fontWeight: '600', color: '#555', marginTop: 15 },
+  emptySubText: { fontSize: 14, color: '#999', marginTop: 5, textAlign: 'center', paddingHorizontal: 40 },
 
   goalCard: {
     backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: 18,
     marginBottom: 16,
-
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-    overflow: 'hidden',
-
     shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
     elevation: 3,
+    overflow: 'hidden',
+    borderWidth: 0,
   },
-
-  goalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-
-    backgroundColor: '#fff',
-  },
-
+  goalHeader: { flexDirection: 'row', alignItems: 'center', padding: 16, backgroundColor: '#fff' },
   goalIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-
-    backgroundColor: '#1ec8a5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
+    width: 48, height: 48, borderRadius: 14,
+    backgroundColor: '#f0fcf9',
+    justifyContent: 'center', alignItems: 'center', marginRight: 16,
   },
+  goalInfo: { flex: 1 },
+  goalTitle: { fontSize: 16, fontWeight: 'bold', color: '#333', marginBottom: 4 },
+  goalMeta: { flexDirection: 'row', alignItems: 'center' },
+  priorityBadge: { fontSize: 12, fontWeight: '700', marginRight: 10, textTransform: 'uppercase' },
+  goalDate: { fontSize: 12, color: '#999' },
 
-  goalInfo: {
-    flex: 1,
-  },
-
-  goalTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
-  },
-
-  goalMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  priorityBadge: {
-    fontSize: 12,
-    fontWeight: '700',
-    marginRight: 10,
-    textTransform: 'uppercase',
-  },
-
-  goalDate: {
-    fontSize: 12,
-    color: '#999',
-  },
-
-  phasesContainer: {
-    backgroundColor: '#f9fbf7',
-    padding: 16,
-
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-  },
-
-  phaseItem: {
-    flexDirection: 'row',
-    marginBottom: 0,
-  },
-
-  timelineContainer: {
-    alignItems: 'center',
-    marginRight: 12,
-    width: 20,
-  },
-
-  timelineDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#1ec8a5',
-    marginTop: 6,
-  },
-
-  timelineLine: {
-    width: 2,
-    flex: 1,
-    backgroundColor: '#dcfce7',
-    marginVertical: 4,
-  },
-
-  phaseContent: {
-    flex: 1,
-    paddingBottom: 20,
-  },
-
-  phaseTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#333',
-  },
-
-  phaseTime: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-    marginBottom: 4,
-  },
-
-  phaseDate: {
-    fontSize: 12,
-    color: '#666',
-  },
-
-  phaseNote: {
-    fontSize: 13,
-    color: '#555',
-    fontStyle: 'italic',
-    marginBottom: 8,
-  },
-
+  phasesContainer: { backgroundColor: '#fcfcfc', padding: 16, borderTopWidth: 1, borderTopColor: '#f0f0f0' },
+  phaseItem: { flexDirection: 'row', marginBottom: 0 },
+  timelineContainer: { alignItems: 'center', marginRight: 12, width: 20 },
+  timelineDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#1ec8a5', marginTop: 6 },
+  timelineLine: { width: 2, flex: 1, backgroundColor: '#dcfce7', marginVertical: 4 },
+  phaseContent: { flex: 1, paddingBottom: 20 },
+  phaseTitle: { fontSize: 15, fontWeight: '600', color: '#333' },
+  phaseTime: { flexDirection: 'row', alignItems: 'center', marginTop: 4, marginBottom: 4 },
+  phaseDate: { fontSize: 12, color: '#666' },
+  phaseNote: { fontSize: 13, color: '#555', fontStyle: 'italic', marginBottom: 8 },
   viewDetailBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#1ec8a5',
-    marginTop: 4,
+    flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start',
+    backgroundColor: '#fff', paddingHorizontal: 12, paddingVertical: 6,
+    borderRadius: 20, borderWidth: 1, borderColor: '#1ec8a5', marginTop: 4,
   },
-
-  viewDetailText: {
-    fontSize: 12,
-    color: '#1ec8a5',
-    fontWeight: '600',
-    marginRight: 4,
-  },
-
-  noPhaseText: {
-    color: '#999',
-    fontStyle: 'italic',
-    textAlign: 'center',
-    padding: 10,
-  },
+  viewDetailText: { fontSize: 12, color: '#1ec8a5', fontWeight: '600', marginRight: 4 },
+  noPhaseText: { color: '#999', fontStyle: 'italic', textAlign: 'center', padding: 10 },
 });
 
 export default ProgramTab;

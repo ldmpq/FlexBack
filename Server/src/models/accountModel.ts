@@ -12,6 +12,12 @@ export const AccountModel = {
         soDienThoai: true,
         loaiTaiKhoan: true,
         ngayTaoTaiKhoan: true,
+        BacSi: {
+          select: { chuyenKhoa: true, congTac: true }
+        },
+        KyThuatVien: {
+          select: { chungChi: true }
+        }
       },
       orderBy: { maTaiKhoan: "asc" },
     });

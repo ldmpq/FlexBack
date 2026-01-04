@@ -6,7 +6,6 @@ import { usePatientManager } from '../hooks/usePatientManager';
 
 const Patients: React.FC = () => {
   const navigate = useNavigate();
-  // Lấy toàn bộ logic từ Hook
   const {
     filteredPatients,
     loading,
@@ -16,34 +15,38 @@ const Patients: React.FC = () => {
   } = usePatientManager();
 
   return (
-    <div className="p-6 font-sans text-gray-800">
+    <div className="p-6 font-sans text-gray-800 animate-in fade-in">
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <Users className="text-blue-600" /> Quản lí Bệnh nhân
-        </h2>
-          <p className="text-gray-500">Danh sách bệnh nhân đang điều trị trong hệ thống</p>
+            <Users className="text-blue-600" /> Quản lí Bệnh nhân
+          </h2>
+          <p className="text-gray-500 text-sm mt-1">Danh sách bệnh nhân đang điều trị trong hệ thống</p>
         </div>
       </div>
-      {/* --- SEARCH BAR --- */}
+
+      {/* Search Bar */}
       <SearchBar
         value={searchTerm}
         onChange={setSearchTerm}
         placeholder="Tìm kiếm theo tên bệnh nhân hoặc số điện thoại..."
       />
-      {/* --- ERROR MESSAGE --- */}
+
+      {/* Error Message */}
       {error && (
         <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 text-red-700 rounded-r shadow-sm">
           <p className="font-medium">Đã xảy ra lỗi!</p>
           <p className="text-sm">{error}</p>
         </div>
       )}
-      {/* --- TABLE DANH SÁCH --- */}
-      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+
+      {/* Table */}
+      <div className="bg-white rounded-lg shadow overflow-hidden border border-gray-200 mt-6">
         {loading ? (
-          <div className="p-12 text-center">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-500">Đang tải dữ liệu...</p>
+          <div className="p-12 text-center flex flex-col items-center justify-center text-gray-500">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-3"></div>
+            <p>Đang tải dữ liệu...</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -63,12 +66,12 @@ const Patients: React.FC = () => {
                     {/* Cột 1: Tên & Mã */}
                     <td className="p-4">
                       <div className="flex items-center">
-                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-3 border border-blue-200">
+                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-3 border border-blue-200 shadow-sm">
                           {patient.hoVaTen ? patient.hoVaTen.charAt(0).toUpperCase() : 'U'}
                         </div>
                         <div>
                           <p className="font-bold text-gray-800">{patient.hoVaTen || 'Chưa cập nhật tên'}</p>
-                          <p className="text-xs text-gray-500 font-mono">#{patient.maTaiKhoan}</p>
+                          <p className="text-xs text-gray-500 font-mono">@{patient.tenTaiKhoan}</p>
                         </div>
                       </div>
                     </td>
@@ -80,25 +83,25 @@ const Patients: React.FC = () => {
                     {/* Cột 3: Giới tính & Tuổi */}
                     <td className="p-4">
                       <div className="text-sm text-gray-700">
-                        <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${patient.gioiTinh === 'Nam' ? 'bg-blue-100 text-blue-700' :
-                            patient.gioiTinh === 'Nữ' ? 'bg-pink-100 text-pink-700' : 'bg-gray-100 text-gray-600'
+                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium border ${patient.gioiTinh === 'Nam' ? 'bg-blue-50 text-blue-700 border-blue-100' :
+                            patient.gioiTinh === 'Nữ' ? 'bg-pink-50 text-pink-700 border-pink-100' : 'bg-gray-100 text-gray-600 border-gray-200'
                           }`}>
-                          {patient.gioiTinh}
+                          {patient.gioiTinh || 'Khác'}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {patient.ngaySinh ? new Date(patient.ngaySinh).toLocaleDateString('vi-VN') : '---'}
+                      <p className="text-xs text-gray-500 mt-1 pl-1">
+                        {patient.ngaySinh ? new Date(patient.ngaySinh).toLocaleDateString('vi-VN') : '--/--/----'}
                       </p>
                     </td>
-                    {/* Cột 4: Tình trạng (Lấy từ bảng BenhNhan) */}
+                    {/* Cột 4: Tình trạng */}
                     <td className="p-4">
                       <p className="text-sm text-gray-600 max-w-xs truncate" title={patient.BenhNhan?.[0]?.tinhTrangHienTai}>
-                        {patient.BenhNhan?.[0]?.tinhTrangHienTai || <span className="text-gray-400 italic">Chưa có hồ sơ</span>}
+                        {patient.BenhNhan?.[0]?.tinhTrangHienTai || <span className="text-gray-400 italic text-xs">Chưa có hồ sơ bệnh án</span>}
                       </p>
                     </td>
                     {/* Cột 5: Hành động */}
                     <td className="p-4 text-center">
-                      <div className="flex justify-center gap-2">
+                      <div className="flex justify-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => navigate(`/admin/patients/${patient.maTaiKhoan}`)}
                           className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition shadow-sm border border-blue-100"
@@ -109,10 +112,14 @@ const Patients: React.FC = () => {
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan={5} className="p-12 text-center text-gray-500 flex flex-col items-center justify-center">
-                      <Search size={48} className="text-gray-200 mb-4 opacity-50" />
-                      <p className="text-lg font-medium">Không tìm thấy bệnh nhân nào.</p>
-                      <p className="text-sm text-gray-400">Thử tìm kiếm với từ khóa khác.</p>
+                    <td colSpan={5} className="p-12">
+                      <div className="flex flex-col items-center justify-center text-center text-gray-500">
+                        <div className="bg-gray-50 p-4 rounded-full mb-3">
+                            <Search size={40} className="text-gray-300" />
+                        </div>
+                        <p className="text-lg font-medium text-gray-700">Không tìm thấy bệnh nhân nào.</p>
+                        <p className="text-sm text-gray-400 mt-1">Thử tìm kiếm với từ khóa khác hoặc kiểm tra lại bộ lọc.</p>
+                      </div>
                     </td>
                   </tr>
                 )}

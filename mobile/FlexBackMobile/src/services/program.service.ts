@@ -8,7 +8,7 @@ export const programService = {
       const meRes = await axiosClient.get('/auth/me');
       const user = meRes.data.data;
 
-      const benhNhan = user.BenhNhan?.[0];
+      const benhNhan = user.BenhNhan;
 
       if (!benhNhan) {
         console.warn("User không phải là bệnh nhân hoặc chưa có data BenhNhan");

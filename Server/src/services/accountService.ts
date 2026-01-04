@@ -4,14 +4,14 @@ import { AccountModel } from "../models/accountModel";
 
 const ALLOWED_ROLES = ["BAC_SI", "KY_THUAT_VIEN", "ADMIN"];
 
-const createDetailRecord = async (tx: any, maTaiKhoan: number, loaiTaiKhoan: string) => {
+const createDetailRecord = async (tx: any, maTaiKhoan: number, loaiTaiKhoan: string, data: any) => {
   switch (loaiTaiKhoan) {
     case "BAC_SI":
       return tx.bacSi.create({
         data: {
           maTaiKhoan,
-          chuyenKhoa: "Chưa cập nhật",
-          congTac: "Chưa cập nhật",
+          chuyenKhoa: data.chuyenKhoa || "Chưa cập nhật",
+          congTac: data.congTac || "Chưa cập nhật",
           ngayBatDau: new Date(),
         }
       });
@@ -20,7 +20,7 @@ const createDetailRecord = async (tx: any, maTaiKhoan: number, loaiTaiKhoan: str
       return tx.kyThuatVien.create({
         data: {
           maTaiKhoan,
-          chungChi: "Chưa cập nhật",
+          chungChi: data.chungChi || "Chưa cập nhật",
           ngayBatDau: new Date(),
         }
       });
@@ -37,7 +37,7 @@ export const AccountService = {
   },
 
   async createStaffAccount(body: any) {
-    const { tenTaiKhoan, matKhau, hoVaTen, email, loaiTaiKhoan, soDienThoai } = body;
+    const { tenTaiKhoan, matKhau, hoVaTen, email, loaiTaiKhoan, soDienThoai, chuyenKhoa, congTac, chungChi } = body;
 
     if (!tenTaiKhoan || !matKhau || !hoVaTen || !loaiTaiKhoan)
       return { status: 400, message: "Thiếu thông tin bắt buộc!" };
@@ -51,6 +51,7 @@ export const AccountService = {
     const hashed = await bcrypt.hash(matKhau, 10);
 
     const result = await prisma.$transaction(async (tx) => {
+
       const newAcc = await AccountModel.createAccount(tx, {
         tenTaiKhoan,
         matKhau: hashed,
@@ -60,7 +61,7 @@ export const AccountService = {
         loaiTaiKhoan,
       });
 
-      await createDetailRecord(tx, newAcc.maTaiKhoan, loaiTaiKhoan);
+      await createDetailRecord(tx, newAcc.maTaiKhoan, loaiTaiKhoan, body);
 
       return newAcc;
     });
@@ -68,7 +69,6 @@ export const AccountService = {
     return { status: 201, message: "Tạo tài khoản thành công!", data: result };
   },
 
-  // Cập nhật thông tin tài khoản (chỉ Admin)
   async updateAccount(id: number, body: any) {
     const account = await AccountModel.findById(id);
     if (!account) return { status: 404, message: "Tài khoản không tồn tại!" };
@@ -77,14 +77,50 @@ export const AccountService = {
       hoVaTen: body.hoVaTen,
       email: body.email,
       soDienThoai: body.soDienThoai,
-      loaiTaiKhoan: body.loaiTaiKhoan,
     };
 
     if (body.matKhau) {
       updateData.matKhau = await bcrypt.hash(body.matKhau, 10);
     }
 
-    await AccountModel.updateAccount(id, updateData);
+    // Dùng Transaction để update cả 2 bảng cùng lúc
+    await prisma.$transaction(async (tx) => {
+      // 1. Update bảng chính
+      await tx.taiKhoan.update({
+        where: { maTaiKhoan: id },
+        data: updateData
+      });
+
+      // 2. Update bảng phụ tùy theo Role
+      if (account.loaiTaiKhoan === 'BAC_SI') {
+        await tx.bacSi.upsert({
+          where: { maTaiKhoan: id },
+          update: {
+            chuyenKhoa: body.chuyenKhoa,
+            congTac: body.congTac
+          },
+          create: {
+            maTaiKhoan: id,
+            chuyenKhoa: body.chuyenKhoa || "Chưa cập nhật",
+            congTac: body.congTac || "Chưa cập nhật",
+            ngayBatDau: new Date()
+          }
+        });
+      } else if (account.loaiTaiKhoan === 'KY_THUAT_VIEN') {
+        await tx.kyThuatVien.upsert({
+          where: { maTaiKhoan: id },
+          update: {
+            chungChi: body.chungChi
+          },
+          create: {
+            maTaiKhoan: id,
+            chungChi: body.chungChi || "Chưa cập nhật",
+            ngayBatDau: new Date()
+          }
+        });
+      }
+    });
+
     return { status: 200, message: "Cập nhật tài khoản thành công!" };
   },
 

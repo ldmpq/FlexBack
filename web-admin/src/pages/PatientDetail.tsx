@@ -22,7 +22,7 @@ const PatientDetail: React.FC = () => {
   if (!patient) return <div className="p-8 text-center text-red-500">Không tìm thấy bệnh nhân! (Vui lòng kiểm tra lại ID)</div>;
 
   // Sử dụng Optional Chaining để tránh lỗi khi data chưa đầy đủ
-  const info = patient.BenhNhan?.[0];
+  const info = patient.BenhNhan;
 
   return (
     <div className="p-6 max-w-6xl mx-auto font-sans text-gray-800 relative">

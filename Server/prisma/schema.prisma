@@ -29,9 +29,9 @@ model TaiKhoan {
   ngayTaoTaiKhoan  DateTime? @default(now()) @db.DateTime(0)
 
   // Relations
-  BenhNhan         BenhNhan[]
-  BacSi            BacSi[]
-  KyThuatVien      KyThuatVien[]
+  BenhNhan         BenhNhan?
+  BacSi            BacSi?
+  KyThuatVien      KyThuatVien?
   ThongBaoLichTap  ThongBaoLichTap[]
 
   @@map("TAIKHOAN")
@@ -70,7 +70,7 @@ model BenhNhan {
   canNang          Decimal?  @db.Decimal(5, 2)
   tienSuChanThuong String?   @db.Text
   tinhTrangHienTai String?   @db.Text
-  maTaiKhoan       Int?
+  maTaiKhoan       Int?      @unique
 
   // Relations
   TaiKhoan         TaiKhoan? @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
@@ -84,7 +84,7 @@ model BacSi {
   chuyenKhoa  String?   @db.VarChar(100)
   congTac     String?   @db.VarChar(100)
   ngayBatDau  DateTime? @db.Date
-  maTaiKhoan  Int?
+  maTaiKhoan  Int?      @unique
 
   // Relations
   TaiKhoan    TaiKhoan? @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
@@ -97,7 +97,7 @@ model KyThuatVien {
   maKyThuatVien Int       @id @default(autoincrement())
   chungChi      String?   @db.Text
   ngayBatDau    DateTime? @db.Date
-  maTaiKhoan    Int?
+  maTaiKhoan    Int?      @unique
 
   // Relations
   TaiKhoan      TaiKhoan? @relation(fields: [maTaiKhoan], references: [maTaiKhoan])

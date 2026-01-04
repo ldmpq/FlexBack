@@ -25,8 +25,8 @@ export interface StaffAccount {
   loaiTaiKhoan: AccountRole;
   ngayTaoTaiKhoan: string;
   // Dữ liệu mở rộng (có thể có hoặc không tùy vào API list hay detail)
-  BacSi?: BacSiInfo[];
-  KyThuatVien?: KyThuatVienInfo[];
+  BacSi?: BacSiInfo;
+  KyThuatVien?: KyThuatVienInfo;
 }
 
 // Dữ liệu Form khi tạo mới hoặc cập nhật
@@ -38,4 +38,7 @@ export interface AccountFormData {
   loaiTaiKhoan: AccountRole;
   matKhau: string;
   xacNhanMatKhau: string;
+  chuyenKhoa?: string;  // Dành cho Bác sĩ
+  congTac?: string;     // Dành cho Bác sĩ
+  chungChi?: string;    // Dành cho KTV
 }
