@@ -4,7 +4,7 @@ For using FlexBack, you need to follow these 3 steps:
 1. To create the database, open terminal, type `cd .\Server\` and run this command: `npx prisma generate`
 2. In MySQL: 
 Choose flex_back, select taikhoan table -> insert value and apply (for the Dob (ngaySinh), you should leave it as "YYYY-MM-DD" and Role(loaiTaiKhoan): ADMIN)
-3. cd to Server, run this command: npx ts-node prisma/fix_passwords.ts
+3. cd to Server, run this command: `npx ts-node prisma/fix_passwords.ts`
 
 P/s: With Server and web-admin -> `npm run dev`; mobile/FlexBackMobile -> `npx expo start`
 
