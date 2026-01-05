@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Phone, MapPin, Calendar, FileText, PlusCircle} from 'lucide-react';
+import { ArrowLeft, User, Phone, MapPin, Calendar, FileText, PlusCircle, Edit } from 'lucide-react';
 import { usePatientDetailManager } from '../hooks/usePatientDetailManager';
 import CreateRecordForm from '../components/forms/CreateRecordForm';
 
@@ -10,23 +10,31 @@ const PatientDetail: React.FC = () => {
   const currentUser = JSON.parse(localStorage.getItem('user_info') || '{}');
   const isDoctor = currentUser?.loaiTaiKhoan === 'BAC_SI';
 
-  // Lấy logic từ Hook
   const { 
     patient, loading, listBacSi, listKTV, doctorsLoading,
     showModal, setShowModal,
     formData, setFormData, submitting,
-    handleCreateHoSo, openCreateModal
+    editingId,
+    handleSaveHoSo, openCreateModal, openEditModal
   } = usePatientDetailManager();
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Đang điều trị': return 'bg-green-100 text-green-700 border-green-200';
+      case 'Hoàn thành': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'Tạm hoãn': return 'bg-orange-100 text-orange-700 border-orange-200';
+      case 'Đã hủy': return 'bg-red-100 text-red-700 border-red-200';
+      default: return 'bg-gray-100 text-gray-600 border-gray-200';
+    }
+  };
 
   if (loading) return <div className="p-8 text-center text-blue-600 font-medium">Đang tải thông tin...</div>;
   if (!patient) return <div className="p-8 text-center text-red-500">Không tìm thấy bệnh nhân! (Vui lòng kiểm tra lại ID)</div>;
 
-  // Sử dụng Optional Chaining để tránh lỗi khi data chưa đầy đủ
   const info = patient.BenhNhan;
 
   return (
     <div className="p-6 max-w-6xl mx-auto font-sans text-gray-800 relative">
-      {/* Nút quay lại */}
       <button onClick={() => navigate('/admin/patients')} className="flex items-center text-gray-500 hover:text-blue-600 mb-4 transition">
         <ArrowLeft size={20} className="mr-2" /> Quay lại danh sách
       </button>
@@ -49,7 +57,7 @@ const PatientDetail: React.FC = () => {
           </div>
         </div>
         <div className="border-l pl-6 border-gray-100 min-w-[300px]">
-           <h3 className="font-bold text-gray-700 mb-2">Tình trạng hiện tại:</h3>
+           <h3 className="font-bold text-gray-700 mb-2">Tình trạng hiện tại của bệnh nhân:</h3>
            <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded italic">
              "{info?.tinhTrangHienTai || 'Chưa có ghi chú tình trạng'}"
            </p>
@@ -75,14 +83,33 @@ const PatientDetail: React.FC = () => {
       <div className="grid gap-4">
         {info?.HoSoBenhAn && info.HoSoBenhAn.length > 0 ? (
           info.HoSoBenhAn.map((hs) => (
-            <div key={hs.maHoSo} className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition cursor-pointer">
+            <div key={hs.maHoSo} className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition cursor-pointer relative group">
+              
+              {/* Header Card Hồ sơ */}
               <div className="flex justify-between mb-2">
                 <span className="font-bold text-lg text-blue-700">Hồ sơ #{hs.maHoSo}</span>
-                <span className="text-sm text-gray-500 flex items-center">
-                  <Calendar size={14} className="mr-1" />
-                  {new Date(hs.ngayLapHoSo).toLocaleDateString('vi-VN')}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className={`text-xs font-semibold px-2.5 py-1 rounded border shadow-sm ${getStatusColor(hs.trangThaiHienTai || '')}`}>
+                    {hs.trangThaiHienTai || 'Đang điều trị'}
+                  </span>
+                  <span className="text-sm text-gray-500 flex items-center pl-2 border-l border-gray-200">
+                    <Calendar size={14} className="mr-1" />
+                    {new Date(hs.ngayLapHoSo).toLocaleDateString('vi-VN')}
+                  </span>
+
+                  {isDoctor && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); openEditModal(hs); }}
+                      className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition opacity-0 group-hover:opacity-100"
+                      title="Chỉnh sửa hồ sơ"
+                    >
+                      <Edit size={16} />
+                    </button>
+                  )}
+                </div>
               </div>
+
+              {/* Nội dung hồ sơ */}
               <p className="text-gray-700 font-medium mb-1">Chẩn đoán: {hs.chanDoan}</p>
               
               <p className="text-sm text-gray-500">
@@ -99,7 +126,7 @@ const PatientDetail: React.FC = () => {
                 </span>
               </p>
               
-              {/* NÚT XEM LỘ TRÌNH*/}
+              {/* Nút xem lộ trình */}
               <div className="mt-4 pt-3 border-t flex justify-end gap-3">
                  <button 
                     onClick={() => navigate('/admin/plans', { state: { selectedHoSoId: hs.maHoSo } })}
@@ -117,18 +144,18 @@ const PatientDetail: React.FC = () => {
         )}
       </div>
 
-      {/* TẠO HỒ SƠ */}
       {isDoctor && (
         <CreateRecordForm
           isOpen={showModal}
           onClose={() => setShowModal(false)}
-          onSubmit={handleCreateHoSo}
+          onSubmit={handleSaveHoSo}
           formData={formData}
           setFormData={setFormData}
           submitting={submitting}
           listBacSi={listBacSi}
           listKTV={listKTV}
           doctorsLoading={doctorsLoading}
+          title={editingId ? "Cập nhật hồ sơ" : "Tạo hồ sơ mới"}
         />)}
     </div>
   );

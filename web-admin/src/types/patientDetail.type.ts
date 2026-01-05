@@ -18,6 +18,7 @@ export interface MedicalRecord {
   maHoSo: number;
   ngayLapHoSo: string;
   chanDoan: string;
+  trangThaiHienTai: string;
   BacSi?: {
     hoVaTen?: string;
     TaiKhoan?: { hoVaTen: string };

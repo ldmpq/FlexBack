@@ -16,6 +16,21 @@ export const createHoSoBenhAn = async (req: Request, res: Response) => {
   }
 };
 
+export const updateHoSoBenhAn = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = await HoSoService.updateHoSoBenhAn(id, req.body);
+    
+    res.status(200).json({ 
+      message: 'Cập nhật hồ sơ thành công!', 
+      data 
+    });
+  } catch (error: any) {
+    console.error("Lỗi cập nhật hồ sơ:", error);
+    res.status(400).json({ message: error.message });
+  }
+};
+
 export const getListBacSi = async (req: Request, res: Response) => {
   try {
     const data = await HoSoService.getListBacSi();

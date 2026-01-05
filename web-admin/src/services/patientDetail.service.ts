@@ -22,5 +22,9 @@ export const patientDetailService = {
   // Tạo hồ sơ bệnh án mới
   createHoSo: async (payload: { maBenhNhan: number; maBacSi: string | number; maKyThuatVien?: string | number; chanDoan: string; trangThaiHienTai: string }) => {
     return axiosClient.post('/hoso', payload);
+  },
+
+  updateHoSo: async (id: number, payload: any) => {
+    return axiosClient.put(`/hoso/${id}`, payload);
   }
 };

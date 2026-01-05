@@ -4,9 +4,9 @@ import { patientDetailService } from '../services/patientDetail.service';
 import type { PatientDetailData, DoctorOption, KtvOption, CreateHoSoForm } from '../types/patientDetail.type';
 
 export const usePatientDetailManager = () => {
-  const { id } = useParams<{ id: string }>(); // Lấy ID từ URL
+  const { id } = useParams<{ id: string }>(); 
   
-  // Data State
+  // --- Data State ---
   const [patient, setPatient] = useState<PatientDetailData | null>(null);
   const [listBacSi, setListBacSi] = useState<DoctorOption[]>([]);
   const [listKTV, setListKTV] = useState<KtvOption[]>([]);
@@ -15,9 +15,13 @@ export const usePatientDetailManager = () => {
   const [doctorsLoading, setDoctorsLoading] = useState(false);
   const [ktvsLoading, setKtvsLoading] = useState(false);
 
-  // UI & Form State
+  // --- UI & Form State ---
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  
+  // State quan trọng: Đang sửa ID nào? (null = Tạo mới)
+  const [editingId, setEditingId] = useState<number | null>(null);
+
   const [formData, setFormData] = useState<CreateHoSoForm>({
     chanDoan: '',
     trangThaiHienTai: '',
@@ -25,8 +29,6 @@ export const usePatientDetailManager = () => {
     maKyThuatVien: ''
   });
 
-  // --- API CALLS ---
-  
   const fetchDetail = useCallback(async () => {
     if (!id) return;
     try {
@@ -68,54 +70,87 @@ export const usePatientDetailManager = () => {
     }
   };
 
-  // Load data khi component mount hoặc ID thay đổi
   useEffect(() => {
     fetchDetail();
+    fetchDoctors();
+    fetchKTVs();
   }, [fetchDetail]);
 
-  const handleCreateHoSo = async (e: React.FormEvent) => {
+
+  // 1. Mở Modal Tạo Mới
+  const openCreateModal = () => {
+    setEditingId(null);
+    setFormData({ chanDoan: '', trangThaiHienTai: 'Đang điều trị', maBacSi: '', maKyThuatVien: '' }); // Reset Form
+    setShowModal(true);
+  };
+
+  // 2. Mở Modal Chỉnh Sửa (Đổ dữ liệu cũ vào form)
+  const openEditModal = (record: any) => {
+    setEditingId(record.maHoSo); // Set ID đang sửa
+    
+    // Tìm KTV hiện tại trong mảng Phân công
+    const currentKTV = record.PhanCong && record.PhanCong.length > 0 
+      ? record.PhanCong[0].maKyThuatVien 
+      : '';
+
+    setFormData({
+      chanDoan: record.chanDoan || '',
+      // Lấy trạng thái từ bệnh nhân hoặc hồ sơ
+      trangThaiHienTai: record.trangThaiHienTai || 'Đang điều trị', 
+      maBacSi: record.maBacSi || '',
+      maKyThuatVien: currentKTV
+    });
+
+    setShowModal(true);
+  };
+
+  // 3. Xử lý Lưu (Tự động phân biệt Tạo/Sửa)
+  const handleSaveHoSo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.chanDoan) return alert("Vui lòng nhập chẩn đoán!");
 
-    // Lấy maBenhNhan từ dữ liệu chi tiết đã load
     const maBenhNhan = patient?.BenhNhan?.maBenhNhan;
-    
-    if (!maBenhNhan) {
-      return alert("Lỗi dữ liệu bệnh nhân (Thiếu mã chi tiết). Vui lòng tải lại trang.");
-    }
+    if (!maBenhNhan) return alert("Lỗi dữ liệu bệnh nhân (Thiếu mã chi tiết).");
 
     try {
       setSubmitting(true);
-      await patientDetailService.createHoSo({
-        maBenhNhan,
-        maBacSi: formData.maBacSi,
-        maKyThuatVien: formData.maKyThuatVien,
-        chanDoan: formData.chanDoan,
-        trangThaiHienTai: formData.trangThaiHienTai
-      });
 
-      alert("Tạo hồ sơ thành công!");
+      if (editingId) {
+        await patientDetailService.updateHoSo(editingId, {
+          ...formData,
+          // Update không cần gửi lại maBenhNhan
+        });
+        alert("Cập nhật hồ sơ thành công!");
+      } else {
+        await patientDetailService.createHoSo({
+          maBenhNhan,
+          maBacSi: formData.maBacSi,
+          maKyThuatVien: formData.maKyThuatVien,
+          chanDoan: formData.chanDoan,
+          trangThaiHienTai: formData.trangThaiHienTai
+        });
+        alert("Tạo hồ sơ thành công!");
+      }
+
       setShowModal(false);
-      setFormData({ chanDoan: '', trangThaiHienTai: '', maBacSi: '' }); // Reset form
-      fetchDetail(); // Reload lại dữ liệu mới nhất
+      setEditingId(null);
+      fetchDetail(); // Load lại dữ liệu mới nhất
     } catch (error) {
       console.error(error);
-      alert("Có lỗi xảy ra khi tạo hồ sơ.");
+      alert("Có lỗi xảy ra. Vui lòng thử lại.");
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const openCreateModal = () => {
-    setShowModal(true);
-    fetchDoctors();
-    fetchKTVs();
   };
 
   return {
     patient, loading, listBacSi, listKTV, doctorsLoading, ktvsLoading,
     showModal, setShowModal, 
     formData, setFormData, submitting,
-    handleCreateHoSo, openCreateModal
+    editingId,
+    openCreateModal,
+    openEditModal,
+    handleSaveHoSo,
+    fetchDetail
   };
 };

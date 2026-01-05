@@ -72,7 +72,7 @@ const Exercises: React.FC = () => {
                 <div className="flex gap-1">
                   <button
                     onClick={() => handleEdit(ex)}
-                    className="p-1.5 text-gray-400 hover:text-blue-600 rounded hover:bg-gray-100"
+                    className="p-1.5 text-gray-400 hover:text-green-600 rounded hover:bg-gray-100"
                     title="Chỉnh sửa"
                   >
                     <Edit size={16} />

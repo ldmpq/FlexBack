@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, Calendar, MessageCircle, Send, PlayCircle, Clock, Activity, Dumbbell, List, Star } from 'lucide-react';
+import { ArrowLeft, User, Calendar, MessageCircle, Send, Clock, Activity, Dumbbell, List, Star } from 'lucide-react';
 import axiosClient from '../utils/axiosClient';
 
 const ReportDetail = () => {

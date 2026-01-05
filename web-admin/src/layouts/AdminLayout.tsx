@@ -10,6 +10,12 @@ interface UserInfo {
   loaiTaiKhoan: string;
 }
 
+const ROLE_NAMES: Record<string, string> = {
+  'ADMIN': 'Quản trị viên',
+  'BAC_SI': 'Bác sĩ',
+  'KY_THUAT_VIEN': 'Kỹ thuật viên'
+};
+
 const AdminLayout = () => {
   const [user, setUser] = useState<UserInfo | null>(null);
   const location = useLocation();
@@ -73,7 +79,7 @@ const AdminLayout = () => {
 
   // 2. Xử lý click "Xem chi tiết"
   const handleOpenDetail = async () => {
-    setShowDropdown(false); // Đóng menu
+    setShowDropdown(false);
     setShowProfileModal(true);
     const data = await fetchMyProfile();
     if (data) setFullProfile(data);
@@ -81,7 +87,7 @@ const AdminLayout = () => {
 
   // 3. Xử lý click "Cập nhật thông tin"
   const handleOpenEdit = async () => {
-    setShowDropdown(false); // Đóng menu
+    setShowDropdown(false);
     setShowEditModal(true);
     const data = await fetchMyProfile();
     
@@ -167,7 +173,9 @@ const AdminLayout = () => {
                 <User size={24} className="text-blue-700" />
               </div>
               <div className="overflow-hidden">
-                <p className="text-xs text-blue-600">Xin chào {user?.loaiTaiKhoan}</p>
+                <p className="text-xs text-blue-600">
+                   Xin chào {user?.loaiTaiKhoan ? (ROLE_NAMES[user.loaiTaiKhoan] || user.loaiTaiKhoan) : '...'}
+                </p>
                 <p className="font-bold text-gray-800 truncate w-28">
                   {user?.hoVaTen || 'Admin'}
                 </p>
@@ -200,7 +208,7 @@ const AdminLayout = () => {
           <MenuItem to="/admin" icon={LayoutDashboard} label="Tổng quan" />
           <MenuItem to="/admin/patients" icon={Users} label="Bệnh nhân" />
           <MenuItem to="/admin/plans" icon={Map} label="Hồ sơ và Lộ trình" />
-          <MenuItem to="/admin/reports" icon={ClipboardList} label="Báo cáo" />
+          <MenuItem to="/admin/reports" icon={ClipboardList} label="Báo cáo luyện tập" />
 
           {user?.loaiTaiKhoan === 'KY_THUAT_VIEN' && (
              <div className="mt-2">

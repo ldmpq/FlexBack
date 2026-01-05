@@ -162,9 +162,23 @@ const MedicalResources = () => {
                   <td className="p-4 text-gray-500 font-mono text-sm">#{activeTab === 'thuoc' ? item.maThuoc : item.maThucPham}</td>
                   <td className="p-4 font-semibold text-gray-800">{activeTab === 'thuoc' ? item?.tenThuoc : item?.tenThucPham}</td>
                   <td className="p-4 text-gray-600 text-sm max-w-md truncate">{activeTab === 'thuoc' ? item?.congDung : item?.chiTiet}</td>
-                  <td className="p-4 flex justify-end gap-2">
-                    <button onClick={() => { setEditingItem(item); setIsModalOpen(true); }} className="p-2 text-green-600 bg-green-50 rounded hover:bg-green-100"><Edit size={16}/></button>
-                    <button onClick={() => handleDelete(activeTab === 'thuoc' ? item.maThuoc : item.maThucPham)} className="p-2 text-red-600 bg-red-50 rounded hover:bg-red-100"><Trash2 size={16}/></button>
+                  <td className="p-4">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <button
+                        onClick={() => { setEditingItem(item); setIsModalOpen(true); }}
+                        className="p-2 text-green-600 bg-green-50 rounded hover:bg-green-100"
+                        title="Chỉnh sửa"
+                      >
+                        <Edit size={16} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(activeTab === 'thuoc' ? item.maThuoc : item.maThucPham)}
+                        className="p-2 text-red-600 bg-red-50 rounded hover:bg-red-100"
+                        title="Xóa"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -8,107 +8,153 @@ import YoutubeModal from '../components/modals/YoutubeModal';
 import HeaderNavigation from '../components/navigation/header.navigation';
 
 const BASE_URL = 'http://10.0.2.2:3000';
+const { width: SCREEN_WIDTH } = Dimensions.get('window'); // Lấy chiều rộng màn hình
 
 const ExerciseDetailScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  
-  // Lấy dữ liệu được truyền từ HomeTab
-  const { detail } = route.params as { detail: any }; 
-  const exercise = detail?.BaiTapPhucHoi || {};
 
+  const { exerciseList, initialIndex } = route.params as { exerciseList: any[], initialIndex: number };
+
+  const [currentIndex, setCurrentIndex] = useState(initialIndex || 0);
+
+  // Modal State
   const [videoVisible, setVideoVisible] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
   const [youtubeVisible, setYoutubeVisible] = useState(false);
 
-  const handleOpenVideo = () => {
-    const url = exercise.videoHuongDan;
-    if (!url) {
+  // Xử lý mở video (Dùng chung cho các item)
+  const handleOpenVideo = (videoUrl: string) => {
+    if (!videoUrl) {
       Alert.alert("Thông báo", "Bài tập này chưa có video hướng dẫn.");
       return;
     }
-
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-      setCurrentVideoUrl(url);
+    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+      setCurrentVideoUrl(videoUrl);
       setYoutubeVisible(true);
     } else {
-      const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
+      const fullUrl = videoUrl.startsWith('http') ? videoUrl : `${BASE_URL}${videoUrl}`;
       setCurrentVideoUrl(fullUrl);
       setVideoVisible(true);
     }
   };
 
-  return (
-    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      <HeaderNavigation title="Chi tiết bài tập" onBack={() => navigation.goBack()} />
+  const renderExerciseItem = ({ item }: { item: any }) => {
+    const exercise = item?.BaiTapPhucHoi || {};
+    
+    return (
+      <View style={{ width: SCREEN_WIDTH }}> 
+        <ScrollView contentContainerStyle={styles.content}>
+          {/* Banner Video */}
+          <TouchableOpacity style={styles.videoBanner} onPress={() => handleOpenVideo(exercise.videoHuongDan)}>
+              <View style={styles.playIconContainer}>
+                 <MaterialIcons name="play-arrow" size={40} color="#fff" />
+              </View>
+              <Text style={styles.clickToPlayText}>Xem video hướng dẫn</Text>
+          </TouchableOpacity>
 
-      <ScrollView contentContainerStyle={styles.content}>
+          {/* Header Info */}
+          <View style={styles.headerInfo}>
+            <Text style={styles.title}>{exercise.tenBaiTap || "Tên bài tập"}</Text>
+            
+            <View style={styles.tagRow}>
+               {exercise.dungCuCanThiet ? (
+                  <View style={styles.tag}>
+                     <FontAwesome5 name="tools" size={12} color="#1ec8a5" />
+                     <Text style={styles.tagText}>{exercise.dungCuCanThiet}</Text>
+                  </View>
+               ) : null}
 
-        <TouchableOpacity style={styles.videoBanner} onPress={handleOpenVideo}>
-            <View style={styles.playIconContainer}>
-               <MaterialIcons name="play-arrow" size={40} color="#fff" />
+               {exercise.thoiLuongPhut ? (
+                  <View style={[styles.tag, {marginLeft: 8}]}>
+                     <Feather name="clock" size={12} color="#1ec8a5" />
+                     <Text style={styles.tagText}>{exercise.thoiLuongPhut} phút</Text>
+                  </View>
+               ) : null}
             </View>
-            <Text style={styles.clickToPlayText}>Xem video hướng dẫn</Text>
-        </TouchableOpacity>
+          </View>
 
-        <View style={styles.headerInfo}>
-          <Text style={styles.title}>{exercise.tenBaiTap || "Tên bài tập"}</Text>
-          
-          <View style={styles.tagRow}>
-             {/* SỬA LỖI: Dùng toán tử 3 ngôi thay vì && để tránh render chuỗi rỗng */}
-             {exercise.dungCuCanThiet ? (
-                <View style={styles.tag}>
-                   <FontAwesome5 name="tools" size={12} color="#1ec8a5" />
-                   <Text style={styles.tagText}>{exercise.dungCuCanThiet}</Text>
+          {/* Stats Card */}
+          <View style={styles.statsCard}>
+             <Text style={styles.sectionTitle}>Mục tiêu hôm nay</Text>
+             <View style={styles.statsRow}>
+                <View style={styles.statItem}>
+                   <Text style={styles.statValue}>{item.sets || '--'}</Text>
+                   <Text style={styles.statLabel}>SETS</Text>
                 </View>
-             ) : null}
-
-             {/* SỬA LỖI: Dùng toán tử 3 ngôi để tránh render số 0 */}
-             {exercise.thoiLuongPhut ? (
-                <View style={[styles.tag, {marginLeft: 8}]}>
-                   <Feather name="clock" size={12} color="#1ec8a5" />
-                   <Text style={styles.tagText}>{exercise.thoiLuongPhut} phút</Text>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                   <Text style={styles.statValue}>{item.reps || '--'}</Text>
+                   <Text style={styles.statLabel}>REPS</Text>
                 </View>
+                <View style={styles.statDivider} />
+                <View style={styles.statItem}>
+                   <Text style={styles.statValue}>{item.cuongDo || 'Vừa'}</Text>
+                   <Text style={styles.statLabel}>CƯỜNG ĐỘ</Text>
+                </View>
+             </View>
+             
+             {item.ghiChu ? (
+               <View style={styles.noteBox}>
+                 <Feather name="info" size={14} color="#d97706" style={{ marginTop: 2 }} />
+                 <Text style={styles.noteText}>{item.ghiChu}</Text>
+               </View>
              ) : null}
           </View>
+
+          {/* Description */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Hướng dẫn thực hiện</Text>
+            <Text style={styles.descriptionText}>
+              {exercise.moTaBaiTap || exercise.moTa || 'Chưa có mô tả chi tiết cho bài tập này.'}
+            </Text>
+          </View>
+
+          <View style={{height: 100}} />
+        </ScrollView>
+      </View>
+    );
+  };
+
+  const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
+    if (viewableItems.length > 0) {
+      setCurrentIndex(viewableItems[0].index);
+    }
+  }).current;
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
+      
+      {/* Header Navigation: Hiển thị số thứ tự bài tập */}
+      <HeaderNavigation 
+        title={`Bài tập ${currentIndex + 1}/${exerciseList?.length || 0}`} 
+        onBack={() => navigation.goBack()} 
+      />
+
+      {exerciseList && exerciseList.length > 0 ? (
+        <FlatList
+          data={exerciseList}
+          renderItem={renderExerciseItem}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal // Lướt ngang
+          pagingEnabled // Lướt từng trang một (snap)
+          showsHorizontalScrollIndicator={false}
+          
+          initialScrollIndex={initialIndex} // Nhảy tới bài tập được chọn ban đầu
+          getItemLayout={(data, index) => (
+            { length: SCREEN_WIDTH, offset: SCREEN_WIDTH * index, index }
+          )}
+          
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+        />
+      ) : (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+           <Text style={{color: '#999'}}>Không có dữ liệu bài tập</Text>
         </View>
+      )}
 
-        <View style={styles.statsCard}>
-           <Text style={styles.sectionTitle}>Mục tiêu hôm nay</Text>
-           <View style={styles.statsRow}>
-              <View style={styles.statItem}>
-                 <Text style={styles.statValue}>{detail.sets || '--'}</Text>
-                 <Text style={styles.statLabel}>SETS</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                 <Text style={styles.statValue}>{detail.reps || '--'}</Text>
-                 <Text style={styles.statLabel}>REPS</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                 <Text style={styles.statValue}>{detail.cuongDo || 'Vừa'}</Text>
-                 <Text style={styles.statLabel}>CƯỜNG ĐỘ</Text>
-              </View>
-           </View>
-           
-           {detail.ghiChu ? (
-             <View style={styles.noteBox}>
-               <Feather name="info" size={14} color="#d97706" style={{ marginTop: 2 }} />
-               <Text style={styles.noteText}>{detail.ghiChu}</Text>
-             </View>
-           ) : null}
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Hướng dẫn thực hiện</Text>
-          <Text style={styles.descriptionText}>
-            {exercise.moTaBaiTap || exercise.moTa || 'Chưa có mô tả chi tiết cho bài tập này.'}
-          </Text>
-        </View>
-
-      </ScrollView>
-
+      {/* Nút Hoàn thành (Fixed ở dưới) */}
       <View style={styles.footerContainer}>
         <TouchableOpacity style={styles.primaryButton} onPress={() => navigation.goBack()}>
            <Feather name="check" size={20} color="#fff" />
@@ -116,22 +162,21 @@ const ExerciseDetailScreen = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Modals Video */}
       {videoVisible && (
         <VideoModal
           visible={videoVisible}
           videoUrl={currentVideoUrl}
-          onClose={() => {
-            setVideoVisible(false);
-            setCurrentVideoUrl(null);
-          }}
+          onClose={() => { setVideoVisible(false); setCurrentVideoUrl(null); }}
         />
       )}
-
+      
       <YoutubeModal
         visible={youtubeVisible}
         youtubeUrl={currentVideoUrl}
         onClose={() => setYoutubeVisible(false)}
       />
+
     </SafeAreaView>
   );
 };
@@ -141,12 +186,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f7fa',
   },
-
   content: {
     padding: 16,
-    paddingBottom: 100,
   },
-
   videoBanner: {
     height: 180,
     backgroundColor: '#333',
@@ -157,7 +199,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd',
   },
-
   playIconContainer: {
     width: 60,
     height: 60,
@@ -167,28 +208,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
-
   clickToPlayText: {
     color: '#fff',
     fontWeight: '500',
   },
-
   headerInfo: {
     marginBottom: 20,
   },
-
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 8,
   },
-
   tagRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
   tag: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -197,14 +233,12 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 8,
   },
-
   tagText: {
     marginLeft: 6,
     color: '#1ec8a5',
     fontWeight: '600',
     fontSize: 13,
   },
-
   statsCard: {
     backgroundColor: '#fff',
     borderRadius: 16,
@@ -216,43 +250,36 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 12,
   },
-
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-
   statItem: {
     flex: 1,
     alignItems: 'center',
   },
-
   statValue: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#1ec8a5',
   },
-
   statLabel: {
     fontSize: 11,
     color: '#888',
     marginTop: 4,
   },
-
   statDivider: {
     width: 1,
     height: 30,
     backgroundColor: '#eee',
   },
-
   noteBox: {
     flexDirection: 'row',
     backgroundColor: '#fffbeb',
@@ -260,24 +287,20 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 16,
   },
-
   noteText: {
     fontSize: 13,
     color: '#b45309',
     marginLeft: 8,
     flex: 1,
   },
-
   section: {
     marginBottom: 20,
   },
-
   descriptionText: {
     lineHeight: 24,
     color: '#555',
     fontSize: 15,
   },
-
   footerContainer: {
     position: 'absolute',
     bottom: 0,
@@ -288,7 +311,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
-
   primaryButton: {
     backgroundColor: '#1ec8a5',
     borderRadius: 12,
@@ -298,7 +320,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
   },
-
   primaryButtonText: {
     color: '#fff',
     fontSize: 16,

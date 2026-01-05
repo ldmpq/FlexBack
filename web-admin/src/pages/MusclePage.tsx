@@ -102,18 +102,32 @@ const MusclePage = () => {
               <tbody className="divide-y divide-gray-100">
                 {filteredData.length > 0 ? (
                   filteredData.map((item) => (
-                    <tr key={item.maNhomCo} className="hover:bg-blue-50/50 transition">
+                    <tr key={item.maNhomCo} className="hover:bg-blue-50/50 transition group">
                       <td className="p-4 font-bold text-gray-800 flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><BicepsFlexed size={16} /></div>
-                          {item.tenNhomCo}
+                        <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><BicepsFlexed size={16} /></div>
+                        {item.tenNhomCo}
                       </td>
+
                       <td className="p-4 text-sm text-gray-600 max-w-md truncate">
                         {item.moTaNhomCo || <span className="text-gray-400 italic">Chưa có mô tả</span>}
                       </td>
+
                       <td className="p-4 text-center">
-                        <div className="flex justify-center gap-2">
-                          <button onClick={() => handleOpenEdit(item)} className="p-2 text-blue-600 bg-blue-50 rounded hover:bg-blue-100"><Edit size={16} /></button>
-                          <button onClick={() => handleDelete(item.maNhomCo, item.tenNhomCo)} className="p-2 text-red-600 bg-red-50 rounded hover:bg-red-100"><Trash2 size={16} /></button>
+                        <div className="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                          <button
+                            onClick={() => handleOpenEdit(item)}
+                            className="p-2 text-green-600 bg-green-50 rounded hover:bg-green-100"
+                            title="Chỉnh sửa"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.maNhomCo, item.tenNhomCo)}
+                            className="p-2 text-red-600 bg-red-50 rounded hover:bg-red-100"
+                            title="Xóa"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </td>
                     </tr>

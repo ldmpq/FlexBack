@@ -157,7 +157,7 @@ const ReportsList = () => {
                     </td>
                   </tr>
                 )) : (
-                  /* --- EMPTY STATE (GIỐNG PATIENTS.TSX) --- */
+
                   <tr>
                     <td colSpan={7} className="p-12 text-center text-gray-500">
                       <div className="flex flex-col items-center justify-center">

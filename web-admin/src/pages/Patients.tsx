@@ -95,8 +95,8 @@ const Patients: React.FC = () => {
                     </td>
                     {/* Cột 4: Tình trạng */}
                     <td className="p-4">
-                      <p className="text-sm text-gray-600 max-w-xs truncate" title={patient.BenhNhan?.[0]?.tinhTrangHienTai}>
-                        {patient.BenhNhan?.[0]?.tinhTrangHienTai || <span className="text-gray-400 italic text-xs">Chưa có hồ sơ bệnh án</span>}
+                      <p className="text-sm text-gray-600 max-w-xs truncate" title={patient.BenhNhan?.tinhTrangHienTai}>
+                        {patient.BenhNhan?.tinhTrangHienTai || <span className="text-gray-400 italic text-xs">Chưa có hồ sơ bệnh án</span>}
                       </p>
                     </td>
                     {/* Cột 5: Hành động */}

@@ -17,6 +17,7 @@ import thucPhamRoute from './routes/thucPhamRoute';
 import nhomCoRoute from './routes/nhomCoRoute';
 import benhNhanRoute from './routes/benhNhanRoute';
 import thongBaoRoute from './routes/thongBaoRoute';
+import dashBoardRoute from './routes/dashboardRoutes'
 
 dotenv.config();
 
@@ -47,6 +48,7 @@ app.use('/api/thucPham', thucPhamRoute);
 app.use('/api/nhom-co', nhomCoRoute);
 app.use('/api/benh-nhan', benhNhanRoute);
 app.use('/api/thongbao', thongBaoRoute);
+app.use('/api/dashboard', dashBoardRoute);
 
 // Route test server
 app.get('/', (req: Request, res: Response) => {

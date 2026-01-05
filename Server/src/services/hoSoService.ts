@@ -1,12 +1,9 @@
-// server/src/services/hoSoService.ts
 import prisma from '../prismaClient';
 import { CreateHoSoDTO } from '../models/hoSoModel';
 
 export class HoSoService {
   static async createHoSoBenhAn(data: CreateHoSoDTO) {
     const { maBenhNhan, maBacSi, chanDoan, trangThaiHienTai, maKyThuatVien } = data;
-
-    // Log kiểm tra dữ liệu đầu vào
     console.log("Dữ liệu nhận được:", { maBenhNhan, maKyThuatVien });
 
     if (!maBenhNhan || !chanDoan) {
@@ -67,6 +64,36 @@ export class HoSoService {
     });
 
     return newHoSo;
+  }
+
+  static async updateHoSoBenhAn(id: number, data: any) {
+    const { maBacSi, chanDoan, trangThaiHienTai, maKyThuatVien } = data;
+    const updateData: any = {
+      chanDoan,
+      trangThaiHienTai,
+      maBacSi: maBacSi ? parseInt(maBacSi) : null,
+    };
+
+    if (maKyThuatVien) {
+      await prisma.phanCong.deleteMany({
+        where: { maHoSo: id }
+      });
+
+      updateData.PhanCong = {
+        create: {
+          maKyThuatVien: parseInt(maKyThuatVien),
+          ngayBatDau: new Date()
+        }
+      };
+    }
+
+    return await prisma.hoSoBenhAn.update({
+      where: { maHoSo: id },
+      data: updateData,
+      include: {
+        PhanCong: true
+      }
+    });
   }
 
   static async getListBacSi() { 

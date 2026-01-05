@@ -36,13 +36,13 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
     setCurrentVideoUrl(null);
   };
 
-  const handlePressExercise = (item: any) => {
-    const detailData = {
+  const handlePressExercise = (selectedIndex: number) => {
+    // 1. Chuẩn hóa toàn bộ danh sách bài tập
+    const formattedList = exercises.map((item: any) => ({
       sets: item.soSet,
       reps: item.soRep,
       ghiChu: item.ghiChu,
       cuongDo: item.cuongDo || 'Vừa',
-
       BaiTapPhucHoi: {
         maBaiTap: item.maBaiTap,
         tenBaiTap: item.tenBaiTap,
@@ -51,8 +51,13 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
         dungCuCanThiet: item.dungCuCanThiet,
         thoiLuongPhut: item.thoiLuongPhut
       }
-    };
-    navigation.navigate('ExerciseDetail', { detail: detailData });
+    }));
+
+    // 2. Truyền danh sách + index của bài được chọn
+    navigation.navigate('ExerciseDetail', { 
+      exerciseList: formattedList,
+      initialIndex: selectedIndex
+    });
   };
 
   return (
@@ -71,7 +76,7 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
               key={index}
               style={styles.card}
               activeOpacity={0.7}
-              onPress={() => handlePressExercise(item)}
+              onPress={() => handlePressExercise(index)}
             >
               <View style={styles.cardHeader}>
                 <View style={styles.iconBox}>

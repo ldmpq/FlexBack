@@ -8,5 +8,5 @@ export interface Patient {
   ngaySinh: string;
   BenhNhan: {
     tinhTrangHienTai: string;
-  }[];
+  };
 }

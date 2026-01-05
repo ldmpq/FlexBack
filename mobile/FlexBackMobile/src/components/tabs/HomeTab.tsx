@@ -69,13 +69,15 @@ const HomeTab = () => {
   }, []);
 
   // Hàm render từng bài tập nhỏ
-  const renderExerciseItem = (detail: ChiTietKeHoach) => {
+  const renderExerciseItem = (detail: ChiTietKeHoach, index: number, fullList: ChiTietKeHoach[]) => {
     return (
       <TouchableOpacity 
         key={detail.maChiTiet} 
         style={styles.exerciseItem}
-
-        onPress={() => navigation.navigate('ExerciseDetail', { detail: detail })} 
+        onPress={() => navigation.navigate('ExerciseDetail', {
+          exerciseList: fullList,
+          initialIndex: index
+        })} 
       >
         <View style={styles.exerciseIconBox}>
           <MaterialIcons name="fitness-center" size={24} color="#1ec8a5" />
@@ -149,7 +151,9 @@ const HomeTab = () => {
 
               {/* Danh sách bài tập trong kế hoạch này */}
               {plan.ChiTietKeHoach && plan.ChiTietKeHoach.length > 0 ? (
-                plan.ChiTietKeHoach.map((detail) => renderExerciseItem(detail))
+                plan.ChiTietKeHoach.map((detail, index) => 
+                  renderExerciseItem(detail, index, plan.ChiTietKeHoach)
+                )
               ) : (
                 <Text style={styles.emptyText}>Chưa có bài tập chi tiết.</Text>
               )}

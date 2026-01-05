@@ -16,6 +16,7 @@ interface CreateRecordModalProps {
   listBacSi: any[];
   listKTV: any[];
   doctorsLoading: boolean;
+  title?: string
 }
 
 const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
@@ -27,7 +28,8 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
   submitting,
   listBacSi,
   listKTV,
-  doctorsLoading
+  doctorsLoading,
+  title
 }) => {
   if (!isOpen) return null;
 
@@ -36,7 +38,7 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
         {/* Header */}
         <div className="bg-blue-600 p-4 flex justify-between items-center text-white">
-          <h3 className="font-bold text-lg flex items-center gap-2">Tạo Hồ Sơ Mới</h3>
+          <h3 className="font-bold text-lg flex items-center gap-2">{title || "Tạo Hồ Sơ Mới"}</h3>
           <button onClick={onClose} className="hover:bg-blue-700 p-1 rounded-full transition">
             <X size={20} />
           </button>
@@ -59,18 +61,22 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
             ></textarea>
           </div>
 
-          {/* Input Tình trạng */}
+          {/* Input Trạng thái hồ sơ */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Tình trạng hiện tại
-            </label>
-            <input
-              type="text"
-              className="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
-              value={formData.trangThaiHienTai}
-              onChange={(e) => setFormData({ ...formData, trangThaiHienTai: e.target.value })}
-            />
-          </div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Trạng thái điều trị
+              </label>
+              <select
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                value={formData.trangThaiHienTai}
+                onChange={(e) => setFormData({ ...formData, trangThaiHienTai: e.target.value })}
+              >
+                <option value="Đang điều trị">Đang điều trị</option>
+                <option value="Hoàn thành">Hoàn thành</option>
+                <option value="Tạm hoãn">Tạm hoãn</option>              
+                <option value="Đã hủy">Đã hủy</option>
+              </select>
+            </div>
 
           {/* Select Bác sĩ */}
           <div>

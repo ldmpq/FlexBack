@@ -95,17 +95,22 @@ const TreatmentManager: React.FC = () => {
 
   return (
     <div className="p-6 h-[calc(100vh-64px)] flex flex-col font-sans text-gray-800">
-      <div>
+      <div className="mb-4">
         <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
           <Map className="text-blue-600" /> Quản lí Hồ sơ và Lộ trình
         </h2>
-        <p className="text-gray-500">Tạo lộ trình điều trị cho bệnh nhân</p>
+        <p className="text-gray-500 text-sm mt-1">Tạo lộ trình điều trị cho bệnh nhân</p>     
       </div>
 
       <div className="flex gap-6 flex-1 overflow-hidden">
         {/* CỘT TRÁI: DANH SÁCH */}
         <div className="w-1/3 bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col">
-          <div className="p-4 border-b bg-gray-50 font-semibold text-gray-700 rounded-t-xl">Danh sách Hồ sơ ({listHoSo.length})</div>
+          <div className="p-4 border-b bg-gray-50 rounded-t-xl flex justify-between items-center">
+            <span className="font-bold text-gray-700">Danh sách Hồ sơ</span>
+            <span className="bg-blue text-blue-600 px-2.5 py-0.5 rounded-full text-xs font-bold border border-gray-200 shadow-sm">
+              {listHoSo.length}
+            </span>
+          </div>
           <div className="overflow-y-auto flex-1 p-2 space-y-2">
             {listHoSo.map(hs => (
               <div key={hs.maHoSo} onClick={() => handleSelectHoSo(hs.maHoSo)}
@@ -135,7 +140,7 @@ const TreatmentManager: React.FC = () => {
                     {(selectedHoSo as any).KyThuatVien ? (
                       <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded text-xs font-medium backdrop-blur-sm border border-white/10 shadow-sm">
                         <Briefcase size={12} className="text-white" />
-                        KTV: {(selectedHoSo as any).KyThuatVien?.TaiKhoan?.hoVaTen || 'Chưa cập nhật tên'}
+                        KTV phụ trách: {(selectedHoSo as any).KyThuatVien?.TaiKhoan?.hoVaTen || 'Chưa cập nhật tên'}
                       </span>
                     ) : (selectedHoSo as any).BacSi ? (
                       <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded text-xs font-medium backdrop-blur-sm border border-white/10 shadow-sm">
@@ -173,10 +178,9 @@ const TreatmentManager: React.FC = () => {
                             </div>
 
                             <div className="flex items-center gap-3 pl-4 border-l border-gray-100 ml-4">
-                              {/* Nút Xóa: Thêm style hover đỏ nhạt để cảnh báo nguy hiểm */}
                               <button
                                 onClick={(e) => {
-                                  e.stopPropagation(); // Quan trọng: Ngăn click xuyên qua để mở accordion
+                                  e.stopPropagation();
                                   setDeleteData({ id: mt.maMucTieu, name: mt.noiDung, type: 'GOAL' });
                                 }}
                                 className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all group relative"
@@ -195,7 +199,7 @@ const TreatmentManager: React.FC = () => {
                           {expandedMucTieu === mt.maMucTieu && (
                             <div className="bg-gray-50 p-5 border-t border-gray-100 animate-in slide-in-from-top-2 duration-300">
                               <div className="flex justify-between items-center mb-4">
-                                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2"><Map size={14} /> Các giai đoạn của lộ trình</h4>
+                                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2"><Map size={14} />Lộ trình điều trị</h4>
                                 <button onClick={() => { setTargetMucTieuId(mt.maMucTieu); setShowRouteModal(true); fetchKTV(); }} className="text-blue-600 text-sm font-semibold hover:text-blue-800 flex items-center gap-1 hover:underline"><Plus size={14} /> Thêm Giai đoạn</button>
                               </div>
 
@@ -224,16 +228,25 @@ const TreatmentManager: React.FC = () => {
                                               </div>
                                             )}
                                           </div>
-                                          <button onClick={() => handleOpenExerciseSetup(lt)} className="text-xs font-medium border border-gray-200 px-3 py-1.5 rounded-md hover:bg-blue-600 hover:text-white hover:border-blue-600 transition flex items-center gap-2">
-                                            <Dumbbell size={14} /> Chi tiết & Bài tập
-                                          </button>
-                                          <button
-                                            onClick={(e) => { e.stopPropagation(); setDeleteData({ id: lt.maLoTrinh, name: lt.tenLoTrinh, type: 'ROUTE' }); }}
-                                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition border border-transparent hover:border-red-200"
-                                            title="Xóa lộ trình"
-                                          >
-                                            <Trash2 size={16} />
-                                          </button>
+                                          <div className="flex items-center gap-2">
+                                            <button
+                                              onClick={() => handleOpenExerciseSetup(lt)}
+                                              className="text-xs font-medium border border-gray-200 px-3 py-1.5 rounded-md hover:bg-blue-600 hover:text-white hover:border-blue-600 transition flex items-center gap-2"
+                                            >
+                                              <Dumbbell size={14} /> Chi tiết & Bài tập
+                                            </button>
+
+                                            <button
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                setDeleteData({ id: lt.maLoTrinh, name: lt.tenLoTrinh, type: 'ROUTE' });
+                                              }}
+                                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-md transition border border-transparent hover:border-red-200"
+                                              title="Xóa lộ trình"
+                                            >
+                                              <Trash2 size={16} />
+                                            </button>
+                                          </div>
                                         </div>
                                       </div>
                                     );
@@ -269,12 +282,12 @@ const TreatmentManager: React.FC = () => {
       />
 
       <DeleteConfirmModal
-        isOpen={!!deleteData} // Mở khi deleteData có dữ liệu
+        isOpen={!!deleteData}
         onClose={() => setDeleteData(null)}
         onConfirm={handleConfirmDelete}
         itemName={deleteData?.name || ''}
-        type={deleteData?.type || 'ROUTE'} // Mặc định để tránh lỗi null
-        isSubmitting={submitting} // Truyền state submitting từ hook vào để disable nút khi đang gọi API
+        type={deleteData?.type || 'ROUTE'}
+        isSubmitting={submitting}
       />
 
     </div>
