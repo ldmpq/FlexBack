@@ -28,7 +28,7 @@ export const guideService = {
   },
 
   getFoods: async () => {
-    const response = await axiosClient.get('/thuoc');
+    const response = await axiosClient.get('/thucpham');
     const list = response.data?.data || response.data || [];
     return list.map((item: any) => ({
       id: item.maThucPham,

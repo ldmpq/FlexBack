@@ -66,6 +66,15 @@ export const useProfile = () => {
       setLoading(true);
 
       const payload: any = { ...formData };
+      
+      if (payload.ngaySinh && payload.ngaySinh.includes('/')) {
+        const parts = payload.ngaySinh.split('/');
+        if (parts.length === 3) {
+           const [day, month, year] = parts;
+           payload.ngaySinh = `${year}-${month}-${day}`;
+        }
+      }
+
       if (!payload.ngaySinh) delete payload.ngaySinh;
 
       await profileService.updateProfile(payload);

@@ -19,6 +19,24 @@ const ProfileScreen = ({ navigation }: any) => {
     );
   }
 
+  const formatDaTeInput = (text: string) => {
+    const cleaned = text.replace(/[^0-9]/g, '');
+
+    if (cleaned.length <= 2) {
+      return cleaned;
+    } else if (cleaned.length <= 4) {
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+    } else {
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4, 8)}`;
+    }
+  };
+
+  const isoToDisplay = (isoDate: string) => {
+    if (!isoDate || !isoDate.includes('-')) return isoDate;
+    const [year, month, day] = isoDate.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -66,16 +84,20 @@ const ProfileScreen = ({ navigation }: any) => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Ngày sinh (YYYY-MM-DD)</Text>
+              <Text style={styles.label}>Ngày sinh (DD/MM/YYYY)</Text>
               <View style={styles.inputWrapper}>
                 <Feather name="calendar" size={18} color="#1ec8a5" />
                 <TextInput
                   style={styles.input}
-                  placeholder="1990-01-01"
-                  value={formData.ngaySinh}
-                  onChangeText={(t) =>
-                    setFormData({ ...formData, ngaySinh: t })
-                  }
+                  placeholder="01/01/1990"
+                  placeholderTextColor="#ccc"
+                  keyboardType="numeric"
+                  maxLength={10}
+                  value={isoToDisplay(formData.ngaySinh)} 
+                  onChangeText={(t) => {
+                    const formatted = formatDaTeInput(t);
+                    setFormData({ ...formData, ngaySinh: formatted });
+                  }}
                 />
               </View>
             </View>

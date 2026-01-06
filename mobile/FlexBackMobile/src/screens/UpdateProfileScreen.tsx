@@ -15,6 +15,24 @@ const UpdateProfileScreen = ({ navigation }: any) => {
   });
   const [loading, setLoading] = useState(false);
 
+  const formatDaTeInput = (text: string) => {
+    const cleaned = text.replace(/[^0-9]/g, '');
+
+    if (cleaned.length <= 2) {
+      return cleaned;
+    } else if (cleaned.length <= 4) {
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+    } else {
+      return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4, 8)}`;
+    }
+  };
+
+  const isoToDisplay = (isoDate: string) => {
+    if (!isoDate || !isoDate.includes('-')) return isoDate;
+    const [year, month, day] = isoDate.split('-');
+    return `${day}/${month}/${year}`;
+  };
+
   const handleUpdate = async () => {
     try {
       setLoading(true);
@@ -49,13 +67,18 @@ const UpdateProfileScreen = ({ navigation }: any) => {
 
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-                <Text style={styles.label}>Ngày sinh</Text>
+                <Text style={styles.label}>Ngày sinh (DD/MM/YYYY)</Text>
                 <TextInput 
-                  style={styles.input} 
-                  placeholder="Năm-Tháng-Ngày (VD: 2000-01-01)" 
-                  placeholderTextColor="#aaa" 
-                  value={formData.ngaySinh} 
-                  onChangeText={t => setFormData({...formData, ngaySinh: t})} 
+                  style={styles.input}
+                  placeholder="01/01/1990"
+                  placeholderTextColor="#ccc"
+                  keyboardType="numeric"
+                  maxLength={10}
+                  value={isoToDisplay(formData.ngaySinh)} 
+                  onChangeText={(t) => {
+                    const formatted = formatDaTeInput(t);
+                    setFormData({ ...formData, ngaySinh: formatted });
+                  }}
                 />
             </View>
 

@@ -4,7 +4,6 @@ import { ProgramData } from '../types/program.type';
 export const programService = {
   getMyProgram: async (): Promise<ProgramData | null> => {
     try {
-      console.log("1. Đang gọi /auth/me để lấy ID hồ sơ...");
       const meRes = await axiosClient.get('/auth/me');
       const user = meRes.data.data;
 
@@ -23,14 +22,12 @@ export const programService = {
       }
 
       const maHoSo = hoSo.maHoSo;
-      console.log("2. Tìm thấy maHoSo:", maHoSo, "- Đang gọi API lấy lộ trình...");
 
       const res = await axiosClient.get(`/treatment/${maHoSo}`);
-      console.log("3. Lấy dữ liệu lộ trình thành công!");
 
       return res.data.data;
     } catch (error) {
-      console.error("Lỗi trong quá trình lấy lộ trình:", error);
+      console.error(error);
       return null;
     }
   }

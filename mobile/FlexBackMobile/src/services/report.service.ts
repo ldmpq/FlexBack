@@ -2,7 +2,6 @@ import { ReportHistory } from '../types/result.type';
 import axiosClient from '../utils/axiosClient';
 
 export const reportService = {
-  // Tạo báo cáo mới
   createReport: async (data: { 
     maKeHoach: number | string; 
     thoiLuong: number | string; // Phút

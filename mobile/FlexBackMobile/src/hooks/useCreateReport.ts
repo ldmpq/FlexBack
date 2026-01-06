@@ -57,35 +57,25 @@ export const useCreateReport = ({
         ngayLuyenTap: new Date().toISOString(),
       });
 
-      Alert.alert(
-        'Thành công',
-        'Báo cáo luyện tập đã được gửi!',
+      Alert.alert('Thành công', 'Báo cáo luyện tập đã được gửi!',
         [{ text: 'OK', onPress: () => navigation.goBack() }]
       );
     } catch (error) {
       console.error('CreateReport error:', error);
-      Alert.alert(
-        'Lỗi',
-        'Không thể gửi báo cáo. Vui lòng kiểm tra lại.'
-      );
+      Alert.alert('Lỗi', 'Không thể gửi báo cáo. Vui lòng kiểm tra lại.');
     } finally {
       setLoading(false);
     }
   };
 
   return {
-    // state
     danhGiaSoBo,
     thoiLuong,
     mucDoDau,
     loading,
-
-    // setters
     setDanhGiaSoBo,
     setThoiLuong,
     setMucDoDau,
-
-    // actions
     handleSubmit,
   };
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Feather } from '@expo/vector-icons';
@@ -6,7 +6,7 @@ import { useCreateReport } from '../hooks/useCreateReport';
 import HeaderNavigation from '../components/navigation/header.navigation';
 
 const CreateReportScreen = ({ route, navigation }: any) => {
-  const { maKeHoach, title } = route.params || {};
+  const { maKeHoach, title, duration } = route.params || {};
 
   const {
     danhGiaSoBo,
@@ -18,6 +18,12 @@ const CreateReportScreen = ({ route, navigation }: any) => {
     loading,
     handleSubmit,
   } = useCreateReport({ maKeHoach, navigation });
+
+  useEffect(() => {
+    if (duration) {
+      setThoiLuong(duration.toString());
+    }
+  }, [duration]);
 
   const renderPainLevel = (level: number) => (
     <TouchableOpacity

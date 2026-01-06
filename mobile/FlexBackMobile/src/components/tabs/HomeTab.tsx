@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl,Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { Feather, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import SearchBar from '../../components/common/SearchBar';
 import { useNavigation } from '@react-navigation/native';
 import axiosClient from '../../utils/axiosClient';
@@ -32,25 +32,19 @@ const HomeTab = () => {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-
   const navigation = useNavigation<any>();
   
-  // State lưu danh sách kế hoạch bài tập hôm nay
   const [todayPlans, setTodayPlans] = useState<KeHoach[]>([]);
   const [search, setSearch] = useState('');
 
-  // Hàm gọi API lấy thông tin User & Bài tập
   const fetchData = async () => {
     try {
-      // Gọi song song 2 API để tối ưu tốc độ
       const [userRes, planRes] = await Promise.all([
         axiosClient.get('/auth/me'),
-        axiosClient.get('/dieuTri/bai-tap-hom-nay') // Gọi vào route dieuTri
+        axiosClient.get('/dieuTri/bai-tap-hom-nay')
       ]);
-
       setUser(userRes.data.data);
       setTodayPlans(planRes.data.data);
-      
     } catch (error) {
       console.error('Lỗi tải dữ liệu HomeTab:', error);
     } finally {
@@ -68,35 +62,20 @@ const HomeTab = () => {
     fetchData();
   }, []);
 
-  // Hàm render từng bài tập nhỏ
-  const renderExerciseItem = (detail: ChiTietKeHoach, index: number, fullList: ChiTietKeHoach[]) => {
-    return (
-      <TouchableOpacity 
-        key={detail.maChiTiet} 
-        style={styles.exerciseItem}
-        onPress={() => navigation.navigate('ExerciseDetail', {
-          exerciseList: fullList,
-          initialIndex: index
-        })} 
-      >
-        <View style={styles.exerciseIconBox}>
-          <MaterialIcons name="fitness-center" size={24} color="#1ec8a5" />
-        </View>
+  const handleStartPlan = (plan: KeHoach) => {
+    if (!plan.ChiTietKeHoach || plan.ChiTietKeHoach.length === 0) {
+        alert("Kế hoạch này chưa có bài tập chi tiết.");
+        return;
+    }
 
-        <View style={{ flex: 1, marginLeft: 12 }}>
-          <Text style={styles.exerciseName}>{detail.BaiTapPhucHoi.tenBaiTap}</Text>
-          <View style={styles.metaContainer}>
-            {detail.sets && <Text style={styles.metaText}>{detail.sets} Sets</Text>}
-            {detail.reps && <Text style={styles.metaText}>• {detail.reps} Reps</Text>}
-            {detail.cuongDo && <Text style={styles.metaText}>• {detail.cuongDo}</Text>}
-          </View>
-        </View>
+    const tenCuThe = `${plan.tenKeHoach} - ${new Date().toLocaleDateString('vi-VN')}`;
 
-        <View style={styles.playButton}>
-           <Feather name="chevron-right" size={24} color="#ccc" />
-        </View>
-      </TouchableOpacity>
-    );
+    navigation.navigate('ExerciseDetail', {
+      exerciseList: plan.ChiTietKeHoach,
+      initialIndex: 0,  
+      maKeHoach: plan.maKeHoach,             
+      planTitle: tenCuThe
+    });
   };
 
   return (
@@ -107,16 +86,11 @@ const HomeTab = () => {
           {loading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <Text style={styles.userName}>
-              {user?.hoVaTen || 'Bệnh nhân'}
-            </Text>
+            <Text style={styles.userName}>{user?.hoVaTen || 'Bệnh nhân'}</Text>
           )}
         </View>
-
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>
-            {user?.hoVaTen?.charAt(0).toUpperCase() || 'F'}
-          </Text>
+          <Text style={styles.avatarText}>{user?.hoVaTen?.charAt(0).toUpperCase() || 'F'}</Text>
         </View>
       </View>
 
@@ -124,77 +98,69 @@ const HomeTab = () => {
 
       <ScrollView 
         contentContainerStyle={styles.content}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#1ec8a5']} />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#1ec8a5']} />}
       >
-        {/* ===== CARD: BÀI TẬP HÔM NAY ===== */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Lịch tập hôm nay</Text>
+          <Text style={styles.sectionTitle}>Trạng thái hôm nay</Text>
           <Text style={styles.dateText}>{new Date().toLocaleDateString('vi-VN')}</Text>
         </View>
 
         {loading ? (
           <ActivityIndicator size="large" color="#1ec8a5" style={{ marginTop: 20 }} />
         ) : todayPlans.length > 0 ? (
-          // Mapping qua các kế hoạch đang active
           todayPlans.map((plan) => (
-            <View key={plan.maKeHoach} style={styles.card}>
-              <View style={styles.planHeader}>
-                <Text style={styles.planTitle}>{plan.tenKeHoach}</Text>
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>Hôm nay</Text>
-                </View>
+            <View key={plan.maKeHoach} style={styles.summaryCard}>
+              <View style={styles.cardLeftBorder} />
+              <View style={styles.cardContent}>
+                  <View style={styles.planHeader}>
+                    <Text style={styles.planTitle}>{plan.tenKeHoach}</Text>
+                    <View style={styles.activeBadge}>
+                        <View style={styles.dot} />
+                        <Text style={styles.activeText}>Có lịch tập</Text>
+                    </View>
+                  </View>
+
+                  <Text style={styles.subText}>
+                     Tổng cộng: <Text style={{fontWeight: 'bold', color: '#333'}}>{plan.ChiTietKeHoach?.length || 0}</Text> bài tập
+                  </Text>
+                  <Text style={styles.descriptionText}>
+                     Hãy hoàn thành bài tập để duy trì tiến độ phục hồi của bạn nhé.
+                  </Text>
+
+                  <TouchableOpacity 
+                    style={styles.startButton}
+                    onPress={() => handleStartPlan(plan)}
+                  >
+                     <FontAwesome5 name="play" size={14} color="#fff" style={{marginRight: 8}} />
+                     <Text style={styles.startButtonText}>Bắt đầu tập luyện</Text>
+                  </TouchableOpacity>
               </View>
-
-              <View style={styles.divider} />
-
-              {/* Danh sách bài tập trong kế hoạch này */}
-              {plan.ChiTietKeHoach && plan.ChiTietKeHoach.length > 0 ? (
-                plan.ChiTietKeHoach.map((detail, index) => 
-                  renderExerciseItem(detail, index, plan.ChiTietKeHoach)
-                )
-              ) : (
-                <Text style={styles.emptyText}>Chưa có bài tập chi tiết.</Text>
-              )}
             </View>
           ))
         ) : (
-          // Trường hợp không có bài tập
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Hôm nay nghỉ ngơi!</Text>
-            <Text style={styles.cardContent}>
-              Bạn không có bài tập nào được lên lịch cho hôm nay.
-            </Text>
-            
-            {/* Nút Xem lộ trình tổng quan */}
-            <TouchableOpacity 
-              style={styles.primaryButton}
-              onPress={() => navigation.navigate('Program')} 
-            >
-              <Text style={styles.primaryButtonText}>Xem lộ trình tổng quan</Text>
-            </TouchableOpacity>
+          <View style={styles.emptyCard}>
+             <MaterialIcons name="event-available" size={60} color="#ccc" />
+             <Text style={styles.emptyTitle}>Hôm nay bạn rảnh rỗi!</Text>
+             <Text style={styles.emptyDesc}>Không có lịch tập nào được chỉ định cho hôm nay. Hãy nghỉ ngơi hoặc xem lại lộ trình.</Text>
+             
+             <TouchableOpacity style={styles.outlineButton} onPress={() => navigation.navigate('Program')}>
+                <Text style={styles.outlineButtonText}>Xem lộ trình tổng quan</Text>
+             </TouchableOpacity>
           </View>        
         )}
 
-        {/* ===== CARD: TIẾN ĐỘ ===== */}
-        <View style={[styles.card, styles.progressCard, { marginTop: 10 }]}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-             <Text style={[styles.cardTitle, { color: '#1ec8a5' }]}>
-              Tiến độ tuần này
-            </Text>
-            <Feather name="trending-up" size={20} color="#1ec8a5" />
+        <View style={[styles.progressContainer, { marginTop: 20 }]}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
+             <Text style={styles.sectionTitle}>Tiến độ tuần này</Text>
+             <Feather name="trending-up" size={20} color="#1ec8a5" />
           </View>
-         
-          <Text style={styles.cardContent}>
-            Hoàn thành <Text style={{fontWeight: 'bold', color: '#1ec8a5'}}>0/5</Text> buổi tập
-          </Text>
-          {/* Progress Bar Giả lập */}
-          <View style={styles.progressBarBg}>
-            <View style={[styles.progressBarFill, { width: '10%' }]} />
+          <View style={styles.progressCard}>
+              <Text style={styles.progressContent}>Đã hoàn thành <Text style={{fontWeight: 'bold', color: '#1ec8a5'}}>0/5</Text> buổi</Text>
+              <View style={styles.progressBarBg}>
+                <View style={[styles.progressBarFill, { width: '10%' }]} />
+              </View>
           </View>
         </View>
-
         <View style={{height: 40}} /> 
       </ScrollView>
     </SafeAreaView>
@@ -202,13 +168,10 @@ const HomeTab = () => {
 };
 
 const styles = StyleSheet.create({
-  /* ===== SAFE AREA ===== */
   safeArea: {
     flex: 1,
     backgroundColor: '#f5f7fb',
   },
-
-  /* ===== HEADER ===== */
   header: {
     backgroundColor: '#1ec8a5',
     paddingHorizontal: 20,
@@ -220,192 +183,186 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-
-  greeting: {
-    color: '#eafff9',
-    fontSize: 14,
+  greeting: { 
+    color: '#eafff9', 
+    fontSize: 14 
   },
-
-  userName: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 4,
+  userName: { 
+    color: '#fff', 
+    fontSize: 20, 
+    fontWeight: 'bold', 
+    marginTop: 4 
   },
-
-  avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#ffffff44',
-    justifyContent: 'center',
+  avatar: { 
+    width: 44, 
+    height: 44, 
+    borderRadius: 22, 
+    backgroundColor: '#eaea36cf', 
+    justifyContent: 'center', 
     alignItems: 'center',
-  },
-
-  avatarText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-
-  /* ===== CONTENT ===== */
-  content: {
-    padding: 20,
-    paddingTop: 30,
-  },
-
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-    paddingHorizontal: 4,
-  },
-
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-
-  dateText: {
-    fontSize: 14,
-    color: '#666',
-  },
-
-  /* ===== CARD ===== */
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 18,
-    padding: 16,
-    marginBottom: 16,
     shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    elevation: 3,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-
+  avatarText: { 
+    color: '#fff', 
+    fontSize: 18, 
+    fontWeight: 'bold' 
+  },
+  content: { 
+    padding: 20, 
+    paddingTop: 30 
+  },
+  sectionHeader: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    marginBottom: 16 
+  },
+  sectionTitle: { 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    color: '#333' 
+  },
+  dateText: { 
+    fontSize: 14, 
+    color: '#666' 
+  },
+  summaryCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    flexDirection: 'row',
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: {width: 0, height: 4},
+    shadowRadius: 10,
+    elevation: 4,
+    marginBottom: 16,
+  },
+  cardLeftBorder: {
+    width: 6,
+    backgroundColor: '#1ec8a5',
+  },
+  cardContent: {
+    flex: 1,
+    padding: 16,
+  },
   planHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 8,
   },
-
   planTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+    flex: 1,
+    marginRight: 8,
   },
-
-  badge: {
+  activeBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#e0f2f1',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 8,
+    borderRadius: 12,
   },
-
-  badgeText: {
-    color: '#009688',
-    fontSize: 12,
-    fontWeight: '600',
+  dot: { 
+    width: 6, 
+    height: 6, 
+    borderRadius: 3, 
+    backgroundColor: '#009688', 
+    marginRight: 4 
   },
-
-  divider: {
-    height: 1,
-    backgroundColor: '#eee',
-    marginVertical: 8,
+  activeText: { 
+    fontSize: 12, 
+    color: '#009688', 
+    fontWeight: '600' 
   },
-
-  /* ===== EXERCISE ITEM ===== */
-  exerciseItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+  subText: { 
+    fontSize: 14, 
+    color: '#555', 
+    marginBottom: 6 
   },
-
-  exerciseIconBox: {
-    width: 40,
-    height: 40,
+  descriptionText: { 
+    fontSize: 13, 
+    color: '#888', 
+    marginBottom: 16 
+  },
+  startButton: {
+    backgroundColor: '#1ec8a5',
+    paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: '#f0fcf9',
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  exerciseName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#333',
+  startButtonText: { 
+    color: '#fff', 
+    fontWeight: 'bold', 
+    fontSize: 15 
   },
-
-  metaContainer: {
-    flexDirection: 'row',
-    marginTop: 4,
+  emptyCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000', 
+    shadowOpacity: 0.05, 
+    shadowRadius: 8, 
+    elevation: 2
   },
-
-  metaText: {
-    fontSize: 13,
-    color: '#888',
-    marginRight: 4,
+  emptyTitle: { 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    color: '#333', 
+    marginTop: 12 
   },
-
-  playButton: {
-    padding: 4,
+  emptyDesc: { 
+    fontSize: 14, 
+    color: '#888', 
+    textAlign: 'center', 
+    marginTop: 8, 
+    marginBottom: 20, 
+    lineHeight: 20 
   },
-
-  /* ===== GENERIC CARD STYLES ===== */
-  cardTitle: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-  },
-
-  cardContent: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 14,
-  },
-
-  primaryButton: {
-    backgroundColor: '#1ec8a5',
+  outlineButton: {
+    borderWidth: 1,
+    borderColor: '#1ec8a5',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 10,
-    alignSelf: 'flex-start',
+    borderRadius: 20,
   },
-
-  primaryButtonText: {
-    color: '#fff',
-    fontWeight: '600',
+  outlineButtonText: { 
+    color: '#1ec8a5', 
+    fontWeight: '600' 
   },
-
-  emptyText: {
-    color: '#999',
-    fontStyle: 'italic',
-    textAlign: 'center',
-    marginTop: 10,
+  progressContainer: { 
+    marginTop: 10 
   },
-
-  /* ===== PROGRESS CARD ===== */
-  progressCard: {
-    backgroundColor: '#fff',
+  progressCard: { 
+    backgroundColor: '#fff', 
+    padding: 16, 
+    borderRadius: 12 
   },
-
-  progressBarBg: {
-    height: 6,
-    backgroundColor: '#eee',
-    borderRadius: 3,
-    marginTop: 4,
+  progressContent: { 
+    fontSize: 14, 
+    color: '#666', 
+    marginBottom: 8 
   },
-
-  progressBarFill: {
-    height: 6,
-    backgroundColor: '#1ec8a5',
-    borderRadius: 3,
+  progressBarBg: { 
+    height: 8, 
+    backgroundColor: '#f0f0f0', 
+    borderRadius: 4 
+  },
+  progressBarFill: { 
+    height: 8, 
+    backgroundColor: '#1ec8a5', 
+    borderRadius: 4 
   },
 });
 

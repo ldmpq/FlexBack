@@ -56,7 +56,9 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
     // 2. Truyền danh sách + index của bài được chọn
     navigation.navigate('ExerciseDetail', { 
       exerciseList: formattedList,
-      initialIndex: selectedIndex
+      initialIndex: selectedIndex,
+      maKeHoach: maKeHoach, 
+      planTitle: title
     });
   };
 

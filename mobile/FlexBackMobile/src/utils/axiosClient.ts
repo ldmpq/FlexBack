@@ -19,7 +19,6 @@ export const setAuthToken = (token: string) => {
 // Interceptor: Tự động gắn Token vào mọi request
 axiosClient.interceptors.request.use(
   async (config) => {
-    // const token = await AsyncStorage.getItem('token'); // Cách chuẩn dùng AsyncStorage
     const token = authToken;
 
     if (token) {

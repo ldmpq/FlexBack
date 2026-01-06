@@ -25,16 +25,24 @@ const GuideDetailScreen = ({ route, navigation }: any) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        let apiData: GuideItem[] = [];
+        let rawData: any[] = [];
 
         if (category === 'EXERCISE') {
-            apiData = await guideService.getExercises();
+            rawData = await guideService.getExercises();
         } else if (category === 'MEDICINE') {
-            apiData = await guideService.getMedicines();
+            rawData = await guideService.getMedicines();
         } else if (category === 'FOOD') {
-            apiData = await guideService.getFoods();
+            rawData = await guideService.getFoods();
         }
-        setData(apiData);
+
+        const formattedData: GuideItem[] = rawData.map((item) => ({
+            id: item.id || item.maBaiTap || item.maThuoc || item.maThucPham || Math.random(),
+            name: item.name || item.tenBaiTap || item.tenThuoc || item.tenThucPham || 'Chưa cập nhật tên',
+            description: item.description || item.moTa || item.congDung || '',
+            category: category
+        }));
+
+        setData(formattedData);
       } catch (error) {
         console.error("Lỗi tải dữ liệu hướng dẫn:", error);
       } finally {
@@ -47,7 +55,7 @@ const GuideDetailScreen = ({ route, navigation }: any) => {
 
   // Logic tìm kiếm
   const filteredData = data.filter(item => 
-    item.name.toLowerCase().includes(search.toLowerCase())
+    (item.name || '').toLowerCase().includes(search.toLowerCase())
   );
 
   // Lấy icon theo loại
@@ -87,7 +95,7 @@ const GuideDetailScreen = ({ route, navigation }: any) => {
       ) : (
         <FlatList
           data={filteredData}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
