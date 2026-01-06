@@ -137,9 +137,16 @@ const AdminLayout = () => {
   };
 
   const MenuItem = ({ to, icon: Icon, label }: any) => {
-    const active = to === '/admin' 
-      ? location.pathname === to 
-      : location.pathname.startsWith(to);
+    let active = false;
+
+    if (to.includes('?')) {
+      const currentFullUrl = location.pathname + location.search;
+      active = currentFullUrl === to;
+    } else {
+      active = to === '/admin' 
+        ? location.pathname === to 
+        : location.pathname.startsWith(to);
+    }
     return (
       <Link
         to={to}
