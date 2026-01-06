@@ -5,8 +5,10 @@ import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import VideoModal from '../components/modals/VideoModal';
 import YoutubeModal from '../components/modals/YoutubeModal';
 import HeaderNavigation from '../components/navigation/header.navigation';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // 👇 1. Import AsyncStorage
 
 const BASE_URL = 'http://10.0.2.2:3000';
+const SESSION_KEY = '@workout_session_start'; // Key lưu thời gian tập
 
 const PhaseDetailScreen = ({ route, navigation }: any) => {
   const { title, exercises } = route.params || {};
@@ -36,9 +38,9 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
     setCurrentVideoUrl(null);
   };
 
-  const handlePressExercise = (selectedIndex: number) => {
-    // 1. Chuẩn hóa toàn bộ danh sách bài tập
-    const formattedList = exercises.map((item: any) => ({
+  // Hàm chuẩn hóa danh sách bài tập (dùng chung)
+  const getFormattedList = () => {
+    return exercises.map((item: any) => ({
       sets: item.soSet,
       reps: item.soRep,
       ghiChu: item.ghiChu,
@@ -52,8 +54,32 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
         thoiLuongPhut: item.thoiLuongPhut
       }
     }));
+  };
 
-    // 2. Truyền danh sách + index của bài được chọn
+  // 👇 2. Xử lý khi nhấn "Bắt đầu tập"
+  const handleStartPhase = async () => {
+    if (!exercises || exercises.length === 0) {
+        Alert.alert("Thông báo", "Giai đoạn này chưa có bài tập nào.");
+        return;
+    }
+
+    // Lưu thời điểm bắt đầu để ExerciseDetailScreen tự động chạy Timer
+    await AsyncStorage.setItem(SESSION_KEY, new Date().toISOString());
+
+    const formattedList = getFormattedList();
+
+    // Chuyển sang màn hình tập, bắt đầu từ bài đầu tiên (index 0)
+    navigation.navigate('ExerciseDetail', { 
+      exerciseList: formattedList,
+      initialIndex: 0,
+      maKeHoach: maKeHoach, 
+      planTitle: title
+    });
+  };
+
+  // Xử lý khi nhấn vào từng bài lẻ (Xem trước)
+  const handlePressExercise = (selectedIndex: number) => {
+    const formattedList = getFormattedList();
     navigation.navigate('ExerciseDetail', { 
       exerciseList: formattedList,
       initialIndex: selectedIndex,
@@ -103,15 +129,15 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
                   <Text style={styles.statValue}>{item.soRep}</Text>
                   <Text style={styles.statLabel}>Reps</Text>
                 </View>
-                {item.thoiLuongPhut > 0 && (
+                {item.thoiLuongPhut > 0 ? (
                   <>
                     <View style={styles.statDivider} />
                     <View style={styles.statItem}>
-                      <Text style={styles.statValue}>{item.thoiLuongPhut}'</Text>
+                      <Text style={styles.statValue}>{`${item.thoiLuongPhut}'`}</Text>
                       <Text style={styles.statLabel}>Thời gian</Text>
                     </View>
                   </>
-                )}
+                ) : null}
               </View>
 
               {item.ghiChu ? (
@@ -127,17 +153,11 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
 
       <View style={styles.footerContainer}>
         <TouchableOpacity
-          style={styles.reportButton}
-          onPress={() => {
-            if (!maKeHoach) {
-              Alert.alert("Lỗi", "Không tìm thấy kế hoạch để báo cáo.");
-              return;
-            }
-            navigation.navigate('CreateReport', { maKeHoach, title });
-          }}
+          style={styles.startButton}
+          onPress={handleStartPhase}
         >
-          <Feather name="check-circle" size={20} color="#fff" />
-          <Text style={styles.reportButtonText}>Hoàn thành & Báo cáo</Text>
+          <FontAwesome5 name="play" size={16} color="#fff" />
+          <Text style={styles.startButtonText}>Bắt đầu tập</Text>
         </TouchableOpacity>
       </View>
 
@@ -163,23 +183,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f7fa',
   },
-
   content: {
     padding: 16,
     paddingBottom: 40,
   },
-
   emptyContainer: {
     alignItems: 'center',
     marginTop: 60,
   },
-
   emptyText: {
     marginTop: 16,
     color: '#999',
     fontSize: 16,
   },
-
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
@@ -194,13 +210,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
-
   iconBox: {
     width: 40,
     height: 40,
@@ -210,19 +224,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 12,
   },
-
   exerciseName: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
   },
-
   subText: {
     fontSize: 13,
     color: '#666',
     marginTop: 2,
   },
-
   statsContainer: {
     flexDirection: 'row',
     backgroundColor: '#f9fbf7',
@@ -230,47 +241,25 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 12,
   },
-
   statItem: {
     flex: 1,
     alignItems: 'center',
   },
-
   statValue: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1ec8a5',
   },
-
   statLabel: {
     fontSize: 12,
     color: '#888',
     textTransform: 'uppercase',
   },
-
   statDivider: {
     width: 1,
     backgroundColor: '#e5e7eb',
     marginHorizontal: 8,
   },
-
-  descContainer: {
-    marginBottom: 12,
-  },
-
-  descLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#555',
-    marginBottom: 4,
-  },
-
-  descText: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
-  },
-
   noteContainer: {
     flexDirection: 'row',
     backgroundColor: '#fffbeb',
@@ -278,14 +267,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 12,
   },
-
   noteText: {
     fontSize: 13,
     color: '#b45309',
     marginLeft: 8,
     flex: 1,
   },
-
   footerContainer: {
     padding: 16,
     backgroundColor: '#fff',
@@ -300,18 +287,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-
-  reportButton: {
+  startButton: {
     backgroundColor: '#1ec8a5',
     borderRadius: 12,
     paddingVertical: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 10,
+    shadowColor: '#1ec8a5',
+    shadowOpacity: 0.3,
+    shadowOffset: {width: 0, height: 4},
+    elevation: 4
   },
-
-  reportButtonText: {
+  startButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',

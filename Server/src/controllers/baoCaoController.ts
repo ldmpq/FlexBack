@@ -65,3 +65,27 @@ export const sendFeedback = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Lỗi gửi phản hồi" });
   }
 };
+
+export const getMyFeedback = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as AuthRequest).user?.id;
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    
+    const data = await BaoCaoService.getFeedbackByPatient(userId);
+
+    const formattedData = data.map(item => ({
+      maThongBao: item.maDanhGia,
+      noiDung: item.chiTiet,
+      ngayTao: item.ngayDanhGia,
+      thangDiem: item.thangDiem,
+      daDoc: item.daDoc
+    }));
+
+    res.status(200).json({ data: formattedData });
+  } catch (error) {
+    console.error("Lỗi lấy đánh giá:", error);
+    res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};

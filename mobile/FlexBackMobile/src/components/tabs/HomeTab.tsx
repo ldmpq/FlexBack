@@ -1,10 +1,15 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import SearchBar from '../../components/common/SearchBar';
 import { useNavigation } from '@react-navigation/native';
+import { LineChart } from 'react-native-chart-kit';
 import axiosClient from '../../utils/axiosClient';
+import { reportService } from '../../services/report.service';
+import { Feedback } from '../../types/result.type';
+
+const screenWidth = Dimensions.get("window").width
 
 interface BaiTap {
   maBaiTap: number;
@@ -37,16 +42,47 @@ const HomeTab = () => {
   const [todayPlans, setTodayPlans] = useState<KeHoach[]>([]);
   const [search, setSearch] = useState('');
 
+  const [chartData, setChartData] = useState<any>(null);
+
   const fetchData = async () => {
     try {
-      const [userRes, planRes] = await Promise.all([
+      const [userRes, planRes, feedbackList] = await Promise.all([
         axiosClient.get('/auth/me'),
-        axiosClient.get('/dieuTri/bai-tap-hom-nay')
+        axiosClient.get('/dieuTri/bai-tap-hom-nay'),
+        reportService.getEvaluations()
       ]);
       setUser(userRes.data.data);
       setTodayPlans(planRes.data.data);
+
+      const listDanhGia: Feedback[] = feedbackList; 
+
+      if (listDanhGia.length > 0) {
+        // Sắp xếp theo ngày tăng dần
+        const sorted = listDanhGia.sort((a, b) => 
+           new Date(a.ngayTao).getTime() - new Date(b.ngayTao).getTime()
+        );
+        
+        // Lấy 6 mốc gần nhất
+        const recent = sorted.slice(-6);
+
+        setChartData({
+          labels: recent.map(item => {
+             const d = new Date(item.ngayTao);
+             return `${d.getDate()}/${d.getMonth() + 1}`;
+          }),
+          datasets: [{
+              data: recent.map(item => item.thangDiem),
+              color: (opacity = 1) => `rgba(30, 200, 165, ${opacity})`,
+              strokeWidth: 2
+          }],
+          legend: ["Điểm phục hồi"]
+        });
+      } else {
+        setChartData(null);
+      }
+
     } catch (error) {
-      console.error('Lỗi tải dữ liệu HomeTab:', error);
+      console.error('Lỗi tải dữ liệu HomeTab:', error);  
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -149,7 +185,53 @@ const HomeTab = () => {
           </View>        
         )}
 
-        <View style={[styles.progressContainer, { marginTop: 20 }]}>
+        <View style={[styles.progressContainer, { marginTop: 24 }]}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, alignItems: 'center'}}>
+             <View>
+               <Text style={styles.sectionTitle}>Tiến độ phục hồi</Text>
+               <Text style={styles.sectionSubTitle}>Dựa trên đánh giá của bác sĩ</Text>
+             </View>
+             <Feather name="trending-up" size={24} color="#1ec8a5" />
+          </View>
+          
+          <View style={styles.chartCard}>
+             {chartData ? (
+               <LineChart
+                 data={chartData}
+                 width={screenWidth - 40 - 32}
+                 height={220}
+                 yAxisLabel=""
+                 yAxisSuffix="đ"
+                 chartConfig={{
+                   backgroundColor: "#fff",
+                   backgroundGradientFrom: "#fff",
+                   backgroundGradientTo: "#fff",
+                   decimalPlaces: 1,
+                   color: (opacity = 1) => `rgba(30, 200, 165, ${opacity})`,
+                   labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                   style: {
+                     borderRadius: 16
+                   },
+                   propsForDots: {
+                     r: "5",
+                     strokeWidth: "2",
+                     stroke: "#1ec8a5"
+                   }
+                 }}
+                 bezier
+                 style={{
+                   marginVertical: 8,
+                   borderRadius: 16
+                 }}
+               />
+             ) : (
+               <ActivityIndicator color="#1ec8a5" />
+             )}
+             <Text style={styles.chartNote}>Biểu đồ thể hiện mức độ phục hồi (Thang điểm 10)</Text>
+          </View>
+        </View>
+
+        {/* <View style={[styles.progressContainer, { marginTop: 20 }]}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10}}>
              <Text style={styles.sectionTitle}>Tiến độ tuần này</Text>
              <Feather name="trending-up" size={20} color="#1ec8a5" />
@@ -160,7 +242,7 @@ const HomeTab = () => {
                 <View style={[styles.progressBarFill, { width: '10%' }]} />
               </View>
           </View>
-        </View>
+        </View> */}
         <View style={{height: 40}} /> 
       </ScrollView>
     </SafeAreaView>
@@ -224,6 +306,11 @@ const styles = StyleSheet.create({
     fontSize: 18, 
     fontWeight: 'bold', 
     color: '#333' 
+  },
+  sectionSubTitle: { 
+    fontSize: 12, 
+    color: '#888', 
+    marginTop: 2 
   },
   dateText: { 
     fontSize: 14, 
@@ -364,6 +451,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#1ec8a5', 
     borderRadius: 4 
   },
+  chartCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: {width: 0, height: 4},
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  chartNote: {
+    marginTop: 8,
+    fontSize: 12,
+    color: '#888',
+    fontStyle: 'italic'
+  }
 });
 
 export default HomeTab;

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middlewares/authMiddleware';
-import { createBaoCao, getMyReports, getAllReports, sendFeedback, getReportDetail } from '../controllers/baoCaoController';
+import { createBaoCao, getMyReports, getAllReports, sendFeedback, getReportDetail, getMyFeedback } from '../controllers/baoCaoController';
 
 const router = Router();
 
@@ -15,6 +15,7 @@ router.get('/all', authenticateToken, getAllReports);
 
 // 2. Gửi phản hồi
 router.post('/feedback', authenticateToken, sendFeedback);
+router.get('/feedback', authenticateToken, getMyFeedback);
 
 // 3. Lấy chi tiết (Đặt cuối cùng để tránh trùng với /history hoặc /all)
 router.get('/:id', authenticateToken, getReportDetail);

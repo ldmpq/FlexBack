@@ -1,4 +1,4 @@
-import { ReportHistory } from '../types/result.type';
+import { ReportHistory, Feedback } from '../types/result.type';
 import axiosClient from '../utils/axiosClient';
 
 export const reportService = {
@@ -14,6 +14,11 @@ export const reportService = {
 
   getMyReports: async (): Promise<ReportHistory[]> => {
     const res = await axiosClient.get('/baocao/history');
+    return res.data.data || [];
+  },
+
+  getEvaluations: async (): Promise<Feedback[]> => {
+    const res = await axiosClient.get('/baocao/feedback');
     return res.data.data || [];
   }
 };

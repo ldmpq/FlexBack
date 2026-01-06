@@ -151,4 +151,34 @@ export class BaoCaoService {
       }
     });
   }
+
+  static async getFeedbackByPatient(userId: number) {
+    const benhNhan = await prisma.benhNhan.findFirst({
+      where: { maTaiKhoan: userId }
+    });
+    if (!benhNhan) return [];
+
+    const dsHoSo = await prisma.hoSoBenhAn.findMany({
+      where: { maBenhNhan: benhNhan.maBenhNhan },
+      select: { maHoSo: true }
+    });
+    
+    const listMaHoSo = dsHoSo.map(h => h.maHoSo);
+
+    const feedbacks = await prisma.danhGiaTienTrien.findMany({
+      where: { 
+        maHoSo: { in: listMaHoSo } 
+      },
+      orderBy: { ngayDanhGia: 'desc' },
+      select: {
+        maDanhGia: true,
+        chiTiet: true,
+        ngayDanhGia: true,
+        thangDiem: true,
+        daDoc: true
+      }
+    });
+
+    return feedbacks;
+  }
 }
