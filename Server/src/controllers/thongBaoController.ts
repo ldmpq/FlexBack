@@ -4,7 +4,7 @@ import prisma from '../prismaClient';
 // Lấy danh sách PHẢN HỒI (Đánh giá tiến triển) của User
 export const getMyNotifications = async (req: Request | any, res: Response) => {
   try {
-    const userId = req.user?.maTaiKhoan;
+    const userId = req.user?.id;
 
     const list = await prisma.danhGiaTienTrien.findMany({
       where: {
@@ -37,7 +37,7 @@ export const getMyNotifications = async (req: Request | any, res: Response) => {
       noiDung: item.chiTiet || "Bác sĩ đã đánh giá quá trình tập luyện của bạn.",
       ngayTao: item.ngayDanhGia,
       thangDiem: item.thangDiem,
-      daDoc: 1,
+      daDoc: item.daDoc,
       BacSi: {
         hoVaTen: item.HoSoBenhAn?.BacSi?.TaiKhoan?.hoVaTen || "Bác sĩ phụ trách"
       }
@@ -56,7 +56,7 @@ export const getUnreadCount = async (req: Request | any, res: Response) => {
 
 export const markAsRead = async (req: Request | any, res: Response) => {
     try {
-        const userId = req.user?.maTaiKhoan;
+        const userId = req.user?.id;
 
         await prisma.danhGiaTienTrien.updateMany({
             where: {

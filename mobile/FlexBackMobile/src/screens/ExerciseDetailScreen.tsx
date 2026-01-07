@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList, Dimensions, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import VideoModal from '../components/modals/VideoModal';
 import YoutubeModal from '../components/modals/YoutubeModal';
@@ -26,39 +26,31 @@ const ExerciseDetailScreen = () => {
 
   const [currentIndex, setCurrentIndex] = useState(initialIndex || 0);
   const startTimeRef = useRef<Date | null>(null);
-  
-  // State: Kiểm soát việc đã bắt đầu hay chưa?
-  const [hasStarted, setHasStarted] = useState(false);
+
   const [isTimerReady, setIsTimerReady] = useState(false);
 
-  // 1. Kiểm tra nếu có session tập dở dang thì khôi phục
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const storedTime = await AsyncStorage.getItem(SESSION_KEY);
-        if (storedTime) {
-          startTimeRef.current = new Date(storedTime);
-          setIsTimerReady(true);
-          setHasStarted(true); // Vào thẳng màn hình tập
+  useFocusEffect(
+    useCallback(() => {
+      const checkSession = async () => {
+        try {
+          const storedTime = await AsyncStorage.getItem(SESSION_KEY);
+          if (storedTime) {
+            startTimeRef.current = new Date(storedTime);
+            setIsTimerReady(true);
+          } else {
+            setIsTimerReady(false);
+            startTimeRef.current = null;
+          }
+        } catch (error) {
+          console.error("Lỗi timer storage:", error);
         }
-      } catch (error) {
-        console.error("Lỗi timer storage:", error);
-      }
-    };
-    checkSession();
-  }, []);
+      };
+      
+      checkSession();
 
-  // 2. Xử lý khi nhấn "Bắt đầu tập"
-  const handleStartWorkout = async () => {
-    const now = new Date();
-    startTimeRef.current = now;
-    
-    // Lưu mốc thời gian bắt đầu
-    await AsyncStorage.setItem(SESSION_KEY, now.toISOString());
-    
-    setIsTimerReady(true);
-    setHasStarted(true); // Chuyển giao diện
-  };
+      return () => {};
+    }, [])
+  )
 
   // Modal State
   const [videoVisible, setVideoVisible] = useState(false);
@@ -92,14 +84,11 @@ const ExerciseDetailScreen = () => {
             const endTime = new Date();
             const start = startTimeRef.current || new Date();
             const diffMs = endTime.getTime() - start.getTime();
-            
             const totalMinutes = Math.max(1, Math.floor(diffMs / 60000));
 
             const finalMaKeHoach = maKeHoach || exerciseList[0]?.maKeHoach || exerciseList[0]?.BaiTapPhucHoi?.maKeHoach;
 
             await AsyncStorage.removeItem(SESSION_KEY);
-            setIsTimerReady(false);
-            setHasStarted(false);
 
             navigation.navigate('CreateReport', { 
                maKeHoach: finalMaKeHoach,
@@ -112,55 +101,6 @@ const ExerciseDetailScreen = () => {
     );
   };
 
-  // --- VIEW 1: DANH SÁCH BÀI TẬP (OVERVIEW) ---
-  const renderOverviewList = () => {
-    return (
-      <View style={{flex: 1}}>
-        <ScrollView contentContainerStyle={{padding: 16, paddingBottom: 100}}>
-          {exerciseList.map((item, index) => {
-             const exercise = item.BaiTapPhucHoi || {};
-             return (
-               <View key={index} style={styles.overviewCard}>
-                 <View style={styles.overviewHeader}>
-                    <View style={styles.iconBox}>
-                       <FontAwesome5 name="running" size={20} color="#1ec8a5" />
-                    </View>
-                    <View style={{flex: 1, marginLeft: 12}}>
-                       <Text style={styles.overviewTitle}>{exercise.tenBaiTap}</Text>
-                       <Text style={styles.overviewSubtitle}>
-                         Dụng cụ: {exercise.dungCuCanThiet || "Không"}
-                       </Text>
-                    </View>
-                    <MaterialIcons name="chevron-right" size={24} color="#ccc" />
-                 </View>
-                 
-                 <View style={styles.overviewStats}>
-                    <View style={styles.ovStatItem}>
-                       <Text style={styles.ovStatVal}>{item.sets || 0}</Text>
-                       <Text style={styles.ovStatLbl}>SETS</Text>
-                    </View>
-                    <View style={styles.verticalLine} />
-                    <View style={styles.ovStatItem}>
-                       <Text style={styles.ovStatVal}>{item.reps || 0}</Text>
-                       <Text style={styles.ovStatLbl}>REPS</Text>
-                    </View>
-                 </View>
-               </View>
-             )
-          })}
-        </ScrollView>
-
-        <View style={styles.footerContainer}>
-          <TouchableOpacity style={styles.startButton} onPress={handleStartWorkout}>
-             <FontAwesome5 name="play" size={16} color="#fff" />
-             <Text style={styles.startButtonText}>Bắt đầu tập</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-  };
-
-  // --- VIEW 2: CHI TIẾT BÀI TẬP (SWIPER) ---
   const renderExerciseItem = useCallback(({ item }: { item: any }) => {
     const exercise = item?.BaiTapPhucHoi || {};
     return (
@@ -179,10 +119,10 @@ const ExerciseDetailScreen = () => {
                {exercise.dungCuCanThiet ? (
                   <View style={styles.tag}>
                      <FontAwesome5 name="tools" size={12} color="#1ec8a5" />
-                     <Text style={styles.tagText}>{exercise.dungCuCanThiet}</Text>
+                     <Text style={styles.tagText}>Dụng cụ: {exercise.dungCuCanThiet}</Text>
                   </View>
                ) : null}
-               {exercise.thoiLuongPhut > 0 ? (
+               {exercise.thoiLuongPhut && exercise.thoiLuongPhut > 0 ? (
                   <View style={[styles.tag, {marginLeft: 8}]}>
                      <Feather name="clock" size={12} color="#1ec8a5" />
                      <Text style={styles.tagText}>{exercise.thoiLuongPhut} phút</Text>
@@ -237,50 +177,45 @@ const ExerciseDetailScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-      
-      {/* HEADER */}
       <View style={styles.headerWrapper}>
         <HeaderNavigation
-          title={!hasStarted ? (planTitle || "Danh sách bài tập") : `Bài tập ${currentIndex + 1}/${exerciseList?.length || 0}`}
+          title={`Bài tập ${currentIndex + 1}/${exerciseList?.length || 0}`}
           onBack={() => navigation.goBack()}
         />
-        {/* Timer chỉ hiện khi đã bắt đầu */}
-        {hasStarted && isTimerReady && (
+        {isTimerReady && (
           <View style={styles.timerOverlay}>
              <TimerWidget startTimeRef={startTimeRef} />
           </View>
         )}
       </View>
-
-      {/* BODY: Chưa bắt đầu -> List dọc. Bắt đầu -> Slide ngang */}
-      {!hasStarted ? (
-         renderOverviewList()
+      
+      {exerciseList && exerciseList.length > 0 ? (
+        <FlatList
+          data={exerciseList}
+          renderItem={renderExerciseItem}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal 
+          pagingEnabled 
+          showsHorizontalScrollIndicator={false}
+          initialScrollIndex={initialIndex}
+          getItemLayout={(data, index) => ({ length: SCREEN_WIDTH, offset: SCREEN_WIDTH * index, index })}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
+          removeClippedSubviews={true} 
+        />
       ) : (
-        <>
-          <FlatList
-            data={exerciseList}
-            renderItem={renderExerciseItem}
-            keyExtractor={(item, index) => index.toString()}
-            horizontal 
-            pagingEnabled 
-            showsHorizontalScrollIndicator={false}
-            initialScrollIndex={initialIndex}
-            getItemLayout={(data, index) => ({ length: SCREEN_WIDTH, offset: SCREEN_WIDTH * index, index })}
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={{ itemVisiblePercentThreshold: 50 }}
-            removeClippedSubviews={true} 
-          />
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+           <Text style={{color: '#999'}}>Không có dữ liệu bài tập</Text>
+        </View>
+      )}
 
-          {/* Button Hoàn thành chỉ hiện ở bài cuối cùng */}
-          {exerciseList && currentIndex === exerciseList.length - 1 && (
-            <View style={styles.footerContainer}>
-              <TouchableOpacity style={styles.finishButton} onPress={handleFinishPress}>
-                <Feather name="check-circle" size={20} color="#fff" />
-                <Text style={styles.finishButtonText}>Hoàn thành & Báo cáo</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </>
+      {exerciseList && currentIndex === exerciseList.length - 1 && isTimerReady && (
+        <View style={styles.footerContainer}>
+          <TouchableOpacity style={styles.primaryButton} onPress={handleFinishPress}>
+             <Feather name="check-circle" size={20} color="#fff" />
+             <Text style={styles.primaryButtonText}>Hoàn thành & Báo cáo</Text>
+          </TouchableOpacity>
+        </View>
       )}
 
       <VideoModal visible={videoVisible} videoUrl={currentVideoUrl} onClose={() => { setVideoVisible(false); setCurrentVideoUrl(null); }} />
@@ -519,7 +454,20 @@ const styles = StyleSheet.create({
     color: '#555',
     fontSize: 15,
   },
-
+  primaryButton: { 
+    backgroundColor: '#1ec8a5', 
+    borderRadius: 12, 
+    paddingVertical: 14, 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    gap: 8 
+  },
+  primaryButtonText: { 
+    color: '#fff', 
+    fontSize: 16, 
+    fontWeight: 'bold' 
+  },
 });
 
 export default ExerciseDetailScreen;

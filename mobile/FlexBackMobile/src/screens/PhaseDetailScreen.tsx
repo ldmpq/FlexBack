@@ -5,10 +5,10 @@ import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import VideoModal from '../components/modals/VideoModal';
 import YoutubeModal from '../components/modals/YoutubeModal';
 import HeaderNavigation from '../components/navigation/header.navigation';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // 👇 1. Import AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BASE_URL = 'http://10.0.2.2:3000';
-const SESSION_KEY = '@workout_session_start'; // Key lưu thời gian tập
+const SESSION_KEY = '@workout_session_start';
 
 const PhaseDetailScreen = ({ route, navigation }: any) => {
   const { title, exercises } = route.params || {};
@@ -38,7 +38,6 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
     setCurrentVideoUrl(null);
   };
 
-  // Hàm chuẩn hóa danh sách bài tập (dùng chung)
   const getFormattedList = () => {
     return exercises.map((item: any) => ({
       sets: item.soSet,
@@ -56,19 +55,16 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
     }));
   };
 
-  // 👇 2. Xử lý khi nhấn "Bắt đầu tập"
   const handleStartPhase = async () => {
     if (!exercises || exercises.length === 0) {
         Alert.alert("Thông báo", "Giai đoạn này chưa có bài tập nào.");
         return;
     }
 
-    // Lưu thời điểm bắt đầu để ExerciseDetailScreen tự động chạy Timer
     await AsyncStorage.setItem(SESSION_KEY, new Date().toISOString());
 
     const formattedList = getFormattedList();
 
-    // Chuyển sang màn hình tập, bắt đầu từ bài đầu tiên (index 0)
     navigation.navigate('ExerciseDetail', { 
       exerciseList: formattedList,
       initialIndex: 0,
@@ -77,9 +73,9 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
     });
   };
 
-  // Xử lý khi nhấn vào từng bài lẻ (Xem trước)
   const handlePressExercise = (selectedIndex: number) => {
     const formattedList = getFormattedList();
+
     navigation.navigate('ExerciseDetail', { 
       exerciseList: formattedList,
       initialIndex: selectedIndex,
@@ -129,15 +125,15 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
                   <Text style={styles.statValue}>{item.soRep}</Text>
                   <Text style={styles.statLabel}>Reps</Text>
                 </View>
-                {item.thoiLuongPhut > 0 ? (
+                {item.thoiLuongPhut > 0 && (
                   <>
                     <View style={styles.statDivider} />
                     <View style={styles.statItem}>
-                      <Text style={styles.statValue}>{`${item.thoiLuongPhut}'`}</Text>
+                      <Text style={styles.statValue}>{item.thoiLuongPhut}'</Text>
                       <Text style={styles.statLabel}>Thời gian</Text>
                     </View>
                   </>
-                ) : null}
+                )}
               </View>
 
               {item.ghiChu ? (
@@ -152,28 +148,14 @@ const PhaseDetailScreen = ({ route, navigation }: any) => {
       </ScrollView>
 
       <View style={styles.footerContainer}>
-        <TouchableOpacity
-          style={styles.startButton}
-          onPress={handleStartPhase}
-        >
+        <TouchableOpacity style={styles.startButton} onPress={handleStartPhase}>
           <FontAwesome5 name="play" size={16} color="#fff" />
           <Text style={styles.startButtonText}>Bắt đầu tập</Text>
         </TouchableOpacity>
       </View>
 
-      {videoVisible && (
-        <VideoModal
-          visible={videoVisible}
-          videoUrl={currentVideoUrl}
-          onClose={closeVideo}
-        />
-      )}
-
-      <YoutubeModal
-        visible={youtubeVisible}
-        youtubeUrl={currentVideoUrl}
-        onClose={() => setYoutubeVisible(false)}
-      />
+      {videoVisible && <VideoModal visible={videoVisible} videoUrl={currentVideoUrl} onClose={closeVideo} />}
+      <YoutubeModal visible={youtubeVisible} youtubeUrl={currentVideoUrl} onClose={() => setYoutubeVisible(false)} />
     </SafeAreaView>
   );
 };

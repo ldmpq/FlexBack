@@ -8,8 +8,10 @@ import { LineChart } from 'react-native-chart-kit';
 import axiosClient from '../../utils/axiosClient';
 import { reportService } from '../../services/report.service';
 import { Feedback } from '../../types/result.type';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const screenWidth = Dimensions.get("window").width
+const screenWidth = Dimensions.get("window").width;
+const SESSION_KEY = '@workout_session_start';
 
 interface BaiTap {
   maBaiTap: number;
@@ -71,7 +73,7 @@ const HomeTab = () => {
              return `${d.getDate()}/${d.getMonth() + 1}`;
           }),
           datasets: [{
-              data: recent.map(item => item.thangDiem),
+              data: recent.map(item => Number(item.thangDiem) || 0),
               color: (opacity = 1) => `rgba(30, 200, 165, ${opacity})`,
               strokeWidth: 2
           }],
@@ -98,11 +100,13 @@ const HomeTab = () => {
     fetchData();
   }, []);
 
-  const handleStartPlan = (plan: KeHoach) => {
+  const handleStartPlan = async (plan: KeHoach) => {
     if (!plan.ChiTietKeHoach || plan.ChiTietKeHoach.length === 0) {
         alert("Kế hoạch này chưa có bài tập chi tiết.");
         return;
     }
+
+    await AsyncStorage.setItem(SESSION_KEY, new Date().toISOString());
 
     const tenCuThe = `${plan.tenKeHoach} - ${new Date().toLocaleDateString('vi-VN')}`;
 
