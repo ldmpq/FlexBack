@@ -1,8 +1,9 @@
-import React from 'react';
-import { Plus, Filter, Trash2, Edit, Youtube, Dumbbell, Upload } from 'lucide-react';
+import React, { useState } from 'react';
+import { Plus, Filter, Trash2, Edit, Youtube, Dumbbell, PlayCircle } from 'lucide-react';
 import { useExerciseManager } from '../hooks/useExerciseManager';
 import SearchBar from '../components/SearchBar';
 import ExerciseForm from '../components/forms/ExerciseForm';
+import VideoPlayerModal from '../components/VideoPlayerModal';
 
 const Exercises: React.FC = () => {
   const {
@@ -15,8 +16,10 @@ const Exercises: React.FC = () => {
     editingId
   } = useExerciseManager();
 
+  const [viewingVideo, setViewingVideo] = useState<string | null>(null);
+
   return (
-    <div className="p-6 font-sans text-gray-800">
+    <div className="p-6 font-sans text-gray-800 relative">
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div>
@@ -35,7 +38,7 @@ const Exercises: React.FC = () => {
 
       {/* FILTER & SEARCH */}
       <div className="bg-white p-2 rounded shadow-sm mb-3 flex flex-col md:flex-row gap-2 border border-gray-200">
-        <div className="flex-1 ">
+        <div className="flex-1">
           <SearchBar
             value={searchTerm}
             onChange={setSearchTerm}
@@ -59,29 +62,20 @@ const Exercises: React.FC = () => {
         </div>
       </div>
 
-
       {/* LIST */}
       {loading ? <div className="p-12 text-center text-blue-600">Đang tải dữ liệu...</div> : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredList.map(ex => (
-            <div key={ex.maBaiTap} className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition p-5 flex flex-col">
+            <div key={ex.maBaiTap} className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition p-5 flex flex-col group">
               <div className="flex justify-between items-start mb-2">
                 <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded uppercase">
                   {ex.NHOM_CO?.tenNhomCo || 'Khác'}
                 </span>
-                <div className="flex gap-1">
-                  <button
-                    onClick={() => handleEdit(ex)}
-                    className="p-1.5 text-gray-400 hover:text-green-600 rounded hover:bg-gray-100"
-                    title="Chỉnh sửa"
-                  >
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => handleEdit(ex)} className="p-1.5 text-gray-400 hover:text-green-600 rounded hover:bg-gray-100" title="Chỉnh sửa">
                     <Edit size={16} />
                   </button>
-                  <button
-                    onClick={() => handleDelete(ex.maBaiTap)}
-                    className="p-1.5 text-gray-400 hover:text-red-600 rounded hover:bg-gray-100"
-                    title="Xóa"
-                  >
+                  <button onClick={() => handleDelete(ex.maBaiTap)} className="p-1.5 text-gray-400 hover:text-red-600 rounded hover:bg-gray-100" title="Xóa">
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -92,11 +86,15 @@ const Exercises: React.FC = () => {
               <div className="mt-auto space-y-2 text-sm border-t pt-3">
                 <div className="flex justify-between"><span className="text-gray-500">Mức độ:</span> <span className={`font-medium ${ex.mucDo === 'Khó' ? 'text-red-500' : 'text-green-600'}`}>{ex.mucDo}</span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Dụng cụ:</span> <span className="font-medium text-gray-700">{ex.dungCuCanThiet || 'Không'}</span></div>
+                
+                {/* 3. Nút mở Video */}
                 {ex.videoHuongDan && (
-                  <a href={isYoutubeLink(ex.videoHuongDan) ? ex.videoHuongDan : `/uploads/videos/${ex.videoHuongDan}`} target="_blank" rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-2 mt-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-medium">
-                    {isYoutubeLink(ex.videoHuongDan) ? <Youtube size={18} /> : <Upload size={18} />} Xem Video
-                  </a>
+                  <button 
+                    onClick={() => setViewingVideo(ex.videoHuongDan)}
+                    className="flex items-center justify-center gap-2 w-full py-2 mt-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-medium border border-red-100"
+                  >
+                    {isYoutubeLink(ex.videoHuongDan) ? <Youtube size={18} /> : <PlayCircle size={18} />} Xem Video
+                  </button>
                 )}
               </div>
             </div>
@@ -104,7 +102,6 @@ const Exercises: React.FC = () => {
         </div>
       )}
 
-      {/* MODAL FORM */}
       <ExerciseForm
         isOpen={showModal}
         onClose={() => setShowModal(false)}
@@ -119,10 +116,13 @@ const Exercises: React.FC = () => {
         videoFile={videoFile}
         setVideoFile={setVideoFile}
       />
+
+      <VideoPlayerModal 
+        videoUrl={viewingVideo} 
+        onClose={() => setViewingVideo(null)} 
+      />
     </div>
   );
 };
 
 export default Exercises;
-
-

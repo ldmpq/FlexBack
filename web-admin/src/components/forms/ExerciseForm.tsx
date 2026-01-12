@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Save, Upload, Link as LinkIcon, Plus, CheckCircle } from 'lucide-react';
-import type { ExerciseFormData, NhomCo, ExerciseFormProps } from '../../types/exercise.type';
+import type {ExerciseFormProps } from '../../types/exercise.type';
 
 const ExerciseForm: React.FC<ExerciseFormProps> = ({
   isOpen,

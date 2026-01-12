@@ -90,7 +90,7 @@ export class UserService {
       await tx.taiKhoan.update({
         where: { maTaiKhoan: userId },
         data: {
-          ngaySinh: ngaySinh ? new Date(ngaySinh) : undefined,
+          ngaySinh: (ngaySinh && !isNaN(Date.parse(ngaySinh))) ? new Date(ngaySinh) : undefined,
           gioiTinh: gioiTinh,
           soDienThoai,
           diaChi

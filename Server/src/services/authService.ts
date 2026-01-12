@@ -86,7 +86,7 @@ export class AuthService {
           email,
           soDienThoai,
           gioiTinh,
-          ngaySinh: ngaySinh ? new Date(ngaySinh) : null,
+          ngaySinh: (ngaySinh && !isNaN(Date.parse(ngaySinh))) ? new Date(ngaySinh) : null,
           loaiTaiKhoan: 'BENH_NHAN',
         },
       });

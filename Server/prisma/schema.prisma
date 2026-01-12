@@ -16,31 +16,31 @@ datasource db {
 }
 
 model TaiKhoan {
-  maTaiKhoan       Int       @id @default(autoincrement())
-  tenTaiKhoan      String?   @db.VarChar(50)
-  matKhau          String?   @db.VarChar(255)
-  hoVaTen          String?   @db.VarChar(100)
-  ngaySinh         DateTime? @db.Date
-  gioiTinh         String?   @db.VarChar(5)
-  soDienThoai      String?   @db.VarChar(10)
-  email            String?   @db.VarChar(100)
-  diaChi           String?   @db.Text
-  loaiTaiKhoan     String?   @db.VarChar(20)
-  ngayTaoTaiKhoan  DateTime? @default(now()) @db.DateTime(0)
+  maTaiKhoan      Int       @id @default(autoincrement())
+  tenTaiKhoan     String?   @db.VarChar(50)
+  matKhau         String?   @db.VarChar(255)
+  hoVaTen         String?   @db.VarChar(100)
+  ngaySinh        DateTime? @db.Date
+  gioiTinh        String?   @db.VarChar(5)
+  soDienThoai     String?   @db.VarChar(10)
+  email           String?   @db.VarChar(100)
+  diaChi          String?   @db.Text
+  loaiTaiKhoan    String?   @db.VarChar(20)
+  ngayTaoTaiKhoan DateTime? @default(now()) @db.DateTime(0)
 
   // Relations
-  BenhNhan         BenhNhan?
-  BacSi            BacSi?
-  KyThuatVien      KyThuatVien?
-  ThongBaoLichTap  ThongBaoLichTap[]
+  BenhNhan        BenhNhan?
+  BacSi           BacSi?
+  KyThuatVien     KyThuatVien?
+  ThongBaoLichTap ThongBaoLichTap[]
 
   @@map("TAIKHOAN")
 }
 
 model NhomCo {
-  maNhomCo    Int       @id @default(autoincrement())
-  tenNhomCo   String?   @db.VarChar(100)
-  moTaNhomCo  String?   @db.Text
+  maNhomCo   Int     @id @default(autoincrement())
+  tenNhomCo  String? @db.VarChar(100)
+  moTaNhomCo String? @db.Text
 
   // Relations
   BaiTapPhucHoi BaiTapPhucHoi[]
@@ -49,46 +49,46 @@ model NhomCo {
 }
 
 model BaiTapPhucHoi {
-  maBaiTap       Int       @id @default(autoincrement())
+  maBaiTap       Int     @id @default(autoincrement())
   maNhomCo       Int?
-  tenBaiTap      String?   @db.VarChar(100)
-  moTaBaiTap     String?   @db.Text
-  mucDo          String?   @db.VarChar(50)
-  dungCuCanThiet String?   @db.VarChar(50)
-  videoHuongDan  String?   @db.VarChar(255)
+  tenBaiTap      String? @db.VarChar(100)
+  moTaBaiTap     String? @db.Text
+  mucDo          String? @db.VarChar(50)
+  dungCuCanThiet String? @db.VarChar(50)
+  videoHuongDan  String? @db.VarChar(255)
 
   // Relations
-  NhomCo         NhomCo?   @relation(fields: [maNhomCo], references: [maNhomCo])
+  NhomCo         NhomCo?          @relation(fields: [maNhomCo], references: [maNhomCo])
   ChiTietKeHoach ChiTietKeHoach[]
 
   @@map("BAITAP_PHUCHOI")
 }
 
 model BenhNhan {
-  maBenhNhan       Int       @id @default(autoincrement())
-  chieuCao         Decimal?  @db.Decimal(5, 2)
-  canNang          Decimal?  @db.Decimal(5, 2)
-  tienSuChanThuong String?   @db.Text
-  tinhTrangHienTai String?   @db.Text
-  maTaiKhoan       Int?      @unique
+  maBenhNhan       Int      @id @default(autoincrement())
+  chieuCao         Decimal? @db.Decimal(5, 2)
+  canNang          Decimal? @db.Decimal(5, 2)
+  tienSuChanThuong String?  @db.Text
+  tinhTrangHienTai String?  @db.Text
+  maTaiKhoan       Int?     @unique
 
   // Relations
-  TaiKhoan         TaiKhoan? @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
-  HoSoBenhAn       HoSoBenhAn[]
+  TaiKhoan   TaiKhoan?    @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
+  HoSoBenhAn HoSoBenhAn[]
 
   @@map("BENHNHAN")
 }
 
 model BacSi {
-  maBacSi     Int       @id @default(autoincrement())
-  chuyenKhoa  String?   @db.VarChar(100)
-  congTac     String?   @db.VarChar(100)
-  ngayBatDau  DateTime? @db.Date
-  maTaiKhoan  Int?      @unique
+  maBacSi    Int       @id @default(autoincrement())
+  chuyenKhoa String?   @db.VarChar(100)
+  congTac    String?   @db.VarChar(100)
+  ngayBatDau DateTime? @db.Date
+  maTaiKhoan Int?      @unique
 
   // Relations
-  TaiKhoan    TaiKhoan? @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
-  HoSoBenhAn  HoSoBenhAn[]
+  TaiKhoan   TaiKhoan?    @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
+  HoSoBenhAn HoSoBenhAn[]
 
   @@map("BACSI")
 }
@@ -100,47 +100,48 @@ model KyThuatVien {
   maTaiKhoan    Int?      @unique
 
   // Relations
-  TaiKhoan      TaiKhoan? @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
-  PhanCong      PhanCong[]
-  LoTrinhDieuTri LoTrinhDieuTri[]
+  TaiKhoan         TaiKhoan?          @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
+  PhanCong         PhanCong[]
+  LoTrinhDieuTri   LoTrinhDieuTri[]
+  DanhGiaTienTrien DanhGiaTienTrien[]
 
   @@map("KYTHUATVIEN")
 }
 
 model HoSoBenhAn {
-  maHoSo          Int       @id @default(autoincrement())
-  maBenhNhan      Int?
-  maBacSi         Int?
-  ngayLapHoSo     DateTime? @db.Date
-  chanDoan        String?   @db.Text
-  trangThaiHienTai String?  @db.VarChar(50)
+  maHoSo           Int       @id @default(autoincrement())
+  maBenhNhan       Int?
+  maBacSi          Int?
+  ngayLapHoSo      DateTime? @db.Date
+  chanDoan         String?   @db.Text
+  trangThaiHienTai String?   @db.VarChar(50)
 
   // Relations
-  BenhNhan        BenhNhan? @relation(fields: [maBenhNhan], references: [maBenhNhan])
-  BacSi           BacSi?    @relation(fields: [maBacSi], references: [maBacSi])
-  ThongBaoLichTap ThongBaoLichTap[]
-  PhanCong        PhanCong[]
-  MucTieuDieuTri  MucTieuDieuTri[]
+  BenhNhan         BenhNhan?          @relation(fields: [maBenhNhan], references: [maBenhNhan])
+  BacSi            BacSi?             @relation(fields: [maBacSi], references: [maBacSi])
+  ThongBaoLichTap  ThongBaoLichTap[]
+  PhanCong         PhanCong[]
+  MucTieuDieuTri   MucTieuDieuTri[]
   DanhGiaTienTrien DanhGiaTienTrien[]
-  ChiTietSuDung   ChiTietSuDung[]
+  ChiTietSuDung    ChiTietSuDung[]
 
   @@map("HOSOSO_BENHAN")
 }
 
 model ThongBaoLichTap {
-  maLichTap   Int       @id @default(autoincrement())
-  maHoSo      Int?
-  maTaiKhoan  Int?
-  ngayTap     DateTime? @db.Date
-  gioBatDau   DateTime? @db.Time
-  trangThai   String?   @db.VarChar(20)
-  daDoc       Int?      @default(0) @db.TinyInt
-  phuongThuc  String?   @db.VarChar(20)
-  ghiChu      String?   @db.Text
+  maLichTap  Int       @id @default(autoincrement())
+  maHoSo     Int?
+  maTaiKhoan Int?
+  ngayTap    DateTime? @db.Date
+  gioBatDau  DateTime? @db.Time
+  trangThai  String?   @db.VarChar(20)
+  daDoc      Int?      @default(0) @db.TinyInt
+  phuongThuc String?   @db.VarChar(20)
+  ghiChu     String?   @db.Text
 
   // Relations
-  HoSoBenhAn  HoSoBenhAn? @relation(fields: [maHoSo], references: [maHoSo])
-  TaiKhoan    TaiKhoan?   @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
+  HoSoBenhAn HoSoBenhAn? @relation(fields: [maHoSo], references: [maHoSo])
+  TaiKhoan   TaiKhoan?   @relation(fields: [maTaiKhoan], references: [maTaiKhoan])
 
   @@map("THONGBAO_LICHTAP")
 }
@@ -153,8 +154,8 @@ model PhanCong {
   ngayKetThuc   DateTime? @db.Date
 
   // Relations
-  HoSoBenhAn    HoSoBenhAn?  @relation(fields: [maHoSo], references: [maHoSo])
-  KyThuatVien   KyThuatVien? @relation(fields: [maKyThuatVien], references: [maKyThuatVien])
+  HoSoBenhAn  HoSoBenhAn?  @relation(fields: [maHoSo], references: [maHoSo])
+  KyThuatVien KyThuatVien? @relation(fields: [maKyThuatVien], references: [maKyThuatVien])
 
   @@map("PHANCONG")
 }
@@ -164,29 +165,29 @@ model MucTieuDieuTri {
   maHoSo         Int?
   noiDung        String?   @db.Text
   trangThai      String?   @db.VarChar(20)
-  mucDoUuTien    String?   @db.VarChar(20)    
+  mucDoUuTien    String?   @db.VarChar(20)
   ngayDatMucTieu DateTime? @default(now()) @db.DateTime(0)
 
   // Relations
-  HoSoBenhAn     HoSoBenhAn? @relation(fields: [maHoSo], references: [maHoSo])
+  HoSoBenhAn     HoSoBenhAn?      @relation(fields: [maHoSo], references: [maHoSo])
   LoTrinhDieuTri LoTrinhDieuTri[]
 
   @@map("MUCTIEU_DIEUTRI")
 }
 
 model LoTrinhDieuTri {
-  maLoTrinh        Int       @id @default(autoincrement())
-  maMucTieu        Int?
-  maKyThuatVien    Int?
-  tenLoTrinh       String?   @db.VarChar(100)
-  thoiGianBatDau   DateTime? @db.Date
-  thoiGianKetThuc  DateTime? @db.Date
-  ghiChu           String?   @db.Text
+  maLoTrinh       Int       @id @default(autoincrement())
+  maMucTieu       Int?
+  maKyThuatVien   Int?
+  tenLoTrinh      String?   @db.VarChar(100)
+  thoiGianBatDau  DateTime? @db.Date
+  thoiGianKetThuc DateTime? @db.Date
+  ghiChu          String?   @db.Text
 
   // Relations
-  MucTieuDieuTri   MucTieuDieuTri? @relation(fields: [maMucTieu], references: [maMucTieu])
-  KyThuatVien      KyThuatVien?    @relation(fields: [maKyThuatVien], references: [maKyThuatVien])
-  KeHoachDieuTri   KeHoachDieuTri[]
+  MucTieuDieuTri MucTieuDieuTri?  @relation(fields: [maMucTieu], references: [maMucTieu])
+  KyThuatVien    KyThuatVien?     @relation(fields: [maKyThuatVien], references: [maKyThuatVien])
+  KeHoachDieuTri KeHoachDieuTri[]
 
   @@map("LOTRINH_DIEUTRI")
 }
@@ -200,21 +201,21 @@ model KeHoachDieuTri {
   thoiGianKetThuc DateTime? @db.Date
 
   // Relations
-  LoTrinhDieuTri  LoTrinhDieuTri? @relation(fields: [maLoTrinh], references: [maLoTrinh])
-  ChiTietKeHoach  ChiTietKeHoach[]
-  BaoCaoLuyenTap  BaoCaoLuyenTap[]
+  LoTrinhDieuTri LoTrinhDieuTri?  @relation(fields: [maLoTrinh], references: [maLoTrinh])
+  ChiTietKeHoach ChiTietKeHoach[]
+  BaoCaoLuyenTap BaoCaoLuyenTap[]
 
   @@map("KEHOACH_DIEUTRI")
 }
 
 model ChiTietKeHoach {
-  maChiTiet   Int       @id @default(autoincrement())
-  maKeHoach   Int?
-  maBaiTap    Int?
-  sets        Int?
-  reps        Int?
-  cuongDo     String?   @db.VarChar(20)
-  ghiChu      String?   @db.Text
+  maChiTiet Int     @id @default(autoincrement())
+  maKeHoach Int?
+  maBaiTap  Int?
+  sets      Int?
+  reps      Int?
+  cuongDo   String? @db.VarChar(20)
+  ghiChu    String? @db.Text
 
   // Relations
   KeHoachDieuTri KeHoachDieuTri? @relation(fields: [maKeHoach], references: [maKeHoach])
@@ -224,12 +225,12 @@ model ChiTietKeHoach {
 }
 
 model BaoCaoLuyenTap {
-  maBaoCao      Int       @id @default(autoincrement())
-  maKeHoach     Int?
-  ngayLuyenTap  DateTime? @db.Date
-  thoiLuong     Int?
-  mucDoDau      Int?
-  danhGiaSoBo   String?   @db.Text
+  maBaoCao     Int       @id @default(autoincrement())
+  maKeHoach    Int?
+  ngayLuyenTap DateTime? @db.Date
+  thoiLuong    Int?
+  mucDoDau     Int?
+  danhGiaSoBo  String?   @db.Text
 
   // Relations
   KeHoachDieuTri KeHoachDieuTri? @relation(fields: [maKeHoach], references: [maKeHoach])
@@ -238,48 +239,53 @@ model BaoCaoLuyenTap {
 }
 
 model DanhGiaTienTrien {
-  maDanhGia    Int       @id @default(autoincrement())
-  maHoSo       Int?
-  ngayDanhGia  DateTime? @db.Date
-  chiTiet      String?   @db.Text
-  thangDiem    Decimal?  @db.Decimal(4, 2)
-  daDoc       Boolean  @default(false)
+  maDanhGia     Int          @id @default(autoincrement())
+  maHoSo        Int?
+  ngayDanhGia   DateTime?    @db.Date
+  chiTiet       String?      @db.Text
+  thangDiem     Decimal?     @db.Decimal(4, 2)
+  daDoc         Boolean      @default(false)
+  loaiDanhGia   String       @default("BAC_SI")
+  ketQua        Boolean?
+  maKyThuatVien Int?
+  KyThuatVien   KyThuatVien? @relation(fields: [maKyThuatVien], references: [maKyThuatVien])
+
   // Relations
-  HoSoBenhAn   HoSoBenhAn? @relation(fields: [maHoSo], references: [maHoSo])
+  HoSoBenhAn HoSoBenhAn? @relation(fields: [maHoSo], references: [maHoSo])
 
   @@map("DANHGIA_TIENTRIEN")
 }
 
 model CamNangThuoc {
-  maThuoc   Int       @id @default(autoincrement())
-  tenThuoc  String?   @db.VarChar(100)
-  congDung  String?   @db.Text
+  maThuoc  Int     @id @default(autoincrement())
+  tenThuoc String? @db.VarChar(100)
+  congDung String? @db.Text
 
   // Relations
   ChiTietSuDung ChiTietSuDung[]
 
-  @@map("CANMANG_THUOC")
+  @@map("CAMNANG_THUOC")
 }
 
 model CamNangThucPham {
-  maThucPham   Int       @id @default(autoincrement())
-  tenThucPham  String?   @db.VarChar(100)
-  chiTiet      String?   @db.Text
+  maThucPham  Int     @id @default(autoincrement())
+  tenThucPham String? @db.VarChar(100)
+  chiTiet     String? @db.Text
 
   // Relations
   ChiTietSuDung ChiTietSuDung[]
 
-  @@map("CANMANG_THUCPHAM")
+  @@map("CAMNANG_THUCPHAM")
 }
 
 model ChiTietSuDung {
-  maSuDung       Int       @id @default(autoincrement())
+  maSuDung       Int     @id @default(autoincrement())
   maHoSo         Int?
-  loai           String?   @db.VarChar(20)
+  loai           String? @db.VarChar(20)
   maThuoc        Int?
   maThucPham     Int?
-  lieuLuong      String?   @db.Text
-  huongDanSuDung String?   @db.Text
+  lieuLuong      String? @db.Text
+  huongDanSuDung String? @db.Text
 
   // Relations
   HoSoBenhAn      HoSoBenhAn?      @relation(fields: [maHoSo], references: [maHoSo])

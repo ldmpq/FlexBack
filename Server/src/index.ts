@@ -29,10 +29,7 @@ app.use(express.json()); // Quan trọng: Đọc JSON từ body request
 app.use(express.urlencoded({ extended: true }));
 
 // Cấu hình Routes
-app.use(
-  '/uploads',
-  express.static(path.join(__dirname, '../uploads'))
-);
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use('/api/auth', authRoute);
 app.use('/api/hoso', hoSoRoute);

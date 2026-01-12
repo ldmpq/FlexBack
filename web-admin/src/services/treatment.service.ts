@@ -63,5 +63,13 @@ export const treatmentService = {
 
   saveRouteExercises: async (maLoTrinh: number, exercises: BaiTapConfig[]) => {
     return axiosClient.post(`/treatment/lotrinh/${maLoTrinh}/exercises`, exercises);
+  }, 
+
+  sendKTVEvaluation: async (data: { 
+    maHoSo: number; 
+    ketQua: boolean;
+    nhanXet: string;
+  }) => {
+    return axiosClient.post('/baocao/ktv-evaluate', data);
   }
 };

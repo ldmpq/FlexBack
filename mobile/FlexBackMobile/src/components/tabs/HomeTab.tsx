@@ -56,7 +56,7 @@ const HomeTab = () => {
       setUser(userRes.data.data);
       setTodayPlans(planRes.data.data);
 
-      const listDanhGia: Feedback[] = feedbackList; 
+      const listDanhGia: Feedback[] = (feedbackList || []).filter((item: any) => item.loaiDanhGia !== 'KTV'); 
 
       if (listDanhGia.length > 0) {
         // Sắp xếp theo ngày tăng dần

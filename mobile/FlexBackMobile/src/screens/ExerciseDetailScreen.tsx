@@ -101,8 +101,20 @@ const ExerciseDetailScreen = () => {
     );
   };
 
+  const getDifficultyColor = (level: string) => {
+    const lvl = level?.toLowerCase() || '';
+    if (lvl.includes('dễ') || lvl.includes('easy')) return { bg: '#ecfdf5', text: '#10b981', icon: 'speedometer-slow' }; // Xanh lá
+    if (lvl.includes('trung') || lvl.includes('medium')) return { bg: '#fffbeb', text: '#f59e0b', icon: 'speedometer-medium' }; // Vàng cam
+    if (lvl.includes('khó') || lvl.includes('hard')) return { bg: '#fef2f2', text: '#ef4444', icon: 'speedometer' }; // Đỏ
+    return { bg: '#f3f4f6', text: '#6b7280', icon: 'speedometer' };
+  };
+
   const renderExerciseItem = useCallback(({ item }: { item: any }) => {
-    const exercise = item?.BaiTapPhucHoi || {};
+    const exercise = item?.BaiTapPhucHoi || item || {};
+    const difficultyLevel = item.mucDo || exercise.mucDo || item.BaiTapPhucHoi?.mucDo;
+
+    const diffStyle = getDifficultyColor(difficultyLevel);
+
     return (
       <View style={{ width: SCREEN_WIDTH }}> 
         <ScrollView contentContainerStyle={styles.content}>
@@ -114,16 +126,28 @@ const ExerciseDetailScreen = () => {
           </TouchableOpacity>
 
           <View style={styles.headerInfo}>
-            <Text style={styles.title}>{exercise.tenBaiTap || "Tên bài tập"}</Text>
+            <Text style={styles.title}>{exercise.tenBaiTap || item.tenBaiTap || "Tên bài tập"}</Text>
+            
             <View style={styles.tagRow}>
+               {/* 1. Tag Mức độ khó */}
+               {difficultyLevel ? (
+                  <View style={[styles.tag, { backgroundColor: diffStyle.bg, marginRight: 8 }]}>
+                     <MaterialCommunityIcons name={diffStyle.icon as any} size={14} color={diffStyle.text} />
+                     <Text style={[styles.tagText, { color: diffStyle.text }]}>Mức độ: {difficultyLevel}</Text>
+                  </View>
+               ) : null}
+
+               {/* 2. Tag Dụng cụ */}
                {exercise.dungCuCanThiet ? (
-                  <View style={styles.tag}>
+                  <View style={[styles.tag, { marginRight: 8 }]}>
                      <FontAwesome5 name="tools" size={12} color="#1ec8a5" />
                      <Text style={styles.tagText}>Dụng cụ: {exercise.dungCuCanThiet}</Text>
                   </View>
                ) : null}
+
+               {/* 3. Tag Thời lượng */}
                {exercise.thoiLuongPhut && exercise.thoiLuongPhut > 0 ? (
-                  <View style={[styles.tag, {marginLeft: 8}]}>
+                  <View style={styles.tag}>
                      <Feather name="clock" size={12} color="#1ec8a5" />
                      <Text style={styles.tagText}>{exercise.thoiLuongPhut} phút</Text>
                   </View>
@@ -135,12 +159,12 @@ const ExerciseDetailScreen = () => {
              <Text style={styles.sectionTitle}>Mục tiêu hôm nay</Text>
              <View style={styles.statsRow}>
                 <View style={styles.statItem}>
-                   <Text style={styles.statValue}>{item.sets || '--'}</Text>
+                   <Text style={styles.statValue}>{item.sets || item.soSet || '--'}</Text>
                    <Text style={styles.statLabel}>SETS</Text>
                 </View>
                 <View style={styles.statDivider} />
                 <View style={styles.statItem}>
-                   <Text style={styles.statValue}>{item.reps || '--'}</Text>
+                   <Text style={styles.statValue}>{item.reps || item.soRep || '--'}</Text>
                    <Text style={styles.statLabel}>REPS</Text>
                 </View>
                 <View style={styles.statDivider} />
@@ -242,62 +266,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 20,
   },
-  overviewCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    elevation: 2,
-  },
-  overviewHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  iconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#e0f2f1',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  overviewTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  overviewSubtitle: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 2,
-  },
-  overviewStats: {
-    flexDirection: 'row',
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
-    padding: 10,
-  },
-  ovStatItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  ovStatVal: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1ec8a5',
-  },
-  ovStatLbl: {
-    fontSize: 11,
-    color: '#888',
-  },
-  verticalLine: {
-    width: 1,
-    backgroundColor: '#eee',
-  },
   footerContainer: {
     position: 'absolute',
     bottom: 0,
@@ -307,37 +275,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#eee',
-  },
-  startButton: {
-    backgroundColor: '#1ec8a5',
-    borderRadius: 12,
-    paddingVertical: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    shadowColor: '#1ec8a5',
-    shadowOpacity: 0.3,
-    elevation: 4,
-  },
-  startButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  finishButton: {
-    backgroundColor: '#1ec8a5',
-    borderRadius: 12,
-    paddingVertical: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  finishButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   content: {
     padding: 16,
@@ -377,6 +314,7 @@ const styles = StyleSheet.create({
   tagRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   tag: {
     flexDirection: 'row',
@@ -385,6 +323,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
+    marginBottom: 6,
   },
   tagText: {
     marginLeft: 6,

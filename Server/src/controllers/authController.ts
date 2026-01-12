@@ -83,8 +83,6 @@ export const resetPassword = async (req: Request, res: Response) => {
   }
 };
 
-// Server/src/controllers/authController.ts
-
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     console.log("Token decoded user:", (req as any).user);

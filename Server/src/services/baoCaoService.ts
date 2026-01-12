@@ -175,10 +175,54 @@ export class BaoCaoService {
         chiTiet: true,
         ngayDanhGia: true,
         thangDiem: true,
-        daDoc: true
+        daDoc: true,
+        loaiDanhGia: true
       }
     });
 
     return feedbacks;
   }
+
+  static async createKTVEvaluation(data: {
+    maHoSo: number;
+    maKTV: number;
+    ketQua: boolean;
+    nhanXet: string;
+  }) {
+    return await prisma.danhGiaTienTrien.create({
+      data: {
+        maHoSo: data.maHoSo,
+        maKyThuatVien: data.maKTV,
+        loaiDanhGia: 'KTV',
+        ketQua: data.ketQua,
+        ngayDanhGia: new Date(),
+        daDoc: false,
+        thangDiem: null
+      }
+    });
+  }
+
+  static async getAllKTVEvaluations() {
+    return await prisma.danhGiaTienTrien.findMany({
+      where: { loaiDanhGia: 'KTV' }, // Chỉ lấy cái KTV gửi
+      orderBy: { ngayDanhGia: 'desc' },
+      include: {
+        HoSoBenhAn: {
+          include: {
+            BenhNhan: {
+              include: {
+                TaiKhoan: { select: { hoVaTen: true } }
+              }
+            }
+          }
+        },
+        KyThuatVien: {
+          include: {
+            TaiKhoan: { select: { hoVaTen: true } }
+          }
+        }
+      }
+    });
+  }
+
 }

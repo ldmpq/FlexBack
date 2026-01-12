@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { BaoCaoService } from '../services/baoCaoService';
 import { AuthRequest } from '../middlewares/authMiddleware';
+import prisma from '../prismaClient';
 
 export const createBaoCao = async (req: Request, res: Response) => {
   try {
@@ -80,12 +81,53 @@ export const getMyFeedback = async (req: Request, res: Response) => {
       noiDung: item.chiTiet,
       ngayTao: item.ngayDanhGia,
       thangDiem: item.thangDiem,
-      daDoc: item.daDoc
+      daDoc: item.daDoc,
+      loaiDanhGia: item.loaiDanhGia
     }));
 
     res.status(200).json({ data: formattedData });
   } catch (error) {
     console.error("Lỗi lấy đánh giá:", error);
+    res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
+// [KTV] Kỹ thuật viên gửi đánh giá
+export const sendKTVEvaluation = async (req: Request | any, res: Response) => {
+  try {
+    const { maHoSo, ketQua, nhanXet } = req.body;
+    const userId = req.user?.id; // Lấy ID từ token
+
+    // 1. Tìm thông tin KTV từ User ID
+    const ktv = await prisma.kyThuatVien.findFirst({
+      where: { maTaiKhoan: userId }
+    });
+
+    if (!ktv) {
+      return res.status(403).json({ message: "Bạn không có quyền Kỹ thuật viên!" });
+    }
+
+    // 2. Gọi service tạo đánh giá
+    await BaoCaoService.createKTVEvaluation({
+      maHoSo: Number(maHoSo),
+      maKTV: ktv.maKyThuatVien,
+      ketQua: Boolean(ketQua),
+      nhanXet: nhanXet
+    });
+
+    res.status(201).json({ message: "Gửi đánh giá tiến độ thành công!" });
+  } catch (error) {
+    console.error("Lỗi gửi đánh giá KTV:", error);
+    res.status(500).json({ message: "Lỗi hệ thống" });
+  }
+};
+
+export const getKTVEvaluations = async (req: Request, res: Response) => {
+  try {
+    const data = await BaoCaoService.getAllKTVEvaluations();
+    res.status(200).json({ data });
+  } catch (error) {
+    console.error("Lỗi lấy danh sách KTV đánh giá:", error);
     res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
