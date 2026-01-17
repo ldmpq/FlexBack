@@ -20,7 +20,6 @@ const AdminLayout = () => {
   const [user, setUser] = useState<UserInfo | null>(null);
   const location = useLocation();
 
-  // --- States cho Dropdown & Modals ---
   const [showDropdown, setShowDropdown] = useState(false);
   const [expandGeneral, setExpandGeneral] = useState(false);
   
